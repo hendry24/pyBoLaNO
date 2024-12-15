@@ -22,7 +22,8 @@ def get_args_no_pow(q):
     if isinstance(q, Pow):
         return (q.args[0] for _ in range(q.args[1]))
     
-    assert isinstance(q, Mul)
+    if not(isinstance(q, Mul)):
+        return [q]
     
     if "Pow" in srepr(q):
         args_long = []

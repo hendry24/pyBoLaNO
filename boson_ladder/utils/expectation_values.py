@@ -97,7 +97,6 @@ class expval(Expr):
                 # is a list of factors of expectation values. Mul
                 # cannot be used here as we want to raise the power
                 # of the expval object instead of what it contains.
-                print(i, j, self.ops)
                 to_write = self.ops[i][j]
                 
                 if to_write in [1, Integer(1)]:
