@@ -81,7 +81,6 @@ def NO_one_step(q_args):
                 seems to only happen when we normal order b*bd, so this may only
                 rarely happen.
                 """
-                print(args_left, args_right)
                 q_NO_mul_args = [args_left + args_right,   
                                 args_left + (bd,b) + args_right]
                 
