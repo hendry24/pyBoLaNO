@@ -2,7 +2,8 @@ from sympy import srepr, Integer, Mul, Pow, Add
 from sympy.physics.secondquant import Commutator
 
 from .utils import *
-from .identities import *
+from .commutator_identities import *
+from .orderings import normal_order as NO
 
 __all__ = ["do_commutator"]
 
@@ -42,6 +43,7 @@ def get_ABC_and_expand(comm):
     bd_in_comm = "CreateBoson" in concatenated_srepr
     if (b_in_comm and not(bd_in_comm)) or (not(b_in_comm) and bd_in_comm):
         return Integer(0)
+    # NOTE: Might want to change this for many body cases.
     
     if not(is_laddder(comm_1)):
         # skip the check if the entry is a single operator
@@ -125,7 +127,7 @@ def expand_single_comm(comm):
     else:
         return [term for term in comm.args]
                 
-def do_commutator(A, B):
+def do_commutator(A, B, normal_order = True):
     comm = Commutator(A, B)
     
     single_comms = []
@@ -140,4 +142,9 @@ def do_commutator(A, B):
 
     expand_recursive(comm)
     
-    return Add(*single_comms)
+    out = Add(*single_comms)
+    
+    if normal_order:
+        out = NO(out)
+    
+    return out

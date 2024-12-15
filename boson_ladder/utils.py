@@ -1,5 +1,5 @@
-from sympy import srepr, Integer, Mul, Pow, Add
-from sympy.physics.secondquant import Commutator, CreateBoson, AnnihilateBoson
+from sympy import srepr, Integer, Mul
+from sympy.physics.secondquant import Commutator, CreateBoson, AnnihilateBoson, B, Dagger
 
 def is_laddder(q):
     return isinstance(q, (AnnihilateBoson, CreateBoson))
@@ -27,3 +27,7 @@ def isolate_bracket(comm):
         comm = comm.args[comm_idx]     # this gets assigned last.
             
     return left_factor, comm, right_factor
+
+def ops():
+    b = B(0)
+    return b, Dagger(b)
