@@ -115,8 +115,6 @@ def normal_order(q):
         q_args = [get_args_no_pow(arg) for arg in q.args]
     elif isinstance(q, Mul):
         q_args = [get_args_no_pow(q)]
-    else:
-        raise ValueError("Invalid expression.")
     
     # The original operator is Add(*[Mul(*x) for x in q_args])
     # since get_args_no_pow returns a list of factors.
