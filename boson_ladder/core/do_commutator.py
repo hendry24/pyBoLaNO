@@ -1,9 +1,19 @@
-from sympy import srepr, Integer, Mul, Pow, Add
-from sympy.physics.secondquant import Commutator
-
-from .utils import *
-from .commutator_identities import *
-from .orderings import normal_order as NO
+from sympy import \
+    srepr, \
+    Integer, \
+    Mul, \
+    Pow, \
+    Add
+from sympy.physics.secondquant import \
+    Commutator
+from ..utils.operators import \
+    is_ladder, \
+    isolate_bracket
+from ..utils.commutators import \
+    expand_A_BC, \
+    expand_AB_C
+from ..utils.normal_ordering import \
+    normal_order as NO
 
 __all__ = ["do_commutator"]
 
@@ -45,7 +55,7 @@ def get_ABC_and_expand(comm):
         return Integer(0)
     # NOTE: Might want to change this for many body cases.
     
-    if not(is_laddder(comm_1)):
+    if not(is_ladder(comm_1)):
         # skip the check if the entry is a single operator
         operation = srepr(comm_1)[:3]
         if operation == "Mul":
@@ -60,7 +70,7 @@ def get_ABC_and_expand(comm):
         
         return expand_AB_C(A, B, C)
         
-    elif not(is_laddder(comm_2)):
+    elif not(is_ladder(comm_2)):
         operation = srepr(comm_2)[:3]
         if operation == "Mul":
             B = comm_2.args[0]

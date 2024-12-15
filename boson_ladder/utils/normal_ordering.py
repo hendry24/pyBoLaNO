@@ -1,7 +1,12 @@
-from sympy import srepr, Mul, Add, Pow
-from sympy.physics.secondquant import CreateBoson, AnnihilateBoson
-
-from .utils import *
+from sympy import \
+    Add, \
+    Pow, \
+    Mul, \
+    srepr
+from sympy.physics.secondquant import \
+    AnnihilateBoson, \
+    CreateBoson
+from .operators import ops
 
 __all__ = ["normal_order"]
 
