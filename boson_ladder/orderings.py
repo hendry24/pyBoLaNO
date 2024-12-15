@@ -1,9 +1,12 @@
-from sympy import srepr, Integer, Mul, Add, Pow
-from sympy.physics.secondquant import Commutator, CreateBoson, AnnihilateBoson, B, Dagger
+from sympy import srepr, Mul, Add, Pow
+from sympy.physics.secondquant import CreateBoson, AnnihilateBoson
 
 from .utils import *
 
 __all__ = ["normal_order"]
+
+b, bd = ops()
+assert isinstance(b, AnnihilateBoson) or isinstance(bd, CreateBoson)
 
 def get_args_no_pow(q):
     """
@@ -12,7 +15,7 @@ def get_args_no_pow(q):
     """
     
     if isinstance(q, Pow):
-        return [q.args[0] for _ in range(q.args[1])]
+        return (q.args[0] for _ in range(q.args[1]))
     
     assert isinstance(q, Mul)
     
@@ -20,7 +23,7 @@ def get_args_no_pow(q):
         args_long = []
         for arg in q.args:
             if isinstance(arg, Pow):
-                for i in range(arg.args[1]):
+                for _ in range(arg.args[1]):
                     args_long.append(arg.args[0])
             else:
                 args_long.append(arg)
@@ -42,8 +45,6 @@ def NO_one_step(q_args):
     Leading scalar does not matter.
     """
     
-    bd, b = ops()
-    
     find_bd = False 
     # We skip the algorithm for bd that are already
     # leftmost. The algorithm starts looking for bd
@@ -57,20 +58,33 @@ def NO_one_step(q_args):
             continue
         
         # The first bd found must be right next
-        # to a b.
+        # to a `b`.
         if isinstance(op, CreateBoson):
             args_left = q_args[:i-1] # To the left of the substituted b*bd.
-            args_right = q_args[i+1:]             
-            q_NO_mul_args = [args_left + args_right,
-                             args_left+ [bd, b] + args_right]
-            # where q_NO = Add(Mul(*q_NO_mul_args[0]), 
-            #                  Mul(*q_NO_mul_args[1]))
-            """
-            We return the quantities as arguments as they will be used
-            for the recursion, so there is no need to call get_args_no_pow
-            repeatedly.
-            """
+            args_right = q_args[i+1:]
             
+            try:           
+                q_NO_mul_args = [args_left + args_right,   
+                                    # Integer(1) is not necessary, since Mul(*()) = Integer(1)
+                                args_left + [bd,b] + args_right]
+                # where q_NO = Add(Mul(*q_NO_mul_args[0]), 
+                #                  Mul(*q_NO_mul_args[1]))
+                """
+                We return the quantities as arguments as they will be used
+                for the recursion, so there is no need to call get_args_no_pow
+                repeatedly.
+                """
+            except:
+                """
+                In some cases (probably only the first recursion stack), args_left
+                and args_right may not be lists, so tuples are needed. Anyway, it 
+                seems to only happen when we normal order b*bd, so this may only
+                rarely happen.
+                """
+                print(args_left, args_right)
+                q_NO_mul_args = [args_left + args_right,   
+                                args_left + (bd,b) + args_right]
+                
             return q_NO_mul_args, False
         
     # If nothing is found, it means the NO is finished and we can return
@@ -94,15 +108,14 @@ def normal_order(q):
     q_NO : sympy.Mul or sympy.Add containing sympy.physics.secondquant.AnnihilateBoson and sympy.physics.secondquant.CreateBoson
         q, normal ordered.
     """
-    
-    if isinstance(q, Add):
-        q_args = [get_args_no_pow(arg) for arg in q.args]
-    elif isinstance(q, Mul):
-        q_args = [get_args_no_pow(q)]
-    elif isinstance(q, (Pow, CreateBoson, AnnihilateBoson))\
+    if isinstance(q, (Pow, CreateBoson, AnnihilateBoson))\
         or (not("CreateBoson" in srepr(q))
             and not("AnnihilateBoson" in srepr(q))):
         return q
+    elif isinstance(q, Add):
+        q_args = [get_args_no_pow(arg) for arg in q.args]
+    elif isinstance(q, Mul):
+        q_args = [get_args_no_pow(q)]
     else:
         raise ValueError("Invalid expression.")
     
