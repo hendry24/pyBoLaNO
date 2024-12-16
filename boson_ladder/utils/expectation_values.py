@@ -74,6 +74,10 @@ class expval(Expr):
     Expectation value object.
     """
     
+    def __new__(cls, *args, **kwargs):
+        obj = super().__new__(cls)
+        return obj
+    
     def __init__(self, val, normal_order = False):
         super().__init__()
         val = sympify(val)
