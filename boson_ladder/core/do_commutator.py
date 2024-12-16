@@ -11,7 +11,8 @@ from ..utils.operators import \
     isolate_bracket
 from ..utils.commutators import \
     expand_A_BC, \
-    expand_AB_C
+    expand_AB_C, \
+    _treat_Kron
 from ..utils.normal_ordering import \
     normal_order as NO
 
@@ -110,7 +111,8 @@ def expand_single_comm(comm):
     # must be input without calling .doit first.
 
     if "Commutator" not in srepr(comm):
-        return comm 
+        return _treat_Kron(comm) 
+                # in case a Symbol is used as the input to the ladder operators.
     
     if "Add" in srepr(comm):
         """
@@ -125,7 +127,6 @@ def expand_single_comm(comm):
     
     left_factor, comm, right_factor = isolate_bracket(comm)
     # At this point, comm should purely be a commutator object.
-    assert isinstance(comm, Commutator)
                 
     comm = get_ABC_and_expand(comm)
     comm = (left_factor*comm*right_factor).expand()
@@ -133,7 +134,7 @@ def expand_single_comm(comm):
     
     if not("Commutator" in srepr(comm)) \
         or len(comm.args) == 1:
-        return comm
+        return _treat_Kron(comm)
     else:
         return [term for term in comm.args]
                 

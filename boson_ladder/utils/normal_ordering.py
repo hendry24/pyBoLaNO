@@ -10,7 +10,7 @@ from .operators import ops
 
 __all__ = ["normal_order"]
 
-b, bd = ops()
+b, bd = ops(0)
 assert isinstance(b, AnnihilateBoson) or isinstance(bd, CreateBoson)
 
 def get_args_no_pow(q):
