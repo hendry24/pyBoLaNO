@@ -2,18 +2,20 @@ from sympy import \
     Mul, \
     Integer, \
     srepr
-from .ladder import \
-    Ladder
+from sympy.physics.secondquant import \
+    CreateBoson, \
+    AnnihilateBoson, \
+    Commutator
     
 __all__ = ["ops",
            "is_ladder",
            "is_ladder_contained"]
 
 def is_ladder(q):
-    return isinstance(q, Ladder)
+    return isinstance(q, (CreateBoson, AnnihilateBoson))
 
 def is_ladder_contained(q):
-    return "Ladder" in srepr(q)
+    return ("CreateBoson" in srepr(q)) or ("AnnihilateBoson" in srepr(q))
 
 def isolate_bracket(comm):
     """
@@ -40,4 +42,6 @@ def isolate_bracket(comm):
     return left_factor, comm, right_factor
 
 def ops(k):
-    return boson_ladder()
+    b = AnnihilateBoson(k)
+    bd = CreateBoson(k)
+    return b, bd
