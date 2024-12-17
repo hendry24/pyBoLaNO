@@ -1,8 +1,15 @@
 from sympy import \
+    Add, \
     Mul, \
+    Pow, \
     Expr, \
+    Integer, \
     sympify, \
     latex
+    
+from .operators import \
+    is_ladder, \
+    is_ladder_contained
 
 class _expval(Expr):
     """
@@ -65,3 +72,48 @@ class _expval(Expr):
 
     def __repr__(self):
         return self._repr_latex(None)
+    
+def _expval_sum(q):
+    """
+    Get the expectation value for a 
+    scalar-weighted sum of expectation values.
+    No a*(b+c) form allowed.
+    """
+    
+    def _treat_Mul(_q):
+        oper = []
+        scalar = []
+        for _arg in _q.args:
+            if (isinstance(_arg, Pow) \
+                    and is_ladder(_arg.args[0])) \
+                or is_ladder(_arg):
+                oper.append(_arg)
+            else:
+                scalar.append(_arg)
+                
+        return Mul(*scalar) * _expval(Mul(*oper))
+
+    out = Integer(0)
+    
+    if not(is_ladder_contained(q)):
+        return q
+    
+    elif isinstance(q, (Pow)) or \
+        is_ladder(q):
+        return _expval(q)
+    
+    elif isinstance(q, Add):
+        for qq in q.args:
+            if not(is_ladder_contained(qq)):
+                out += qq
+            
+            elif isinstance(qq, Mul):
+                out += _treat_Mul(qq)
+                
+            else:
+                out += _expval(qq)
+    
+    else: # Mul
+        out += _treat_Mul(q)
+            
+    return out

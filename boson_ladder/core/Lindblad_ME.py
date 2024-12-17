@@ -1,17 +1,46 @@
 from sympy import \
-    Add
+    Add, \
+    I, \
+    Integer, \
+    Derivative, \
+    Symbol,\
+    Equality
 from sympy.physics.secondquant import \
     Dagger
 from .do_commutator import \
     do_commutator
-from ..utils.normal_ordering import \
-    normal_ordering as NO
+from .normal_order import \
+    normal_ordering
 from ..utils.expval import \
-    _expval
+    _expval_sum
     
-__all__ = ["dissipator_trace"]
+__all__ = ["Hamiltonian_trace",
+           "dissipator_trace",
+           "moment_evo"]
 
-def dissipator_trace(O, A, normal_order=True):
+def Hamiltonian_trace(H, A, normal_order=True, _braket = True):
+    """
+    tr(-1j*[H,.]A) where -1j*[H,.] is the Hamiltonian
+    superoperator. 
+    """
+    H = H.expand()
+    if isinstance(H, Add):
+        H = [arg for arg in H.args]
+    else:
+        H = [H]
+        
+    comm = do_commutator
+    out = Integer(0)
+    
+    for H_k in H:
+        out += -I*comm(A, H_k)
+    
+    if normal_order:
+        out = normal_ordering(out)
+    
+    return _expval_sum(out) if _braket else out 
+
+def dissipator_trace(O, A, normal_order=True, _braket=False):
     """
     tr(D(O) * A) where D(O) is the Lindblad dissipator 
     and A is a polynomial in the ladder operators.
@@ -24,7 +53,7 @@ def dissipator_trace(O, A, normal_order=True):
     
     comm = do_commutator
     
-    out = 0
+    out = Integer(0)
     for k, O_k in enumerate(O):
         Od_k = Dagger(O_k)
         out += Od_k * comm(A, O_k)
@@ -37,5 +66,27 @@ def dissipator_trace(O, A, normal_order=True):
             out += comm(Od_l, A) * O_k
     
     if normal_order:
-        out = NO(out)
-    return _expval(out)
+        out = normal_ordering(out)
+        
+    out = (out/Integer(2)).expand()
+        
+    return _expval_sum(out) if _braket else out
+
+def moment_evo(H, D, A, normal_order = True):
+    t = Symbol("t")
+    RHS = Hamiltonian_trace(H, A, _braket=False)
+    
+    if not(isinstance(D, list)):
+        RHS += dissipator_trace(D, A)
+    else:
+        for k, D_k in enumerate(D):
+            if not(isinstance(D_k, list)):
+                RHS += dissipator_trace(D_k, A, _braket=False)
+            else:
+                RHS += D_k[0]*dissipator_trace(D_k[1], A, _braket=False)
+            
+    if normal_order:
+        RHS = normal_ordering(RHS)
+        
+    return Equality(Derivative(_expval_sum(A), t),
+                    _expval_sum(RHS))

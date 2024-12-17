@@ -1,10 +1,11 @@
 from sympy import \
-    Add, \
     Mul, \
     Integer, \
     srepr, \
     KroneckerDelta
 from sympy.physics.secondquant import \
+    CreateBoson, \
+    AnnihilateBoson, \
     Commutator
 from .error_handling import InvalidTypeError
     
@@ -78,7 +79,7 @@ def _treat_Kron(q):
         Object containing the Kronecker delta object.
     """
     
-    if isinstance(q, Integer):
+    if isinstance(q, (Integer, CreateBoson, AnnihilateBoson)):
         return q
     
     if isinstance(q, KroneckerDelta):

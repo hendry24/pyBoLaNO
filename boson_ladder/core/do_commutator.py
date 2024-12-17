@@ -13,6 +13,8 @@ from ..utils.commutators import \
     expand_AB_C, \
     _isolate_bracket, \
     _treat_Kron
+from ..utils.error_handling import \
+    InvalidTypeError
 from .normal_order import \
     normal_ordering
 
@@ -36,11 +38,6 @@ def get_ABC_and_expand(comm):
     what its input is and will do its job accordingly, i.e. to expand
     with respect to the leftmost eligible operator. 
     """
-    
-    def comm_entry_err_msg(entry):
-        msg = "Commutator entry is neither Mul or Pow. Here is the srepr: \n"
-        msg += srepr(entry)
-        raise ValueError(msg)
     
     comm_1, comm_2 = comm.args
     
@@ -66,7 +63,7 @@ def get_ABC_and_expand(comm):
             A = comm_1.args[0]
             B = Pow(A, comm_1.args[1]-1)
         else:
-            comm_entry_err_msg(comm_1)
+            raise InvalidTypeError([Mul, Pow], type(comm_1))
         C = comm_2
         
         return expand_AB_C(A, B, C)
@@ -80,7 +77,7 @@ def get_ABC_and_expand(comm):
             B = comm_2.args[0]
             C = Pow(B, comm_2.args[1]-1)
         else:
-            comm_entry_err_msg(comm_2)
+            raise InvalidTypeError([Mul, Pow], type(comm_2))
         A = comm_1
         
         return expand_A_BC(A, B, C)

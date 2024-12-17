@@ -4,7 +4,8 @@ from sympy import \
     Mul, \
     Pow, \
     Integer, \
-    srepr
+    srepr, \
+    latex
 from sympy.physics.secondquant import \
     CreateBoson, \
     AnnihilateBoson
@@ -16,14 +17,14 @@ __all__ = ["ops",
            "is_ladder_contained",
            "separate_by_subscript"]
 
-def ops(k = 0):
+def ops(k=None):
     """
     SymPy's bosonic ladder operator objects.
     
     Parameters
     ----------
     
-    k : scalar or `sympy.Integer` or `sympy.Symbol`, default: 0
+    k : scalar or `sympy.Integer` or `sympy.Symbol`, default: None
         Subscript of the boson ladder objects, used 
         do differentiate the ladder operators for 
         different subsystems in a multipartite system.
@@ -43,8 +44,15 @@ def ops(k = 0):
     
     """
     
-    if not(isinstance(k, Symbol)):
-        k = Symbol(r"%s" % (k))
+    if k is None:
+        k = Symbol("")
+    elif isinstance(k, Symbol):
+        pass
+    else:
+        try:
+            k = Symbol(latex(k))
+        except:
+            raise ValueError("Invalid k.")
     
     b = AnnihilateBoson(k)
     bd = CreateBoson(k)
@@ -92,14 +100,22 @@ def _flatten_pow(q):
     """
     Layout any power expressions in q.args and 
     return a list of arguments without power, i.e.
-    q = Mul(*output)
+    q = Mul(*output).
+    
+    Bad expressions such as a Power object with 
+    negative power and non-Integer object are
+    kept as is.
+    
     """
     
     if isinstance(q, Add):
         raise ValueError("q is not supposed to be Add.")
     
     if isinstance(q, Pow):
-        return (q.args[0] for _ in range(q.args[1]))
+        if q.args[1] is not Integer \
+            or q.args[1] < 2: # bad power expressions that may raise error in the program.
+            return [q]
+        return [q.args[0] for _ in range(q.args[1])]
     
     if not(isinstance(q, Mul)):
         return [q]
@@ -108,8 +124,12 @@ def _flatten_pow(q):
         args_long = []
         for arg in q.args:
             if isinstance(arg, Pow):
-                for _ in range(arg.args[1]):
-                    args_long.append(arg.args[0])
+                if q.args[1] is not Integer\
+                    or q.args[1] < 2:
+                    args_long.append(arg)
+                else:
+                    for _ in range(arg.args[1]):
+                        args_long.append(arg.args[0])
             else:
                 args_long.append(arg)
     else:
