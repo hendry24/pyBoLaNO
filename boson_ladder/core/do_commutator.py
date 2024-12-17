@@ -1,6 +1,6 @@
 from sympy import \
     srepr, \
-    Integer, \
+    Number, \
     Mul, \
     Pow, \
     Add
@@ -50,7 +50,7 @@ def get_ABC_and_expand(comm):
     b_in_comm = "AnnihilateBoson" in concatenated_srepr
     bd_in_comm = "CreateBoson" in concatenated_srepr
     if (b_in_comm and not(bd_in_comm)) or (not(b_in_comm) and bd_in_comm):
-        return Integer(0)
+        return Number(0)
     # NOTE: Might want to change this for many body cases.
     
     if not(is_ladder(comm_1)):
