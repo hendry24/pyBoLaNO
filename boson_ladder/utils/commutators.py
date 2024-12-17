@@ -78,6 +78,9 @@ def _treat_Kron(q):
         Object containing the Kronecker delta object.
     """
     
+    if isinstance(q, Integer):
+        return q
+    
     if isinstance(q, KroneckerDelta):
         return 1 if (q.args[0]==q.args[1]) else 0
     
@@ -95,4 +98,5 @@ def _treat_Kron(q):
         return Mul(*out)
     
     else: 
-        raise InvalidTypeError([KroneckerDelta, Mul], q)
+        raise InvalidTypeError([KroneckerDelta, Mul], 
+                               type(q))

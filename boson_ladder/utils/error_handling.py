@@ -11,22 +11,17 @@ class InvalidTypeError(TypeError):
         expected : type or list of type
             Expected object types.
             
-        got : type:
+        got : type
             Input type.
         """
-        if not(isinstance(expected), list):
+        if not(isinstance(expected, list)):
             expected = [expected]
-            
-        for i, obj in enumerate(expected): 
-            if type(obj) != "type":
-                expected[i] = type(obj)
-        if type(got) != "type":
-            got = type(got)
         
         msg = f"Expected ["
         msg += f"{expected[0]}"
         for obj in expected[1:]:
-            msg += "or"
-            msg += f"{expected}"
-        msg += f"], got [{got}] instead."
+            msg += "\n"
+            msg += " or \n"
+            msg += f"{obj}"
+        msg += f"], got \n [{got}] \n instead."
         super().__init__(msg)

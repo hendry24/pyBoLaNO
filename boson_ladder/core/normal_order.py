@@ -75,6 +75,7 @@ def _NO_one_step(q_args):
     # If nothing is found, it means the NO is finished and we can return
     # a True stop flag. We use a boolean flag since both possible outputs
     # are lists of different
+    return q_args, True
         
 def normal_ordering(q):
     """
@@ -107,7 +108,7 @@ def normal_ordering(q):
                                 AnnihilateBoson,
                                 Add,
                                 Mul],
-                               q)
+                                type(q))
     
     # The original operator is Add(*[Mul(*x) for x in q_args])
     # since get_args_no_pow returns a list of factors.

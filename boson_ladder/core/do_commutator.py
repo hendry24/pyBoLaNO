@@ -13,8 +13,8 @@ from ..utils.commutators import \
     expand_AB_C, \
     _isolate_bracket, \
     _treat_Kron
-from ..utils.normal_ordering import \
-    normal_ordering as NO
+from .normal_order import \
+    normal_ordering
 
 __all__ = ["do_commutator"]
 
@@ -122,7 +122,7 @@ def expand_single_comm(comm):
         at a time. 
         """
         msg = "Input accepts only one commutator term, "
-        msg += "not a sum of them"
+        msg += "not a sum of them. This shouldn't happen."
         raise ValueError(msg)
     
     left_factor, comm, right_factor = _isolate_bracket(comm)
@@ -137,9 +137,14 @@ def expand_single_comm(comm):
         return _treat_Kron(comm)
     else:
         return [term for term in comm.args]
+    
+###################################################
                 
 def do_commutator(A, B, normal_order = True):
     comm = Commutator(A, B)
+    
+    if "Commutator" not in srepr(comm):
+        return _treat_Kron(comm)
     
     single_comms = []
     
@@ -156,6 +161,6 @@ def do_commutator(A, B, normal_order = True):
     out = Add(*single_comms)
     
     if normal_order:
-        out = NO(out)
+        out = normal_ordering(out)
     
     return out
