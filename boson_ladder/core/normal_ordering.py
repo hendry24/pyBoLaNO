@@ -6,39 +6,14 @@ from sympy import \
 from sympy.physics.secondquant import \
     AnnihilateBoson, \
     CreateBoson
-from .operators import ops
+from ..utils.operators import \
+    _flatten_pow
+from ..utils.error_handling import \
+    InvalidTypeError
 
 __all__ = ["normal_ordering"]
 
-b, bd = ops(0)
-assert isinstance(b, AnnihilateBoson) or isinstance(bd, CreateBoson)
-
-def get_args_no_pow(q):
-    """
-    Layout any power expressions in q.args and 
-    return a list of arguments without power.
-    """
-    
-    if isinstance(q, Pow):
-        return (q.args[0] for _ in range(q.args[1]))
-    
-    if not(isinstance(q, Mul)):
-        return [q]
-    
-    if "Pow" in srepr(q):
-        args_long = []
-        for arg in q.args:
-            if isinstance(arg, Pow):
-                for _ in range(arg.args[1]):
-                    args_long.append(arg.args[0])
-            else:
-                args_long.append(arg)
-    else:
-        args_long = q.args
-        
-    return args_long
-
-def NO_one_step(q_args):
+def _NO_one_step(q_args):
     """
     Normal order the first [b,bd] sequence found in q_args 
     and return the result as a list of two args.
@@ -57,6 +32,7 @@ def NO_one_step(q_args):
     # to swap after it meets the first b.
     for i, op in enumerate(q_args):
         if isinstance(op, AnnihilateBoson):
+            b_sub = op.args[0]
             find_bd = True
             continue
         
@@ -66,20 +42,16 @@ def NO_one_step(q_args):
         # The first bd found must be right next
         # to a `b`.
         if isinstance(op, CreateBoson):
-            args_left = q_args[:i-1] # To the left of the substituted b*bd.
-            args_right = q_args[i+1:]
+            bd_sub = op.args[0]
             
-            try:           
-                q_NO_mul_args = [args_left + args_right,   
-                                    # Integer(1) is not necessary, since Mul(*()) = Integer(1)
-                                args_left + [bd,b] + args_right]
-                # where q_NO = Add(Mul(*q_NO_mul_args[0]), 
-                #                  Mul(*q_NO_mul_args[1]))
-                """
-                We return the quantities as arguments as they will be used
-                for the recursion, so there is no need to call get_args_no_pow
-                repeatedly.
-                """
+            args_left = q_args[:i-1] # To the left of the substituted b*bd.
+            args_right = q_args[i+1:] # To the right of the substituted b*bd
+            
+            b = AnnihilateBoson(b_sub)
+            bd = CreateBoson(bd_sub)
+
+            try:
+                q_NO_mul_args = [args_left + [bd,b] + args_right]
             except:
                 """
                 In some cases (probably only the first recursion stack), args_left
@@ -87,16 +59,23 @@ def NO_one_step(q_args):
                 seems to only happen when we normal order b*bd, so this may only
                 rarely happen.
                 """
-                q_NO_mul_args = [args_left + args_right,   
-                                args_left + (bd,b) + args_right]
+                q_NO_mul_args = [args_left + (bd,b) + args_right]
+            
+            if b_sub == bd_sub:
+                q_NO_mul_args.append(args_left + args_right)
+                            
+            """
+            We return the quantities as arguments as they will be used
+            for the recursion, so there is no need to call _flatten_pow
+            repeatedly.
+            """
                 
             return q_NO_mul_args, False
         
     # If nothing is found, it means the NO is finished and we can return
     # a True stop flag. We use a boolean flag since both possible outputs
-    # are lists of different depths.
-    return q_args, True
-    
+    # are lists of different
+        
 def normal_ordering(q):
     """
     Normal order the operator q.
@@ -118,9 +97,17 @@ def normal_ordering(q):
             and not("AnnihilateBoson" in srepr(q))):
         return q
     elif isinstance(q, Add):
-        q_args = [get_args_no_pow(arg) for arg in q.args]
+        q_args = [_flatten_pow(arg) 
+                  for arg in q.args]
     elif isinstance(q, Mul):
-        q_args = [get_args_no_pow(q)]
+        q_args = [_flatten_pow(q)]
+    else:
+        raise InvalidTypeError([Pow,
+                                CreateBoson,
+                                AnnihilateBoson,
+                                Add,
+                                Mul],
+                               q)
     
     # The original operator is Add(*[Mul(*x) for x in q_args])
     # since get_args_no_pow returns a list of factors.
@@ -129,7 +116,7 @@ def normal_ordering(q):
     
     q_args_NO = []
     
-    def NO_recursive(arg):
+    def _NO_recursive(arg):
         """
         Recursively get the arguments of the sum of the
         normal-ordered operators and put them in q_args_NO
@@ -137,7 +124,7 @@ def normal_ordering(q):
         Add(*q_args_NO).
         """
         
-        out, stop_flag = NO_one_step(arg)
+        out, stop_flag = _NO_one_step(arg)
             
         if stop_flag:
             """
@@ -158,9 +145,9 @@ def normal_ordering(q):
                 list of the factors of each addend that is free of any
                 Pow since it is the output of NO_one_step. 
                 """
-                NO_recursive(arg)
+                _NO_recursive(arg)
     
     for arg in q_args:
-        NO_recursive(arg)
+        _NO_recursive(arg)
         
     return Add(*q_args_NO)

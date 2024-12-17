@@ -1,13 +1,20 @@
 from sympy import \
     Symbol, \
+    Add, \
+    Mul, \
+    Pow, \
+    Integer, \
     srepr
 from sympy.physics.secondquant import \
     CreateBoson, \
     AnnihilateBoson
+from .error_handling import \
+    InvalidTypeError
     
 __all__ = ["ops",
            "is_ladder",
-           "is_ladder_contained"]
+           "is_ladder_contained",
+           "separate_by_subscript"]
 
 def ops(k = 0):
     """
@@ -80,3 +87,70 @@ def is_ladder_contained(q):
     """
     return ("CreateBoson" in srepr(q)) \
             or ("AnnihilateBoson" in srepr(q))
+            
+def _flatten_pow(q):
+    """
+    Layout any power expressions in q.args and 
+    return a list of arguments without power, i.e.
+    q = Mul(*output)
+    """
+    
+    if isinstance(q, Add):
+        raise ValueError("q is not supposed to be Add.")
+    
+    if isinstance(q, Pow):
+        return (q.args[0] for _ in range(q.args[1]))
+    
+    if not(isinstance(q, Mul)):
+        return [q]
+    
+    if "Pow" in srepr(q):
+        args_long = []
+        for arg in q.args:
+            if isinstance(arg, Pow):
+                for _ in range(arg.args[1]):
+                    args_long.append(arg.args[0])
+            else:
+                args_long.append(arg)
+    else:
+        args_long = q.args
+        
+    return args_long
+
+def separate_by_subscript(q):
+    """
+    Separate an operator product according to the subscript.
+    q is the output of flatten_pow. Returns a list, whose
+    each element is a group of operators with the same
+    index. Scalars are put into the first operator group.
+    """
+    
+    if isinstance(q, (CreateBoson, AnnihilateBoson)):
+        return q
+    
+    if isinstance(q, (Mul, Pow)):
+        q = _flatten_pow(q)
+    
+    if not(isinstance(q, list)):
+        raise InvalidTypeError([CreateBoson, 
+                                AnnihilateBoson,
+                                Mul,
+                                Pow,
+                                list],
+                               q)
+    
+    sub_args = {}
+    scalar = Integer(1)
+    for qq in q:
+        if not(is_ladder(qq)):
+            scalar *= qq
+        
+        sub = qq.args[0]
+        if sub not in sub_args:
+            sub_args[sub] = []
+        
+        sub_args[sub].append(qq)
+        
+    sub_args[list(sub_args.keys())[0]].append(scalar)
+    
+    return list(sub_args.values())
