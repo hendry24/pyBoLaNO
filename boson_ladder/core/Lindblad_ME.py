@@ -16,7 +16,7 @@ from ..utils.expval import \
     
 __all__ = ["Hamiltonian_trace",
            "dissipator_trace",
-           "expval_evo"]
+           "LME_expval_evo"]
 
 def Hamiltonian_trace(H, A, normal_order=True, _braket = True):
     """
@@ -134,11 +134,11 @@ def dissipator_trace(O, A, normal_order=True, _braket=True):
         
     return _expval_sum(out) if _braket else out
 
-def expval_evo(H, D, A, normal_order = True):
+def LME_expval_evo(H, D, A, normal_order = True):
     """
     Calculate the evolution of the expectation value
     of `A`, of the system described by the Lindblad master
-    equation:
+    equation (LME):
 
         `d/dt expval(A) = Hamiltonian_trace(H, A) + sum_k D_k[0] * dissipator_trace(D_k[1], A)`
     
