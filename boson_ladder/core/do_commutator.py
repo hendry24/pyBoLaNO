@@ -14,7 +14,7 @@ from ..utils.commutators import \
     _isolate_bracket, \
     _treat_Kron
 from ..utils.normal_ordering import \
-    normal_order as NO
+    normal_ordering as NO
 
 __all__ = ["do_commutator"]
 

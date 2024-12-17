@@ -8,7 +8,7 @@ from sympy.physics.secondquant import \
     CreateBoson
 from .operators import ops
 
-__all__ = ["normal_order"]
+__all__ = ["normal_ordering"]
 
 b, bd = ops(0)
 assert isinstance(b, AnnihilateBoson) or isinstance(bd, CreateBoson)

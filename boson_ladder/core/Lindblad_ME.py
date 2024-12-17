@@ -5,9 +5,9 @@ from sympy.physics.secondquant import \
 from .do_commutator import \
     do_commutator
 from ..utils.normal_ordering import \
-    normal_order as NO
-from ..utils.expectation_values import \
-    expval
+    normal_ordering as NO
+from ..utils.expval import \
+    _expval
     
 __all__ = ["dissipator_trace"]
 
@@ -38,4 +38,4 @@ def dissipator_trace(O, A, normal_order=True):
     
     if normal_order:
         out = NO(out)
-    return expval(out)
+    return _expval(out)

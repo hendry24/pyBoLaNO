@@ -6,7 +6,7 @@ from sympy import \
     KroneckerDelta
 from sympy.physics.secondquant import \
     Commutator
-from ._error_handling import InvalidTypeError
+from .error_handling import InvalidTypeError
     
 __all__ = ["expand_AB_C",
            "expand_A_BC"]
