@@ -1,5 +1,4 @@
 from sympy import \
-    srepr, \
     Number, \
     Mul, \
     Pow, \

@@ -2,7 +2,6 @@ from sympy import \
     Add, \
     Mul, \
     Number, \
-    srepr, \
     KroneckerDelta
 from sympy.physics.secondquant import \
     CreateBoson, \

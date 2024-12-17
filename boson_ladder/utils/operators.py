@@ -4,7 +4,6 @@ from sympy import \
     Mul, \
     Pow, \
     Number, \
-    srepr, \
     latex
 from sympy.physics.secondquant import \
     CreateBoson, \
@@ -118,7 +117,7 @@ def _flatten_pow(q):
     if not(isinstance(q, Mul)):
         return [q]
     
-    if "Pow" in srepr(q):
+    if q.has(Pow):
         args_long = []
         for arg in q.args:
             if isinstance(arg, Pow):

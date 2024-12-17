@@ -1,8 +1,7 @@
 from sympy import \
     Add, \
     Pow, \
-    Mul, \
-    srepr
+    Mul
 from sympy.physics.secondquant import \
     AnnihilateBoson, \
     CreateBoson
