@@ -1,4 +1,5 @@
 from sympy import \
+    Add, \
     Mul, \
     Number, \
     srepr, \
@@ -75,29 +76,36 @@ def _treat_Kron(q):
     Parameters
     ----------
     
-    q : sympy.functions.special.KroneckerDelta or Mul containing KroneckerDelta
+    q : sympy.Expr
         Object containing the Kronecker delta object.
     """
     
-    if isinstance(q, (Number, CreateBoson, AnnihilateBoson)):
-        return q
-    
-    if isinstance(q, KroneckerDelta):
-        return 1 if (q.args[0]==q.args[1]) else 0
-    
-    elif isinstance(q, Mul):
-        if "KroneckerDelta" not in srepr(q):
-            return q
-        for arg in q.args:
-            out = []
-            if isinstance(arg, KroneckerDelta):
-                if q.args[0]==q.args[1]:
-                    continue
-                else:
-                    return Number(0)
-            out.append(arg)
-        return Mul(*out)
-    
-    else: 
-        raise InvalidTypeError([KroneckerDelta, Mul], 
-                               type(q))
+    if isinstance(q, Add):
+        q = [arg for arg in q.args]
+    else:
+        q = [q]
+
+    out = []
+    for qq in q: 
+        if isinstance(q, (Number, CreateBoson, AnnihilateBoson)):
+            out.append(qq)
+        
+        if isinstance(q, KroneckerDelta):
+            out.append(1 if (qq.args[0]==q.args[1]) 
+                       else 0)
+        
+        elif isinstance(q, Mul):
+            if "KroneckerDelta" not in srepr(q):
+                out.append(qq)
+            for arg in qq.args:
+                _out = []
+                if isinstance(arg, KroneckerDelta):
+                    if arg.args[0]==arg.args[1]:
+                        continue
+                    else:
+                        return Number(0)
+                _out.append(arg)
+            out.append(Mul(*_out))
+        else: 
+            raise InvalidTypeError([KroneckerDelta, Mul, Add], 
+                                type(qq))

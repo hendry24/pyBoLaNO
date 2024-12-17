@@ -20,8 +20,8 @@ class InvalidTypeError(TypeError):
         msg = f"Expected ["
         msg += f"{expected[0]}"
         for obj in expected[1:]:
-            msg += "\n"
-            msg += " or \n"
+            msg += "] \n"
+            msg += " or \n ["
             msg += f"{obj}"
-        msg += f"], got \n [{got}] \n instead."
+        msg += f"\n ], got \n [{got}] \n instead."
         super().__init__(msg)

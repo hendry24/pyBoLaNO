@@ -131,6 +131,7 @@ def expand_single_comm(comm):
     
     if not("Commutator" in srepr(comm)) \
         or len(comm.args) == 1:
+        print(comm)
         return _treat_Kron(comm)
     else:
         return [term for term in comm.args]
