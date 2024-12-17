@@ -34,35 +34,35 @@ def _NO_one_step(q_args):
                 continue
         ###
         
-        b_sub = q_args[i-1].args[0]
-        bd_sub = op.args[0]
-        args_left = q_args[:i-1] # to the left of the substituted b*bd.
-        args_right = q_args[i+1:] # to the right of the substituted b*bd.
-        
-        b = AnnihilateBoson(b_sub)
-        bd = CreateBoson(bd_sub)
-        
-        try:
-            q_NO_mul_args = [args_left + [bd,b] + args_right]
-        except:
-            """
-            In some cases (probably only the first recursion stack), args_left
-            and args_right may not be lists, so tuples are needed. Anyway, it 
-            seems to only happen when we normal order b*bd, so this may only
-            rarely happen.
-            """
-            q_NO_mul_args = [args_left + (bd,b) + args_right]
-        
-        if b_sub == bd_sub:
-            q_NO_mul_args.append(args_left + args_right)
-                        
-        """
-        We return the quantities as arguments as they will be used
-        for the recursion, so there is no need to call _flatten_pow
-        repeatedly.
-        """
+            b_sub = q_args[i-1].args[0]
+            bd_sub = op.args[0]
+            args_left = q_args[:i-1] # to the left of the substituted b*bd.
+            args_right = q_args[i+1:] # to the right of the substituted b*bd.
             
-        return q_NO_mul_args, False
+            b = AnnihilateBoson(b_sub)
+            bd = CreateBoson(bd_sub)
+            
+            try:
+                q_NO_mul_args = [args_left + [bd,b] + args_right]
+            except:
+                """
+                In some cases (probably only the first recursion stack), args_left
+                and args_right may not be lists, so tuples are needed. Anyway, it 
+                seems to only happen when we normal order b*bd, so this may only
+                rarely happen.
+                """
+                q_NO_mul_args = [args_left + (bd,b) + args_right]
+            
+            if b_sub == bd_sub:
+                q_NO_mul_args.append(args_left + args_right)
+                            
+            """
+            We return the quantities as arguments as they will be used
+            for the recursion, so there is no need to call _flatten_pow
+            repeatedly.
+            """
+                
+            return q_NO_mul_args, False
         
     # If nothing is found, it means the NO is finished and we can return
     # a True stop flag. We use a boolean flag since both possible outputs
