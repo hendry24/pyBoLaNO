@@ -7,11 +7,11 @@ from sympy import \
 from sympy.physics.secondquant import \
     Commutator
 from ..utils.operators import \
-    is_ladder, \
-    isolate_bracket
+    is_ladder
 from ..utils.commutators import \
     expand_A_BC, \
     expand_AB_C, \
+    _isolate_bracket, \
     _treat_Kron
 from ..utils.normal_ordering import \
     normal_order as NO
@@ -125,7 +125,7 @@ def expand_single_comm(comm):
         msg += "not a sum of them"
         raise ValueError(msg)
     
-    left_factor, comm, right_factor = isolate_bracket(comm)
+    left_factor, comm, right_factor = _isolate_bracket(comm)
     # At this point, comm should purely be a commutator object.
                 
     comm = get_ABC_and_expand(comm)

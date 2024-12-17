@@ -97,7 +97,7 @@ def NO_one_step(q_args):
     # are lists of different depths.
     return q_args, True
     
-def normal_order(q):
+def normal_ordering(q):
     """
     Normal order the operator q.
     
