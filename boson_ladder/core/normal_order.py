@@ -95,15 +95,20 @@ def normal_ordering(q):
     q_NO : sympy.Expr
         q, normal-ordered.
     """
+    
     if isinstance(q, (Pow, CreateBoson, AnnihilateBoson))\
-        or (not("CreateBoson" in srepr(q))
-            and not("AnnihilateBoson" in srepr(q))):
+        or (not(q.has(CreateBoson))
+            and not(q.has(AnnihilateBoson))):
+            # and, not or, so no is_ladder_contained
         return q
+    
     elif isinstance(q, Add):
         q_args = [_flatten_pow(arg) 
                   for arg in q.args]
+    
     elif isinstance(q, Mul):
         q_args = [_flatten_pow(q)]
+    
     else:
         raise InvalidTypeError([Pow,
                                 CreateBoson,

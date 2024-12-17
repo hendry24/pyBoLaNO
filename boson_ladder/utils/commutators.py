@@ -43,7 +43,7 @@ def _isolate_bracket(comm):
         comm = comm
     
     elif isinstance(comm, Mul):
-        if "Commutator" not in srepr(comm):
+        if not(comm.has(Commutator)):
             msg = "Input is Mul but does not contain Commutator."
             raise ValueError(msg)
         
@@ -54,8 +54,7 @@ def _isolate_bracket(comm):
                 Power of a commutator should not occur.
                 """
                 break
-            else:
-                comm_idx += 1
+            comm_idx += 1
 
         left_factor = Mul(*comm.args[:comm_idx])
         right_factor = Mul(*comm.args[comm_idx+1:])
@@ -87,25 +86,29 @@ def _treat_Kron(q):
 
     out = []
     for qq in q: 
-        if isinstance(q, (Number, CreateBoson, AnnihilateBoson)):
+        if isinstance(qq, (Number, CreateBoson, AnnihilateBoson)):
             out.append(qq)
         
-        if isinstance(q, KroneckerDelta):
+        elif isinstance(qq, KroneckerDelta):
             out.append(1 if (qq.args[0]==q.args[1]) 
                        else 0)
         
-        elif isinstance(q, Mul):
-            if "KroneckerDelta" not in srepr(q):
+        elif isinstance(qq, Mul):
+            if not qq.has(KroneckerDelta):
                 out.append(qq)
-            for arg in qq.args:
+            else:
                 _out = []
-                if isinstance(arg, KroneckerDelta):
-                    if arg.args[0]==arg.args[1]:
-                        continue
-                    else:
-                        return Number(0)
-                _out.append(arg)
-            out.append(Mul(*_out))
+                for arg in qq.args:
+                    if isinstance(arg, KroneckerDelta):
+                        if arg.args[0]==arg.args[1]:
+                            continue
+                        else:
+                            _out = [Number(0)]
+                            break
+                    _out.append(arg)
+                out.append(Mul(*_out))
         else: 
             raise InvalidTypeError([KroneckerDelta, Mul, Add], 
-                                type(qq))
+                                    type(qq))
+            
+    return Add(*out)

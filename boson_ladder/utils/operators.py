@@ -92,8 +92,7 @@ def is_ladder_contained(q):
     out : bool
         `True` if a ladder operator is contained. `False` otherwise.
     """
-    return ("CreateBoson" in srepr(q)) \
-            or ("AnnihilateBoson" in srepr(q))
+    return q.has(AnnihilateBoson, CreateBoson)
             
 def _flatten_pow(q):
     """

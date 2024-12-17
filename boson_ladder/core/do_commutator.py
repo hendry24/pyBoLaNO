@@ -5,9 +5,12 @@ from sympy import \
     Pow, \
     Add
 from sympy.physics.secondquant import \
+    CreateBoson, \
+    AnnihilateBoson, \
     Commutator
 from ..utils.operators import \
-    is_ladder
+    is_ladder, \
+    is_ladder_contained
 from ..utils.commutators import \
     expand_A_BC, \
     expand_AB_C, \
@@ -20,7 +23,7 @@ from .normal_order import \
 
 __all__ = ["do_commutator"]
 
-def get_ABC_and_expand(comm):
+def _eval_sole_comm(comm):
     """
     Get A, B, C for the expansion and expand accordingly. 
     
@@ -39,27 +42,57 @@ def get_ABC_and_expand(comm):
     with respect to the leftmost eligible operator. 
     """
     
+    if not(isinstance(comm, Commutator)):
+        raise InvalidTypeError(Commutator, type(comm))
+    
     comm_1, comm_2 = comm.args
     
-    # First, we need to check if the commutator is zero, since 
-    # the following algorithm does not take into account cases 
-    # like [b, b**9], which is treated as an expandable expression
-    # due to the Pow in its srepr. This leads to faulty evaluation.
+    """
+    == ZERO CASES ==
+    
+    We check if the commutator is zero to speed up the evaluation. 
+    Some of these cases should never occur since SymPy automatically 
+    evaluates simple commutators.
+    
+    NOTE: The order in which the conditions are written are optimized.
+        
+    >   Conditions 1 and 2 applies regardless of the subscripts. If there
+        are only either one of the two operators, then the commutator is 
+        zero.
+        
+    NOTE: May want to add a condition to check if, in the case that conditions
+        1 and 2 are false, the subscripts are such that the commutator is zero.
+        This is not implemented since it can potentially be more computationally
+        expensive than letting going through the recursions. 
+      
+    >   Condition 3 and 4 are obvious. If at least one slot does not contain
+        any ladder operators, then the commutator is zero. This gets put last
+        since SymPy should automatically evaluate commutators in this form,
+        which means that it never gets to this function.
 
-    concatenated_srepr = srepr(comm_1) + srepr(comm_2)
-    b_in_comm = "AnnihilateBoson" in concatenated_srepr
-    bd_in_comm = "CreateBoson" in concatenated_srepr
-    if (b_in_comm and not(bd_in_comm)) or (not(b_in_comm) and bd_in_comm):
+    """
+        
+    b_in_comm = comm_1.has(AnnihilateBoson) or comm_2.has(AnnihilateBoson)
+    bd_in_comm = comm_1.has(CreateBoson) or comm_2.has(CreateBoson)
+    
+    if (b_in_comm and not(bd_in_comm)) \
+        \
+        or (not(b_in_comm) and bd_in_comm) \
+        \
+        or not(is_ladder_contained(comm_1)) \
+        \
+        or not(is_ladder_contained(comm_2)):
+    
         return Number(0)
-    # NOTE: Might want to change this for many body cases.
+    
+    ##########
     
     if not(is_ladder(comm_1)):
         # skip the check if the entry is a single operator
-        operation = srepr(comm_1)[:3]
-        if operation == "Mul":
+        if isinstance(comm_1, Mul):
             A = comm_1.args[0]
             B = Mul(*comm_1.args[1:])
-        elif operation == "Pow":
+        elif isinstance(comm_1, Pow):
             A = comm_1.args[0]
             B = Pow(A, comm_1.args[1]-1)
         else:
@@ -69,11 +102,10 @@ def get_ABC_and_expand(comm):
         return expand_AB_C(A, B, C)
         
     elif not(is_ladder(comm_2)):
-        operation = srepr(comm_2)[:3]
-        if operation == "Mul":
+        if isinstance(comm_2, Mul):
             B = comm_2.args[0]
             C = Mul(*comm_2.args[1:])
-        elif operation == "Pow":
+        elif isinstance(comm_2, Pow):
             B = comm_2.args[0]
             C = Pow(B, comm_2.args[1]-1)
         else:
@@ -87,7 +119,7 @@ def get_ABC_and_expand(comm):
         # though both entries cannot both be ladder operators since SymPy
         # would evaluate comm upon construction. 
     
-def expand_single_comm(comm):
+def _expand_addend(q):
     """
     Utilizing the properties
         [AB,C] = A[B,C] + [A,C]B
@@ -106,36 +138,26 @@ def expand_single_comm(comm):
     # We start with a commutator in the bracket form, if
     # not directly solved by SymPy. This means that comm
     # must be input without calling .doit first.
-
-    if "Commutator" not in srepr(comm):
-        return _treat_Kron(comm) 
-                # in case a Symbol is used as the input to the ladder operators.
     
-    if "Add" in srepr(comm):
-        """
-        When Commutator is initialized, any sum in the
-        input will automatically result in a sum of Commutators.
-        This ensures that the function only deals with one bracket
-        at a time. 
-        """
-        msg = "Input accepts only one commutator term, "
-        msg += "not a sum of them. This shouldn't happen."
-        raise ValueError(msg)
+    if not(q.has(Commutator)):
+        return _treat_Kron(q), True
+                                # stop flag.
     
-    left_factor, comm, right_factor = _isolate_bracket(comm)
-    # At this point, comm should purely be a commutator object.
+    left_factor, comm, right_factor = _isolate_bracket(q)
+    # At this point, comm should purely be a Commutator object.
                 
-    comm = get_ABC_and_expand(comm)
+    comm = _eval_sole_comm(comm)
+    # Should generally return an Add. 
     comm = (left_factor*comm*right_factor).expand()
-            # Should generally return a sum of commutators.
+                                            # lays it flat.
     
-    if not("Commutator" in srepr(comm)) \
-        or len(comm.args) == 1:
-        print(comm)
-        return _treat_Kron(comm)
+    if isinstance(comm, Add):
+        return [arg for arg in comm.args], False
+    elif not(comm.has(Commutator)):
+        return _treat_Kron(comm), True
     else:
-        return [term for term in comm.args]
-    
+        return [comm], False
+        
 ###################################################
                 
 def do_commutator(A, B, normal_order = True):
@@ -162,23 +184,33 @@ def do_commutator(A, B, normal_order = True):
     out : sympy.Expr
         Commutator between A and B, optionally normal ordered.
     """
-    comm = Commutator(A, B)
     
-    if "Commutator" not in srepr(comm):
+    comm = Commutator(A, B)
+    """
+    When the Commutator object is initialized, any sum in the
+    input will automatically result in a sum of Commutators.
+    """
+    
+    if not(comm.has(Commutator)):
         return _treat_Kron(comm)
     
+    if isinstance(comm, Add):
+        recursion_input = comm.args
+    else:
+        recursion_input = [comm]
+    
     single_comms = []
-    
     def expand_recursive(comm):
-        expanded_comm = expand_single_comm(comm)
-        if isinstance(expanded_comm, list):
-            for item in expanded_comm:
-                expand_recursive(item)
+        res, stop_flag = _expand_addend(comm)
+        if stop_flag:
+            single_comms.append(res)
         else:
-            single_comms.append(expanded_comm)
-
-    expand_recursive(comm)
-    
+            for item in res:
+                expand_recursive(item)
+                
+    for item in recursion_input:
+        expand_recursive(item)
+        
     out = Add(*single_comms)
     
     if normal_order:
