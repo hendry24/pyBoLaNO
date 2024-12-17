@@ -79,19 +79,21 @@ def _NO_one_step(q_args):
         
 def normal_ordering(q):
     """
-    Normal order the operator q.
+    Normal order the operator q: all creation operators are
+    written to the left of all annihilation operators within
+    a single term. 
     
     Parameters
     ----------
     
-    q : sympy.Mul or sympy.Add containing sympy.physics.secondquant.AnnihilateBoson and sympy.physics.secondquant.CreateBoson
+    q : sympy.Expr
         The operator to normal order.
         
     Returns
     -------
     
-    q_NO : sympy.Mul or sympy.Add containing sympy.physics.secondquant.AnnihilateBoson and sympy.physics.secondquant.CreateBoson
-        q, normal ordered.
+    q_NO : sympy.Expr
+        q, normal-ordered.
     """
     if isinstance(q, (Pow, CreateBoson, AnnihilateBoson))\
         or (not("CreateBoson" in srepr(q))

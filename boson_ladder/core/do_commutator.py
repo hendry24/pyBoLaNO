@@ -138,6 +138,29 @@ def expand_single_comm(comm):
 ###################################################
                 
 def do_commutator(A, B, normal_order = True):
+    """
+    Calculate the commutator of two arbitrary
+    polynomials of bosonic ladder operators.
+    
+    Parameters
+    ----------
+    
+    A : sympy.Expr
+        Operator in the left-hand slot of the commutator bracket.
+        
+    B : sympy.Expr
+        Operator in the right-hand slot of the commutator bracket.
+        
+    normal_order : bool, default: True
+        Whether to normal-order the result. If `True`, `normal_ordering`
+        is called before the result is returned.
+        
+    Returns
+    ------- 
+    
+    out : sympy.Expr
+        Commutator between A and B, optionally normal ordered.
+    """
     comm = Commutator(A, B)
     
     if "Commutator" not in srepr(comm):

@@ -3,7 +3,7 @@ from sympy import \
     Add, \
     Mul, \
     Pow, \
-    Integer, \
+    Number, \
     srepr, \
     latex
 from sympy.physics.secondquant import \
@@ -24,14 +24,13 @@ def ops(k=None):
     Parameters
     ----------
     
-    k : scalar or `sympy.Integer` or `sympy.Symbol`, default: None
+    k : scalar or `sympy.Number` or `sympy.Symbol`, default: None
         Subscript of the boson ladder objects, used 
         do differentiate the ladder operators for 
         different subsystems in a multipartite system.
-        If a Python scalar or a `sympy.Integer` is input, 
-        it is turned into the corresponding `sympy.Symbol`
-        which is the only one to behave nicely as k in
-        the current version of SymPy (1.1.13).
+        Anything other than a sympy.Symbol is converted to
+        one using `sympy.Symbol(latex(k))`. If this fails, an
+        error is raised. 
     
     Returns
     -------
@@ -103,7 +102,7 @@ def _flatten_pow(q):
     q = Mul(*output).
     
     Bad expressions such as a Power object with 
-    negative power and non-Integer object are
+    negative power and non-Number object are
     kept as is.
     
     """
@@ -112,7 +111,7 @@ def _flatten_pow(q):
         raise ValueError("q is not supposed to be Add.")
     
     if isinstance(q, Pow):
-        if q.args[1] is not Integer \
+        if q.args[1] is not Number \
             or q.args[1] < 2: # bad power expressions that may raise error in the program.
             return [q]
         return [q.args[0] for _ in range(q.args[1])]
@@ -124,7 +123,7 @@ def _flatten_pow(q):
         args_long = []
         for arg in q.args:
             if isinstance(arg, Pow):
-                if q.args[1] is not Integer\
+                if q.args[1] is not Number\
                     or q.args[1] < 2:
                     args_long.append(arg)
                 else:
@@ -143,6 +142,19 @@ def separate_by_subscript(q):
     q is the output of flatten_pow. Returns a list, whose
     each element is a group of operators with the same
     index. Scalars are put into the first operator group.
+    
+    Parameters
+    ----------
+    
+    q : sympy.Expr
+        Operator product or a list of its arguments. 
+        
+    Returns
+    -------
+    
+    out : list
+        List of operator arguments separated by the subscript.
+        Reconstruct the original operator with `sympy.Mul(*out)`.
     """
     
     if isinstance(q, (CreateBoson, AnnihilateBoson)):
@@ -160,7 +172,7 @@ def separate_by_subscript(q):
                                q)
     
     sub_args = {}
-    scalar = Integer(1)
+    scalar = Number(1)
     for qq in q:
         if not(is_ladder(qq)):
             scalar *= qq

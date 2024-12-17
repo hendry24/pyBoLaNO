@@ -3,7 +3,7 @@ from sympy import \
     Mul, \
     Pow, \
     Expr, \
-    Integer, \
+    Number, \
     sympify, \
     latex
     
@@ -93,7 +93,7 @@ def _expval_sum(q):
                 
         return Mul(*scalar) * _expval(Mul(*oper))
 
-    out = Integer(0)
+    out = Number(0)
     
     if not(is_ladder_contained(q)):
         return q

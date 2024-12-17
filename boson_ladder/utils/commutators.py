@@ -1,6 +1,6 @@
 from sympy import \
     Mul, \
-    Integer, \
+    Number, \
     srepr, \
     KroneckerDelta
 from sympy.physics.secondquant import \
@@ -37,8 +37,8 @@ def _isolate_bracket(comm):
     """
     
     if isinstance(comm, Commutator):
-        left_factor = Integer(1)
-        right_factor = Integer(1)
+        left_factor = Number(1)
+        right_factor = Number(1)
         comm = comm
     
     elif isinstance(comm, Mul):
@@ -79,7 +79,7 @@ def _treat_Kron(q):
         Object containing the Kronecker delta object.
     """
     
-    if isinstance(q, (Integer, CreateBoson, AnnihilateBoson)):
+    if isinstance(q, (Number, CreateBoson, AnnihilateBoson)):
         return q
     
     if isinstance(q, KroneckerDelta):
@@ -94,7 +94,7 @@ def _treat_Kron(q):
                 if q.args[0]==q.args[1]:
                     continue
                 else:
-                    return Integer(0)
+                    return Number(0)
             out.append(arg)
         return Mul(*out)
     

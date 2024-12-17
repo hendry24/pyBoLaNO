@@ -16,12 +16,40 @@ from ..utils.expval import \
     
 __all__ = ["Hamiltonian_trace",
            "dissipator_trace",
-           "moment_evo"]
+           "expval_evo"]
 
 def Hamiltonian_trace(H, A, normal_order=True, _braket = True):
     """
-    tr(-1j*[H,.]A) where -1j*[H,.] is the Hamiltonian
-    superoperator. 
+    `tr(-1j*[H,rho]A)` where `rho` is the density matrix and
+    `[.,.]` is the commutator.
+    
+    Parameters
+    ----------
+    
+    H : sympy.Expr
+        The Hamiltonian.
+        
+    A : sympy.Expr
+        The operator to use in the trace.
+        
+    normal_order : bool, default: True
+        Whether to normal-order the result.
+    
+    _braket : bool, default: True
+        Whether to put expectation value brakets
+        for each term in the sum. This parameter
+        is for internal use only. Setting it to
+        False simply deletes the brakets but will
+        cause the result to be misinterpreted.
+    
+    Returns
+    -------
+    
+    out : sympy.Expr
+        The Hamiltonian trace, which appears when the Lindblad
+        master equation is used to calculate the evolution of 
+        some expectation value.
+    
     """
     H = H.expand()
     if isinstance(H, Add):
@@ -42,8 +70,42 @@ def Hamiltonian_trace(H, A, normal_order=True, _braket = True):
 
 def dissipator_trace(O, A, normal_order=True, _braket=True):
     """
-    tr(D(O) * A) where D(O) is the Lindblad dissipator 
-    and A is a polynomial in the ladder operators.
+    `tr(D(O)[rho] * A)` where `rho` is the density matrix.
+    
+    Parameters
+    ----------
+    
+    O : sympy.Expr
+        The operator making up the Liouvillian superoperator 
+        in the Lindblad form, also known as the Lindblad 
+        dissipator, defined as
+            
+            `D(O)[rho] = O*rho*Od - 0.5*{Od*O, rho}`
+        
+        where `Od` is the Hermitian conjugate, `rho` is
+        the system's density matrix, and {.,.} is the
+        anticommutator.
+        
+    A : sympy.Expr
+        The operator to use in the trace. 
+    
+    normal_order : bool, default: True
+        Whether to normal-order the result.
+    
+    _braket : bool, default: True
+        Whether to put expectation value brakets
+        for each term in the sum. This parameter
+        is for internal use only. Setting it to
+        False simply deletes the brakets but will
+        cause the result to be misinterpreted.
+    
+    Returns
+    -------
+    
+    out : sympy.Expr
+        The dissipator trace, which appears when the Lindblad
+        master equation is used to calculate the evolution of 
+        some expectation value.
     """
     O = O.expand()
     if isinstance(O, Add):
@@ -72,18 +134,47 @@ def dissipator_trace(O, A, normal_order=True, _braket=True):
         
     return _expval_sum(out) if _braket else out
 
-def moment_evo(H, D, A, normal_order = True):
+def expval_evo(H, D, A, normal_order = True):
+    """
+    Calculate the evolution of the expectation value
+    of `A`, of the system described by the Lindblad master
+    equation:
+
+        `d/dt expval(A) = Hamiltonian_trace(H, A) + sum_k D_k[0] * dissipator_trace(D_k[1], A)`
+    
+    for `D_k` in `D`.
+    
+    Parameters
+    ----------
+    
+    H : sympy.Expr
+        The Hamiltonian.
+        
+    D : list
+        The Lindblad dissipators, specified as a nested list
+        of lists of two elements. The first element is the
+        multiplying scalar, which can be a `sympy.Expr`. The 
+        second element is the operator defining the Lindblad
+        dissipator.
+        
+    A : sympy.Expr
+        The operator to calculate the expectation value evolution
+        of.
+        
+    normal_order : bool, default: True
+        Whether to normal order the result.
+    
+    Returns
+    -------
+    
+    out : sympy.Equality
+        The evolution equation.
+    """
     t = Symbol("t")
     RHS = Hamiltonian_trace(H, A, _braket=False)
     
-    if not(isinstance(D, list)):
-        RHS += dissipator_trace(D, A)
-    else:
-        for k, D_k in enumerate(D):
-            if not(isinstance(D_k, list)):
-                RHS += dissipator_trace(D_k, A, _braket=False)
-            else:
-                RHS += D_k[0]*dissipator_trace(D_k[1], A, _braket=False)
+    for D_k in D:
+        RHS += D_k[0]*dissipator_trace(D_k[1], A, _braket=False)
             
     if normal_order:
         RHS = normal_ordering(RHS)
