@@ -25,51 +25,44 @@ def _NO_one_step(q_args):
     Leading scalar does not matter.
     """
     
-    find_bd = False 
-    # We skip the algorithm for bd that are already
-    # leftmost. The algorithm starts looking for bd
-    # to swap after it meets the first b.
     for i, op in enumerate(q_args):
-        if isinstance(op, AnnihilateBoson):
-            b_sub = op.args[0]
-            find_bd = True
-            continue
         
-        if not(find_bd):
-            continue
-        
-        # The first bd found must be right next
-        # to a `b`.
+        # Find bd to the right of a b.
         if isinstance(op, CreateBoson):
-            bd_sub = op.args[0]
-            
-            args_left = q_args[:i-1] # To the left of the substituted b*bd.
-            args_right = q_args[i+1:] # To the right of the substituted b*bd
-            
-            b = AnnihilateBoson(b_sub)
-            bd = CreateBoson(bd_sub)
-
-            try:
-                q_NO_mul_args = [args_left + [bd,b] + args_right]
-            except:
-                """
-                In some cases (probably only the first recursion stack), args_left
-                and args_right may not be lists, so tuples are needed. Anyway, it 
-                seems to only happen when we normal order b*bd, so this may only
-                rarely happen.
-                """
-                q_NO_mul_args = [args_left + (bd,b) + args_right]
-            
-            if b_sub == bd_sub:
-                q_NO_mul_args.append(args_left + args_right)
-                            
+            if i == 0 \
+                or not(isinstance(q_args[i-1], AnnihilateBoson)):
+                continue
+        ###
+        
+        b_sub = q_args[i-1].args[0]
+        bd_sub = op.args[0]
+        args_left = q_args[:i-1] # to the left of the substituted b*bd.
+        args_right = q_args[i+1:] # to the right of the substituted b*bd.
+        
+        b = AnnihilateBoson(b_sub)
+        bd = CreateBoson(bd_sub)
+        
+        try:
+            q_NO_mul_args = [args_left + [bd,b] + args_right]
+        except:
             """
-            We return the quantities as arguments as they will be used
-            for the recursion, so there is no need to call _flatten_pow
-            repeatedly.
+            In some cases (probably only the first recursion stack), args_left
+            and args_right may not be lists, so tuples are needed. Anyway, it 
+            seems to only happen when we normal order b*bd, so this may only
+            rarely happen.
             """
-                
-            return q_NO_mul_args, False
+            q_NO_mul_args = [args_left + (bd,b) + args_right]
+        
+        if b_sub == bd_sub:
+            q_NO_mul_args.append(args_left + args_right)
+                        
+        """
+        We return the quantities as arguments as they will be used
+        for the recursion, so there is no need to call _flatten_pow
+        repeatedly.
+        """
+            
+        return q_NO_mul_args, False
         
     # If nothing is found, it means the NO is finished and we can return
     # a True stop flag. We use a boolean flag since both possible outputs
@@ -98,7 +91,6 @@ def normal_ordering(q):
     if isinstance(q, (Pow, CreateBoson, AnnihilateBoson))\
         or (not(q.has(CreateBoson))
             and not(q.has(AnnihilateBoson))):
-            # and, not or, so no is_ladder_contained
         return q
     
     elif isinstance(q, Add):
@@ -131,7 +123,7 @@ def normal_ordering(q):
         Add(*q_args_NO).
         """
         
-        out, stop_flag = _NO_one_step(arg)
+        res, stop_flag = _NO_one_step(arg)
             
         if stop_flag:
             """
@@ -142,9 +134,9 @@ def normal_ordering(q):
             a list of factors that is input. We can then
             make the Mul object and append it to q_args_NO. 
             """  
-            q_args_NO.append(Mul(*out))
+            q_args_NO.append(Mul(*res))
         else:
-            for arg in out:
+            for arg in res:
                 """
                 For each addend in the resulting list of NO_one_step
                 containing the two terms arising from the substitution,

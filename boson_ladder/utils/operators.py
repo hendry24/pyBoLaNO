@@ -105,34 +105,35 @@ def _flatten_pow(q):
     
     """
     
-    if isinstance(q, Add):
-        raise ValueError("q is not supposed to be Add.")
-    
-    if isinstance(q, Pow):
-        if q.args[1] is not Number \
+    def _treat_Pow(q):
+        if not(isinstance(q.args[1], Number)) \
             or q.args[1] < 2: # bad power expressions that may raise error in the program.
             return [q]
         return [q.args[0] for _ in range(q.args[1])]
     
-    if not(isinstance(q, Mul)):
-        return [q]
+    ###
+        
+    if isinstance(q, Pow):
+        return _treat_Pow(q)
     
-    if q.has(Pow):
-        args_long = []
+    elif isinstance(q, Mul):
+        out = []
         for arg in q.args:
             if isinstance(arg, Pow):
-                if q.args[1] is not Number\
-                    or q.args[1] < 2:
-                    args_long.append(arg)
-                else:
-                    for _ in range(arg.args[1]):
-                        args_long.append(arg.args[0])
+                out.extend(_treat_Pow(arg))
+            elif not(isinstance(arg, Add)):
+                out.append(arg)
             else:
-                args_long.append(arg)
+                raise InvalidTypeError([Pow, 
+                                        CreateBoson, 
+                                        AnnihilateBoson,
+                                        Number,
+                                        Symbol],
+                                        type(arg))
+        return out
+    
     else:
-        args_long = q.args
-        
-    return args_long
+        InvalidTypeError([Pow, Mul], type(q))
 
 def separate_by_subscript(q):
     """
