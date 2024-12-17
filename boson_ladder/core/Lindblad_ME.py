@@ -1,7 +1,7 @@
 from sympy import \
     Add, \
     I, \
-    Integer, \
+    Number, \
     Derivative, \
     Symbol,\
     Equality
@@ -30,7 +30,7 @@ def Hamiltonian_trace(H, A, normal_order=True, _braket = True):
         H = [H]
         
     comm = do_commutator
-    out = Integer(0)
+    out = Number(0)
     
     for H_k in H:
         out += -I*comm(A, H_k)
@@ -40,7 +40,7 @@ def Hamiltonian_trace(H, A, normal_order=True, _braket = True):
     
     return _expval_sum(out) if _braket else out 
 
-def dissipator_trace(O, A, normal_order=True, _braket=False):
+def dissipator_trace(O, A, normal_order=True, _braket=True):
     """
     tr(D(O) * A) where D(O) is the Lindblad dissipator 
     and A is a polynomial in the ladder operators.
@@ -53,7 +53,7 @@ def dissipator_trace(O, A, normal_order=True, _braket=False):
     
     comm = do_commutator
     
-    out = Integer(0)
+    out = Number(0)
     for k, O_k in enumerate(O):
         Od_k = Dagger(O_k)
         out += Od_k * comm(A, O_k)
@@ -68,7 +68,7 @@ def dissipator_trace(O, A, normal_order=True, _braket=False):
     if normal_order:
         out = normal_ordering(out)
         
-    out = (out/Integer(2)).expand()
+    out = (out/Number(2)).expand()
         
     return _expval_sum(out) if _braket else out
 
