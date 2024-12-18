@@ -20,8 +20,8 @@ __all__ = ["Hamiltonian_trace",
 
 def Hamiltonian_trace(H, A, normal_order=True):
     """
-    `tr(-1j*[H,rho]A)` where `rho` is the density matrix and
-    `[.,.]` is the commutator.
+    `tr(-i*[H,rho]A) = <-i[A,H]>` where `rho` 
+    is the density matrix and `[.,.]` is the commutator.
     
     Parameters
     ----------
