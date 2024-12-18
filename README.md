@@ -33,7 +33,7 @@ allows the user to normal order any polynomial of bosonic ladder operators. It w
 
 allows the user to evaluate any commutation relation of two polynomials of bosonic ladder operators, based on the identities 
 <div align = "center">
-<img src="https://i.ibb.co.com/6tHWn6L/ABC.pngg" alt="ABC" style = "width:30%">
+<img src="https://i.ibb.co.com/6tHWn6L/ABC.pngg" alt="ABC" style = "width:45%">
 </div>
 
 To evaluate a commutator, `boson_ladder` applies these identites recursively to expand the commutator into a sum of simpler commutators. This is done until the commutators can be automatically evaluated by SymPy.
@@ -43,13 +43,13 @@ To evaluate a commutator, `boson_ladder` applies these identites recursively to 
 allows the user to compute the equation for the evolution of the expectation value of a quantity represented by the operator $A$, i.e. 
 
 <div align = "center">
-<img src="https://i.ibb.co.com/mbJWQ17/expevo.png" alt="expevo" style="width:45%">
+<img src="https://i.ibb.co.com/mbJWQ17/expevo.png" alt="expevo" style="width:60%">
 </div>
 
 where $H$ and $O_k$ can be any polynomials in the ladder operators, and $\rho$ is the density matrix of the system. The following identities are used to compute the RHS (you can easily derive these):
 
 <div align="center">
-<img src="https://i.ibb.co.com/GFrfkJq/expevo-2.png" alt="expevo-2" style="width:80%">
+<img src="https://i.ibb.co.com/GFrfkJq/expevo-2.png" alt="expevo-2" style="width:90%">
 </div>
 
 The user simply needs to input: (1) the Hamiltonian $H$; (2) the Lindblad dissipator (formally the Liouvillian superoperator in Lindblad form) operators $O_j$ and their multiplying nonnegative scalar $\gamma_j$; and (3) the operator $A$ to calculate the expectation value evolution of&mdash;the function will do the rest! 
