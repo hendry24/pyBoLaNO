@@ -32,7 +32,7 @@ What's more, it works for **multipartite systems**!
 
 ### **Let's be transparent**
 
-The core working principle of `boson_ladder` is simple. The package is based on the commutation relations $[b_j,b_k^\dagger]=\delta_{jk}$ and $[b_j,b_k]=[b_j^\dagger,b_k^\dagger]=0$ of the bosonic creation $b_j^\dagger$ and annihilation $b_j^\dagger$ operators, where the subscript ($j$ here) indexes the bosonic mode. 
+The core working principle of `boson_ladder` is simple&mdash;the package is based on the commutation relations $[\hat{b}_j,\hat{b}_k^\dagger]=\delta_{jk}$ and $[\hat{b}_j,\hat{b}_k]=[\hat{b}_j^\dagger,\hat{b}_k^\dagger]=0$ of the bosonic creation $\hat{b}_j^\dagger$ and annihilation $\hat{b}_j^\dagger$ operators, where the subscript ($j$ here) indexes the bosonic mode. 
 
 #### > [`normal_ordering`](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder/core/normal_order.py#L80)
 
@@ -42,26 +42,26 @@ allows the user to normal order any polynomial of bosonic ladder operators. It w
 
 allows the user to evaluate any commutation relation of two polynomials of bosonic ladder operators, based on the identities 
 <div align = "center">
-<img src="https://i.ibb.co.com/6tHWn6L/ABC.pngg" alt="ABC" style = "width:35%">
+<img src="https://i.ibb.co.com/Dz1k0XS/ABC.png" alt="ABC" style = "width:32.5%">
 </div>
 
-To evaluate a commutator, `boson_ladder` applies these identites recursively to expand the commutator into a sum of simpler commutators. This is done until the commutators can be automatically evaluated by SymPy.
+To evaluate a commutator, `boson_ladder` applies these identites recursively to expand the commutator into a sum of simpler commutators. This is done until the commutators can be automatically evaluated by `SymPy`.
 
 #### > [`LME_expval_evo`](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder/core/Lindblad_ME.py#L123) 
 
-allows the user to compute the equation for the evolution of the expectation value of a quantity represented by the operator $A$, i.e. 
+allows the user to compute the equation for the evolution of the expectation value of a quantity represented by the operator $\hat{A}$, i.e. 
 
 <div align = "center">
-<img src="https://i.ibb.co.com/mbJWQ17/expevo.png" alt="expevo" style="width:50%">
+<img src="https://i.ibb.co.com/kKqhzjK/expevo.png" alt="expevo" style="width:50%">
 </div>
 
-where $H$ and $O_k$ can be any polynomials in the ladder operators, and $\rho$ is the density matrix of the system. The following identities are used to compute the RHS (you can easily derive these):
+where $\hat{H}$ and $\hat{{O}}_j$ can be any polynomials in the ladder operators, and $\rho$ is the density matrix of the system. The following identities are used to compute the RHS (you can easily derive these):
 
 <div align="center">
-<img src="https://i.ibb.co.com/GFrfkJq/expevo-2.png" alt="expevo-2" style="width:100%">
+<img src="https://i.ibb.co.com/HB87YVt/expevo-2.png" alt="expevo-2" style="width:100%">
 </div>
 
-The user simply needs to input: (1) the Hamiltonian $H$; (2) the Lindblad dissipator (formally the Liouvillian superoperator in Lindblad form) operators $O_j$ and their multiplying nonnegative scalar $\gamma_j$; and (3) the operator $A$ to calculate the expectation value evolution of&mdash;the function will do the rest! 
+The user simply needs to input: (1) the Hamiltonian $\hat{H}$; (2) the Lindblad dissipator (formally the Liouvillian superoperator in Lindblad form) operators $\hat{O}_j$ and their multiplying nonnegative scalar $\gamma_j$; and (3) the operator $\hat{A}$ to calculate the expectation value evolution of&mdash;the function will do the rest! 
 
 Inside `LME_expval_evo`, the function `Hamiltonian_trace` is called to evaluate the contribution from the Hamiltonian, while `dissipator_trace` is called to evaluate the contribution from each dissipator term indexed $j$ above. These functions are available for the user to call, as well.
 
@@ -94,4 +94,4 @@ Enjoy the package. \\( ﾟヮﾟ)/
 ### CHANGELOG
 
 `ver 1.0.0`
-    - First release.
+-   First release.
