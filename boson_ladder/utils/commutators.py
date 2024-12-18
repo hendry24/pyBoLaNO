@@ -1,6 +1,7 @@
 from sympy import \
     Add, \
     Mul, \
+    Pow, \
     Number, \
     KroneckerDelta
 from sympy.physics.secondquant import \
@@ -85,13 +86,18 @@ def _treat_Kron(q):
 
     out = []
     for qq in q: 
-        if isinstance(qq, (Number, CreateBoson, AnnihilateBoson)):
+        if isinstance(qq, (Number, CreateBoson, AnnihilateBoson, Pow)):
+            """
+            A power of KroneckerDelta should not be possible, so
+            we can assume that this is the case when qq is a power
+            of a ladder operator.
+            """
             out.append(qq)
         
         elif isinstance(qq, KroneckerDelta):
             out.append(1 if (qq.args[0]==q.args[1]) 
                        else 0)
-        
+                
         elif isinstance(qq, Mul):
             if not qq.has(KroneckerDelta):
                 out.append(qq)
@@ -107,7 +113,7 @@ def _treat_Kron(q):
                     _out.append(arg)
                 out.append(Mul(*_out))
         else: 
-            raise InvalidTypeError([KroneckerDelta, Mul, Add], 
+            raise InvalidTypeError([KroneckerDelta, Pow, Mul, Add], 
                                     type(qq))
             
     return Add(*out)

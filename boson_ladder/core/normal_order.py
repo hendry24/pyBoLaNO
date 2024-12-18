@@ -6,7 +6,8 @@ from sympy.physics.secondquant import \
     AnnihilateBoson, \
     CreateBoson
 from ..utils.operators import \
-    _flatten_pow
+    _flatten_pow, \
+    is_ladder_contained
 from ..utils.error_handling import \
     InvalidTypeError
 
@@ -96,16 +97,24 @@ def normal_ordering(q):
         q, normal-ordered.
     """
     
-    if isinstance(q, (Pow, CreateBoson, AnnihilateBoson))\
-        or (not(q.has(CreateBoson))
-            and not(q.has(AnnihilateBoson))):
+    if (not(q.has(CreateBoson)) \
+            and not(q.has(AnnihilateBoson))) \
+        or isinstance(q, (Pow, 
+                          CreateBoson, 
+                          AnnihilateBoson)):
         return q
     
     elif isinstance(q, Add):
-        q_args = [_flatten_pow(arg) 
-                  for arg in q.args]
-    
+        q_args = []
+        for qq in q.args:
+            if not(is_ladder_contained(qq)):
+                q_args.append(qq)
+            else:
+                q_args.append(_flatten_pow(qq))
+                    
     elif isinstance(q, Mul):
+        if not(is_ladder_contained(q)):
+            return q
         q_args = [_flatten_pow(q)]
     
     else:
@@ -155,6 +164,9 @@ def normal_ordering(q):
                 _NO_recursive(arg)
     
     for arg in q_args:
-        _NO_recursive(arg)
+        if not(isinstance(arg, list)): 
+            q_args_NO.append(arg)
+        else:
+            _NO_recursive(arg)
         
     return Add(*q_args_NO)

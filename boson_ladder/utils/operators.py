@@ -112,8 +112,17 @@ def _flatten_pow(q):
         return [q.args[0] for _ in range(q.args[1])]
     
     ###
-        
-    if isinstance(q, Pow):
+    if isinstance(q, Add):
+        msg = "Does not accept Add"
+        raise ValueError(msg)
+    
+    elif isinstance(q, (Number, 
+                        Symbol,
+                        AnnihilateBoson,
+                        CreateBoson)): 
+        return [q]
+    
+    elif isinstance(q, Pow):
         return _treat_Pow(q)
     
     elif isinstance(q, Mul):
@@ -133,7 +142,7 @@ def _flatten_pow(q):
         return out
     
     else:
-        InvalidTypeError([Pow, Mul], type(q))
+        raise InvalidTypeError([Pow, Mul], type(q))
 
 def separate_by_subscript(q):
     """

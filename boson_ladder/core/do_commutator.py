@@ -92,6 +92,10 @@ def _eval_sole_comm(comm):
             A = comm_1.args[0]
             B = Mul(*comm_1.args[1:])
         elif isinstance(comm_1, Pow):
+            if not(comm_1.args[1].is_number):
+                msg = "The exponent of the ladder operator "
+                msg += "must be a Number."
+                raise ValueError(msg)
             A = comm_1.args[0]
             B = Pow(A, comm_1.args[1]-1)
         else:
@@ -105,6 +109,10 @@ def _eval_sole_comm(comm):
             B = comm_2.args[0]
             C = Mul(*comm_2.args[1:])
         elif isinstance(comm_2, Pow):
+            if not(comm_2.args[1].is_number):
+                msg = "The exponent of the ladder operator "
+                msg += "must be a Number."
+                raise ValueError(msg)
             B = comm_2.args[0]
             C = Pow(B, comm_2.args[1]-1)
         else:

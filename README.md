@@ -14,8 +14,8 @@ Are you tired of doing a **cumbersome bosonic ladder operator algebra with compl
 
 At `ver. 1.0.0`, this package offers you useful functions to do your algebra, including:
 
--   Evaluating _any_ **commutation** relations of two polynomials of bosonic ladder operators.
 -   **Normal-ordering** _any_ polynomial of bosonic ladder operators.
+-   Evaluating _any_ **commutation** relations of two polynomials of bosonic ladder operators.
 -   And this is what motivates us to do this: evaluating _any_ **evolution equation for the
     expectation value** for _any_ system described in the **Linbdlad Master Equation** framework.
 
@@ -25,7 +25,11 @@ What's more, it works for **multipartite systems**!
 
 The core working principle of `boson_ladder` is simple. The package is based on the commutation relations $[b_j,b_k^\dagger]=\delta_{jk}$ and $[b_j,b_k]=[b_j^\dagger,b_k^\dagger]=0$ of the bosonic creation $b_j^\dagger$ and annihilation $b_j^\dagger$ operators, where the subscript ($j$ here) indexes the bosonic mode. 
 
-#### > `do_commutator` 
+#### > [`normal_ordering`](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder/core/normal_order.py#L80)
+
+allows the user to normal order any polynomial of bosonic ladder operators. It works like how we humans would normal-order the operator: it looks for a creation operator to the right of an annihilation operator, then apply the commutation relations to swap their places. This is done recursively until all the creation operators are positioned to the left of all the annihilation operators. 
+
+#### > [`do_commutator`](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder/core/do_commutator.py#L162)
 
 allows the user to evaluate any commutation relation of two polynomials of bosonic ladder operators, based on the identities 
 <div align = "center">
@@ -35,12 +39,7 @@ allows the user to evaluate any commutation relation of two polynomials of boson
 
 To evaluate a commutator, `boson_ladder` applies these identites recursively to expand the commutator into a sum of simpler commutators. This is done until the commutators can be automatically evaluated by SymPy.
 
-#### > `normal_ordering` 
-
-allows the user to normal order any polynomial of bosonic ladder operators. It works like how we humans would normal-order the operator: it looks for a creation operator to the right of an annihilation operator, then apply the commutation relation to swap their places. This is done recursively until all the creation operators are
-to the left of all the annihilation operators. 
-
-#### > `LME_expval_evo` 
+#### > [`LME_expval_evo`](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder/core/Lindblad_ME.py#L123) 
 
 allows the user to compute the equation for the evolution of the expectation value of a quantity represented by the operator $A$, i.e. 
 
