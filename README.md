@@ -42,7 +42,7 @@ allows the user to normal order any polynomial of bosonic ladder operators. It w
 
 allows the user to evaluate any commutation relation of two polynomials of bosonic ladder operators, based on the identities 
 <div align = "center">
-<img src="https://i.ibb.co.com/Dz1k0XS/ABC.png" alt="ABC" style = "width:32.5%">
+<img src="https://i.ibb.co.com/Dz1k0XS/ABC.png" alt="ABC" style = "width:33%">
 </div>
 
 To evaluate a commutator, `boson_ladder` applies these identites recursively to expand the commutator into a sum of simpler commutators. This is done until the commutators can be automatically evaluated by `SymPy`.
