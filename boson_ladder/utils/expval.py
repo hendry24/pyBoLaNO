@@ -2,118 +2,82 @@ from sympy import \
     Add, \
     Mul, \
     Pow, \
-    Expr, \
+    Symbol, \
     Number, \
     sympify, \
     latex
-    
 from .operators import \
     is_ladder, \
-    is_ladder_contained
+    is_ladder_contained, \
+    _flatten_pow
 
-class _expval(Expr):
+class _expval(Symbol):
     """
-    The expectation value object. Not accessed by
-    the user; only for presentation of results. 
+    The expectation value object. Only for presentation of
+    results in .core.Lindblad_ME, not for users to use.
+    
+    Parameters
+    ----------
+    
+    q : sympy.Expr
+        The quantity to be put inside the braket.
     """
     def __new__(cls, *args, **kwargs):
         """
-        Only accepts the operator inside the braket. 
-        No scalars, no additions. Can also be unity
-        for easier time dealing with sums with scalars.
+        Assumes a polynomial in ladder operators. The 
+        returned expectation values are thus a 
         """
+        
+        def _get_braket(q):
+            if is_ladder_contained(q):
+                return r"{\left\langle " + latex(q) + r" \right\rangle}"
+            else:
+                return Number(0)
 
+        def _process(q):
+            if not(isinstance(q, (Mul, Pow))):
+                return Number(1), _get_braket(q)
+                        
+            if q.has(Pow):
+                q_args = _flatten_pow(q)
+            else:
+                q_args = q.args
+            
+            scalars = []
+            opers = []
+            for arg in q_args:
+                if is_ladder(arg):
+                    opers.append(arg)
+                else:
+                    scalars.append(arg)
+                    
+            return Mul(*scalars), _get_braket(Mul(*opers))
+        ###
+        
         try:
             q = args[0]
         except:
             q = kwargs.get("q")
-
-        q = sympify(q)
         
-        return super().__new__(cls, q)
-    
+        if q is None:
+            return Number(0)
+        q = sympify(q).expand()
+            
+        ###
+        
+        constructor = []
+        if isinstance(q, Add):
+            q_args = q.args
+        else:
+            q_args = [q]
+
+        for qq in q_args:
+            scal, braket = _process(qq)
+            if isinstance(braket, str):
+                braket = super().__new__(cls, braket)
+            constructor.append(Mul(*[scal, braket]))
+
+        return Add(*constructor)
+        
     def __init__(self, q):
-        self.q = sympify(q)
-        self.is_oper = not(self.q.is_number)
-            
-    def _get_latex(self):
-        if not(self.is_oper):
-            return latex(1)
-        
-        bra = r"{\left\langle "
-        # {} to ensure correct exponentiation. 
-        # Space is necessary.
-        oper = latex(self.q)
-        ket = r" \right\rangle}"
-        return bra+oper+ket
-    
-    def __mul__(self, other):
-        # Skip 1 explicitly during multiplication
-        if not(self.is_oper):
-            return other
-        if isinstance(other, _expval) and not(other.is_oper):
-            return self
-        return Mul(self, other)
-
-    def _eval_expand_multinomial(self, **hints):
-        # This controls how the term expands in multinomial operations
-        if not(self.is_oper):
-            return 1
-        return self
-    
-    def _latex(self, printer):
-        return self._get_latex()
-    
-    def _repr_latex(self, printer):
-        return self._get_latex()
-    
-    def __str__(self):
-        return self._repr_latex(None)
-
-    def __repr__(self):
-        return self._repr_latex(None)
-    
-def _expval_sum(q):
-    """
-    Get the expectation value for a 
-    scalar-weighted sum of expectation values.
-    No a*(b+c) form allowed.
-    """
-    
-    def _treat_Mul(_q):
-        oper = []
-        scalar = []
-        for _arg in _q.args:
-            if (isinstance(_arg, Pow) \
-                    and is_ladder(_arg.args[0])) \
-                or is_ladder(_arg):
-                oper.append(_arg)
-            else:
-                scalar.append(_arg)
-                
-        return Mul(*scalar) * _expval(Mul(*oper))
-
-    out = Number(0)
-    
-    if not(is_ladder_contained(q)):
-        return q
-    
-    elif isinstance(q, (Pow)) or \
-        is_ladder(q):
-        return _expval(q)
-    
-    elif isinstance(q, Add):
-        for qq in q.args:
-            if not(is_ladder_contained(qq)):
-                out += qq
-            
-            elif isinstance(qq, Mul):
-                out += _treat_Mul(qq)
-                
-            else:
-                out += _expval(qq)
-    
-    else: # Mul
-        out += _treat_Mul(q)
-            
-    return out
+        pass

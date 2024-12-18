@@ -12,13 +12,13 @@ from .do_commutator import \
 from .normal_order import \
     normal_ordering
 from ..utils.expval import \
-    _expval_sum
+    _expval
     
 __all__ = ["Hamiltonian_trace",
            "dissipator_trace",
            "LME_expval_evo"]
 
-def Hamiltonian_trace(H, A, normal_order=True, _braket = True):
+def Hamiltonian_trace(H, A, normal_order=True):
     """
     `tr(-1j*[H,rho]A)` where `rho` is the density matrix and
     `[.,.]` is the commutator.
@@ -34,13 +34,6 @@ def Hamiltonian_trace(H, A, normal_order=True, _braket = True):
         
     normal_order : bool, default: True
         Whether to normal-order the result.
-    
-    _braket : bool, default: True
-        Whether to put expectation value brakets
-        for each term in the sum. This parameter
-        is for internal use only. Setting it to
-        False simply deletes the brakets but will
-        cause the result to be misinterpreted.
     
     Returns
     -------
@@ -66,9 +59,9 @@ def Hamiltonian_trace(H, A, normal_order=True, _braket = True):
     if normal_order:
         out = normal_ordering(out)
     
-    return _expval_sum(out) if _braket else out 
+    return _expval(out)
 
-def dissipator_trace(O, A, normal_order=True, _braket=True):
+def dissipator_trace(O, A, normal_order=True):
     """
     `tr(D(O)[rho] * A)` where `rho` is the density matrix.
     
@@ -91,13 +84,6 @@ def dissipator_trace(O, A, normal_order=True, _braket=True):
     
     normal_order : bool, default: True
         Whether to normal-order the result.
-    
-    _braket : bool, default: True
-        Whether to put expectation value brakets
-        for each term in the sum. This parameter
-        is for internal use only. Setting it to
-        False simply deletes the brakets but will
-        cause the result to be misinterpreted.
     
     Returns
     -------
@@ -132,7 +118,7 @@ def dissipator_trace(O, A, normal_order=True, _braket=True):
         
     out = (out/Number(2)).expand()
         
-    return _expval_sum(out) if _braket else out
+    return _expval(out)
 
 def LME_expval_evo(H, D, A, normal_order = True):
     """
@@ -171,13 +157,13 @@ def LME_expval_evo(H, D, A, normal_order = True):
         The evolution equation.
     """
     t = Symbol("t")
-    RHS = Hamiltonian_trace(H, A, _braket=False)
+    RHS = Hamiltonian_trace(H, A)
     
     for D_k in D:
-        RHS += D_k[0]*dissipator_trace(D_k[1], A, _braket=False)
+        RHS += D_k[0]*dissipator_trace(D_k[1], A)
             
     if normal_order:
         RHS = normal_ordering(RHS)
-        
-    return Equality(Derivative(_expval_sum(A), t),
-                    _expval_sum(RHS))
+    
+    return Equality(Derivative(_expval(A), t),
+                    RHS)

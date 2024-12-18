@@ -27,7 +27,15 @@ def _NO_one_step(q_args):
     
     for i, op in enumerate(q_args):
         
-        # Find bd to the right of a b.
+        # Find bd to the right of a b. 
+        
+        """
+        Cases like a scalar standing
+        between b and bd should not happen since SymPy automatically
+        orders commuting expressions to the left of noncommuting ones.
+        As such, the check is skipped here.
+        """
+        
         if isinstance(op, CreateBoson):
             if i == 0 \
                 or not(isinstance(q_args[i-1], AnnihilateBoson)):
