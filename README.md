@@ -1,14 +1,16 @@
 ## **`boson_ladder`: Python Symbolic Package for Bosonic Ladder Operators**
 
----
-
 ### **Hello, there.**
 
 The `boson_ladder` package is _fully_ based on the `SymPy` symbolic package, and serves as a complement for its bosonic ladder operator features that is not yet implemented.
 
+---
+
 ### **Who needs this?**
 
 Are you tired of doing a **cumbersome bosonic ladder operator algebra with complicated commutation relations** and keep on making mistakes in the page-long derivation but did not realize until you are at the end? We feel the same.
+
+---
 
 ### **We present you...**
 
@@ -20,6 +22,8 @@ At `ver. 1.0.0`, this package offers you useful functions to do your algebra, in
     expectation value** for _any_ system described in the **Linbdlad Master Equation** framework.
 
 What's more, it works for **multipartite systems**!
+
+---
 
 ### **Let's be transparent**
 
@@ -56,9 +60,13 @@ The user simply needs to input: (1) the Hamiltonian $H$; (2) the Lindblad dissip
 
 Inside `LME_expval_evo`, the function `Hamiltonian_trace` is called to evaluate the contribution from the Hamiltonian, while `dissipator_trace` is called to evaluate the contribution from each dissipator term indexed $j$ above. These functions are available for the user to call, as well.
 
+---
+
 ### **A quick guide**
 
 We provide a quick tutorial of this package, in the file `boson_ladder_tutorial.ipynb` in the repository tree. Here is a quick ![link.](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder_tutorial.ipynb)
+
+---
 
 ### **Cite us, please!**
 
@@ -73,6 +81,10 @@ Pitiful as it may be, researchers nowadays are valued based on their citation co
 ```
 
 Enjoy the package. \\( ﾟヮﾟ)/
+
+---
+
+---
 
 ### CHANGELOG
 
