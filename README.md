@@ -28,12 +28,11 @@ The core working principle of `boson_ladder` is simple. The package is based on 
 #### > `do_commutator` 
 
 allows the user to evaluate any commutation relation of two polynomials of bosonic ladder operators, based on the identities 
-$$
-[AB,C] = A[B,C] + [A,C]B
-$$ 
-$$
-[A,BC] = [A,B]C + B[A,C]
-$$
+<div align = "center">
+<img src="https://i.ibb.co.com/YQQXqs6/ABC.png" alt="ABC" style = "width:30%">
+</div>
+
+
 To evaluate a commutator, `boson_ladder` applies these identites recursively to expand the commutator into a sum of simpler commutators. This is done until the commutators can be automatically evaluated by SymPy.
 
 #### > `normal_ordering` 
@@ -44,21 +43,16 @@ to the left of all the annihilation operators.
 #### > `LME_expval_evo` 
 
 allows the user to compute the equation for the evolution of the expectation value of a quantity represented by the operator $A$, i.e. 
-$$
-\frac{\mathrm{d}\left\langle A\right\rangle}{\mathrm{d}t} = \mathrm{tr}\left(-i\left[H,\rho\right]A+\sum_j\gamma_j \mathcal{D}\left(O_j\right)\left[\rho\right]A\right)
-$$
-where $H$ and $O_k$ can be any polynomials in the ladder operators. The following identities are used to compute the RHS (you can easily derive these):
 
-\begin{align}
-\mathrm{tr}\left(-i\left[H,\rho\right]A\right) &= -i\left[A,H\right]
-\notag\nonumber
-\\
-\mathrm{tr}\left(\mathcal{D}\left(\sum_k O_k\right)\left[\rho\right]A\right) &= \sum_k \left\langle O_k^\dagger \left[A, O_k\right]\right\rangle + \left\langle \left[O_k^\dagger, A\right] O_k \right\rangle 
-\notag\nonumber
-\\ & \quad
-+\sum_{l>k}\left\langle O_k^\dagger \left[A,O_l\right]\right\rangle + \left\langle \left[ O_k^\dagger,A\right]O_l\right\rangle + \left\langle O_l^\dagger \left[A,O_k\right]\right\rangle + \left\langle \left[ O_l^\dagger,A\right]O_k\right\rangle
-\notag\nonumber
-\end{align}
+<div align = "center">
+<img src="https://i.ibb.co.com/xGzyx48/expevo.png" alt="expevo" style="width:45%">
+</div>
+
+where $H$ and $O_k$ can be any polynomials in the ladder operators, and $\rho$ is the density matrix of the system. The following identities are used to compute the RHS (you can easily derive these):
+
+<div align="center">
+<img class = "img_3" src="https://i.ibb.co.com/7N6xJG1/expevo-2.png" alt="expevo-2" style="width:80%">
+</div>
 
 The user simply needs to input: (1) the Hamiltonian $H$; (2) the Lindblad dissipator (formally the Liouvillian superoperator in Lindblad form) operators $O_j$ and their multiplying nonnegative scalar $\gamma_j$; and (3) the operator $A$ to calculate the expectation value evolution of&mdash;the function will do the rest! 
 
