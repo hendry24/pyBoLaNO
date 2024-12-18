@@ -49,7 +49,7 @@ allows the user to compute the equation for the evolution of the expectation val
 where $H$ and $O_k$ can be any polynomials in the ladder operators, and $\rho$ is the density matrix of the system. The following identities are used to compute the RHS (you can easily derive these):
 
 <div align="center">
-<img src="https://i.ibb.co.com/GFrfkJq/expevo-2.png" alt="expevo-2" style="width:90%">
+<img src="https://i.ibb.co.com/GFrfkJq/expevo-2.png" alt="expevo-2" style="width:100%">
 </div>
 
 The user simply needs to input: (1) the Hamiltonian $H$; (2) the Lindblad dissipator (formally the Liouvillian superoperator in Lindblad form) operators $O_j$ and their multiplying nonnegative scalar $\gamma_j$; and (3) the operator $A$ to calculate the expectation value evolution of&mdash;the function will do the rest! 
