@@ -3,14 +3,67 @@ from sympy import \
     Mul, \
     Pow, \
     Number, \
+    factorial, \
     KroneckerDelta
 from sympy.physics.secondquant import \
     CreateBoson, \
     AnnihilateBoson, \
     Commutator
+from .operators import \
+    is_ladder_contained, \
+    get_ladder_attr
 from .error_handling import InvalidTypeError
     
 __all__ = []
+
+def _do_commutator_b_p_bd_q(b_p, bd_q):
+    """
+    [b**p, bd**q] where b is an AnnihateBoson
+    object and bd is a CreateBoson object.
+    """
+
+    def _comb(a, b):
+        return factorial(a) / (factorial(b)*factorial(a-b))
+    
+    ###
+    
+    # Shortcuts
+    
+    sub_b_p, exp_b_p = get_ladder_attr(b_p)
+    sub_bd_q, exp_bd_q = get_ladder_attr(bd_q)
+    
+    if not(is_ladder_contained(b_p)) or \
+        not(is_ladder_contained(bd_q)) or \
+        sub_b_p != sub_bd_q:
+        return Number(0)
+    
+    ### 
+    
+    if isinstance(b_p, AnnihilateBoson):
+        b = b_p
+        p = 1
+    elif isinstance(b_p, Pow) \
+        and b_p.has(AnnihilateBoson):
+        b, p = b_p.args
+    else:
+        raise InvalidTypeError([AnnihilateBoson, Pow],
+                               type(b_p))
+    
+    if isinstance(bd_q, CreateBoson):
+        bd = bd_q
+        q = 1
+    elif isinstance(bd_q, Pow) \
+        and bd_q.has(CreateBoson):
+        bd, q = bd_q.args
+    else:
+        raise InvalidTypeError([CreateBoson, Pow],
+                               type(bd_q))
+    
+    out = Number(0)
+    for k in range(max(0, p-q), p):
+        out += _comb(p, k) * _comb(q, p-k) * factorial(p-k)\
+                * bd**(q-p+k) * b**k 
+    return out
 
 def _isolate_bracket(comm):
     """

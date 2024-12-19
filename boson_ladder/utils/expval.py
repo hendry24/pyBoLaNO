@@ -8,8 +8,7 @@ from sympy import \
     latex
 from .operators import \
     is_ladder, \
-    is_ladder_contained, \
-    _flatten_pow
+    is_ladder_contained
 
 class _expval(Symbol):
     """
@@ -39,7 +38,12 @@ class _expval(Symbol):
                 return Number(1), _get_braket(q)
                         
             if q.has(Pow):
-                q_args = _flatten_pow(q)
+                q_args = []
+                for qq in q.args:
+                    if isinstance(qq, Pow):
+                        q_args.extend([qq.args[0]]*qq.args[1])
+                    else:
+                        q_args.append(qq)
             else:
                 q_args = q.args
             

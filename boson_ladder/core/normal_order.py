@@ -9,8 +9,10 @@ from sympy.physics.secondquant import \
     CreateBoson
 from ..utils.operators import \
     is_ladder, \
-    is_ladder_contained
-from .commutator import \
+    is_ladder_contained, \
+    get_ladder_attr, \
+    separate_mul_by_sub
+from ..utils.commutators import \
     _do_commutator_b_p_bd_q
 from ..utils.error_handling import \
     InvalidTypeError
@@ -130,21 +132,44 @@ def normal_ordering(q):
                                 Mul],
                                 type(q))
     
-    # return Add(
-    #         *[Mul(
-    #             *[_NO_single_sub(qq_single_sub)
-    #                    for qq_single_sub in _separate_mul_by_sub(qq)
-    #                    ]
-    #             ).expand()
-    #             for qq in q_args]
-    #         )
+    _out = Add(
+            *[Mul(
+                *[_NO_single_sub(qq_single_sub)
+                       for qq_single_sub in separate_mul_by_sub(qq)
+                       ]
+                ).expand()
+                for qq in q_args]
+            )
     
-    # Equivalent to,
-    #
-    # q_NO_Add_args = []
-    # for qq in q_args:
-    #     qq_NO_Mul_args = []
-    #     for qq_single_sub in _separate_mul_by_sub(qq):
-    #         qq_NO_Mul_args.append(_NO_single_sub(qq_single_sub))
-    #     q_NO_Add_args.append(Mul(*qq_NO_Mul_args).expand())
-    # return Add(*q_NO_Add_args)
+    """
+    At this point, the normal ordering is not done since there are
+    probably the terms are written something like 
+        bd_0**p*b_0**q * bd_1**r*b_1**s
+    The last step is simply to swap the argument order to get the
+    nice-looking output with the same subscript order between
+    the creation and the annihilation operators.
+    """
+    
+    if not(isinstance(_out, Add)):
+        return _out
+
+    out = []
+    for q in _out.args:
+        # addend
+        if not(isinstance(q, Mul)):
+            out.append(q)
+        else:
+            collect_scalar = []
+            collect_b = []
+            collect_bd = []
+            for qq in q.args:
+                # factor
+                if qq.has(AnnihilateBoson):
+                    collect_b.append(qq)
+                elif qq.has(CreateBoson):
+                    collect_bd.append(qq)
+                else:
+                    collect_scalar.append(qq)
+            out.append(Mul(*(collect_scalar+collect_bd+collect_b)))
+            
+    return Add(*out)

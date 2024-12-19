@@ -104,9 +104,13 @@ def get_ladder_attr(q):
         sub = q.args[0].args[0]
         exp =  q.args[1]
     else:
-        raise ValueError
+        raise InvalidTypeError([CreateBoson,
+                                AnnihilateBoson,
+                                Pow],
+                               type(q))
     
     return sub, exp
+
 def separate_mul_by_sub(q):
     if isinstance(q, (Number,
                       Symbol,
