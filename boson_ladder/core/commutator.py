@@ -2,19 +2,18 @@ from sympy import \
     Number, \
     Mul, \
     Pow, \
-    Add, \
-    factorial
+    Add
 from sympy.physics.secondquant import \
     CreateBoson, \
     AnnihilateBoson, \
     Commutator
 from ..utils.operators import \
     is_ladder, \
-    is_ladder_contained, \
-    get_ladder_attr
+    is_ladder_contained
 from ..utils.commutators import \
     _isolate_bracket, \
-    _treat_Kron
+    _treat_Kron, \
+    _do_commutator_b_p_bd_q
 from ..utils.error_handling import \
     InvalidTypeError
 from .normal_order import \
@@ -56,7 +55,8 @@ def _eval_sole_comm(comm):
     """
     
     if not(isinstance(comm, Commutator)):
-        raise InvalidTypeError(Commutator, type(comm))
+        raise InvalidTypeError([Commutator], 
+                               type(comm))
     
     comm_1, comm_2 = comm.args
     
@@ -99,47 +99,32 @@ def _eval_sole_comm(comm):
         return Number(0)
     
     ##########
-    
-    if not(is_ladder(comm_1)):
+    if (isinstance(comm_1, (Pow, AnnihilateBoson, CreateBoson)) \
+        and isinstance(comm_2, (Pow, AnnihilateBoson, CreateBoson))):
+        return _do_commutator_b_p_bd_q(comm_1, comm_2)
+        
+    elif not(is_ladder(comm_1)) \
+        and not(isinstance(comm_1, Pow)):
         # skip the check if the entry is a single operator
         if isinstance(comm_1, Mul):
             A = comm_1.args[0]
             B = Mul(*comm_1.args[1:])
-        elif isinstance(comm_1, Pow):
-            if not(comm_1.args[1].is_number):
-                msg = "The exponent of the ladder operator "
-                msg += "must be a Number."
-                raise ValueError(msg)
-            A = comm_1.args[0]
-            B = Pow(A, comm_1.args[1]-1)
         else:
             raise InvalidTypeError([Mul, Pow], type(comm_1))
         C = comm_2
         
         return expand_AB_C(A, B, C)
         
-    elif not(is_ladder(comm_2)):
+    else:
         if isinstance(comm_2, Mul):
             B = comm_2.args[0]
             C = Mul(*comm_2.args[1:])
-        elif isinstance(comm_2, Pow):
-            if not(comm_2.args[1].is_number):
-                msg = "The exponent of the ladder operator "
-                msg += "must be a Number."
-                raise ValueError(msg)
-            B = comm_2.args[0]
-            C = Pow(B, comm_2.args[1]-1)
         else:
             raise InvalidTypeError([Mul, Pow], type(comm_2))
         A = comm_1
         
         return expand_A_BC(A, B, C)
-        
-    else:   
-        return comm
-        # though both entries cannot both be ladder operators since SymPy
-        # would evaluate comm upon construction. 
-    
+              
 def _expand_addend(q):
     """
     Utilizing the properties

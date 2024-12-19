@@ -157,10 +157,12 @@ def LME_expval_evo(H, D, A, normal_order = True):
         The evolution equation.
     """
     t = Symbol("t")
-    RHS = Hamiltonian_trace(H, A)
+    RHS = Hamiltonian_trace(H, A,
+                            normal_order=normal_order)
     
     for D_k in D:
-        RHS += D_k[0]*dissipator_trace(D_k[1], A)
+        RHS += D_k[0]*dissipator_trace(D_k[1], A, 
+                                       normal_order=normal_order)
             
     if normal_order:
         RHS = normal_ordering(RHS)
