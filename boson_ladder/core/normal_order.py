@@ -10,7 +10,7 @@ from sympy.physics.secondquant import \
 from ..utils.operators import \
     is_ladder, \
     is_ladder_contained
-from .do_commutator import \
+from .commutator import \
     _do_commutator_b_p_bd_q
 from ..utils.error_handling import \
     InvalidTypeError

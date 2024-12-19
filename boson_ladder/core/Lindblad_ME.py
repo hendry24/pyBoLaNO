@@ -7,7 +7,7 @@ from sympy import \
     Equality
 from sympy.physics.secondquant import \
     Dagger
-from .do_commutator import \
+from .commutator import \
     do_commutator
 from .normal_order import \
     normal_ordering
