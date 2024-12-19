@@ -29,12 +29,14 @@ def _do_commutator_b_p_bd_q(b_p, bd_q):
     
     # Shortcuts
     
+    if not(is_ladder_contained(b_p)) \
+        or not(is_ladder_contained(bd_q)):
+        return Number(0)
+    
     sub_b_p, exp_b_p = get_ladder_attr(b_p)
     sub_bd_q, exp_bd_q = get_ladder_attr(bd_q)
     
-    if not(is_ladder_contained(b_p)) or \
-        not(is_ladder_contained(bd_q)) or \
-        sub_b_p != sub_bd_q:
+    if sub_b_p != sub_bd_q:
         return Number(0)
     
     ### 
