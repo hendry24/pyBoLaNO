@@ -2,13 +2,13 @@
 
 ### **Hello, there!**
 
-The `boson_ladder` package is _fully_ based on the `SymPy` symbolic package, and serves as a complement for its bosonic ladder operator features that is not yet implemented.
+The `boson_ladder` package is _fully_ based on the `SymPy` symbolic package and serves as a complement for its bosonic ladder operator features that have yet to be implemented.
 
 ---
 
 ### **Who needs this?**
 
-Are you tired of doing a **cumbersome bosonic ladder operator algebra with complicated commutation relations** and keep on making mistakes in the page-long derivation but did not realize until you are at the end? We feel the same.
+Are you tired of doing a **cumbersome bosonic ladder operator algebra with complicated commutation relations** and keep making mistakes in the page-long derivation but do not realize until you are at the end? We feel the same.
 
 ---
 
@@ -31,7 +31,7 @@ The core working principle of `boson_ladder` is simple&mdash;the package is base
 
 #### > [`normal_ordering`](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder/core/normal_order.py#L80)
 
-allows the user to normal order any polynomial of bosonic ladder operators. It works like how we humans would normal-order a given expression. Assuming a sum (the most general form), the algorithm separates each term by their subscripts. For each factor of one subscript, it looks for $\left(\hat{b}_j,\hat{b}_j^\dagger\right)$ sequences in the expression and apply the commutation relations to swap their places. This is done until all the creation operators are to the left of all the annihilation operators. The factors are then multiplied, and the products for different terms are summed to give an almost-normal-ordered expression. Lastly, the algorithm moves the operators with different indices (which commute) around to give a nice looking output.
+allows the user to normal-order any polynomial of bosonic ladder operators. It works like how we humans would normal-order a given expression. Assuming a sum (the most general form), the algorithm separates each addend by its subscripts. For each factor of one subscript, it looks for $\left(\hat{b}_j,\hat{b}_j^\dagger\right)$ sequences in the expression and applies the commutation relations to swap their places. This is done until all the creation operators are to the left of all the annihilation operators. The factors are then multiplied, and the products for different terms are summed to give an almost-normal-ordered expression. Lastly, the algorithm moves the operators with different indices (which commute) around to give a nice-looking output.
 
 #### > [`do_commutator`](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder/core/do_commutator.py#L162)
 
@@ -47,7 +47,7 @@ Inside `LME_expval_evo`, the function [`Hamiltonian_trace`](https://github.com/h
 
 ### **A quick guide**
 
-We provide a quick tutorial of this package, in the file `boson_ladder_tutorial.ipynb` in the repository tree. Here is a quick ![link.](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder_tutorial.ipynb) The notebook includes examples of use alongside a more detailed explanations of the way the package works.
+We provide a quick tutorial of this package, in the file `boson_ladder_tutorial.ipynb` in the repository tree. Here is a quick [link](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder_tutorial.ipynb) that will take you there. The notebook includes examples of use alongside a more detailed explanation of the way the package works.
 
 ---
 
@@ -67,7 +67,7 @@ Pitiful as it may be, researchers nowadays are valued based on their citation co
 
 ### **Parting words**
 
-This program is far from perfect and we would appreciate any critics and suggestions that you may have. In particular, we would appreciate it if you can inform us of any bugs you encounter while using this package. Feel free to reach out to us via email to [hendry01@ui.ac.id](mailto:hendry01@ui.ac.id).
+This program is far from perfect and we would appreciate any critics and suggestions that you may have. In particular, we would appreciate it if you could inform us of any bugs you encounter while using this package. Feel free to reach out to us via email to [hendry01@ui.ac.id](mailto:hendry01@ui.ac.id).
 
 Enjoy the package. \\( ﾟヮﾟ)/ 
 
