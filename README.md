@@ -27,7 +27,7 @@ What's more, it works for **multipartite systems**!
 
 ### **Let's be transparent**
 
-The core working principle of `boson_ladder` is simple&mdash;the package is based on the commutation relations $\left[\hat{b}_j,\hat{b}_k^\dagger\right]=\delta_{jk}$ and $\left[\hat{b}_j,\hat{b}_k\right]=\left[\hat{b}_j^\dagger,\hat{b}_k^\dagger\right]=0$ of the bosonic creation $\hat{b}_j^\dagger$ and annihilation $\hat{b}_j^\dagger$ operators, where the subscript ($j$ here) indexes the bosonic mode. More precisely, we make use of the closed form of the commutator $\left[\hat{b}_j^{p},\hat{b}_k^{\dagger q}\right]$ where $p,q$ are integers to quickly evaluate a given commutator.
+The core working principle of `boson_ladder` is simple&mdash;the package is based on the commutation relations $\left[\hat{b}_j , \hat{b}_k^\dagger\right]= 1 \mathrm{if} j=k,\ 0 \mathrm{otherwise}$ and $\left[\hat{b}_j,\hat{b}_k\right]=\left[\hat{b}_j^\dagger,\hat{b}_k^\dagger\right]=0$ of the bosonic creation $\hat{b}_j^\dagger$ and annihilation $\hat{b}_j^\dagger$ operators, where the subscript ($j$ here) indexes the bosonic mode. More precisely, we make use of the closed form of the commutator $\left[\hat{b}_j^{p},\hat{b}_k^{\dagger q}\right]$ where $p,q$ are integers to quickly evaluate a given commutator.
 
 #### > [`normal_ordering`](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder/core/normal_order.py#L80)
 
