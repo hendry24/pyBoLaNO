@@ -10,20 +10,7 @@ from sympy.physics.secondquant import \
     Commutator
 from .error_handling import InvalidTypeError
     
-__all__ = ["expand_AB_C",
-           "expand_A_BC"]
-
-def expand_AB_C(A,B,C):
-    """
-    [AB,C] = A[B,C] + [A,C]B
-    """
-    return A*Commutator(B,C) + Commutator(A,C)*B
-
-def expand_A_BC(A,B,C):
-    """
-    [A,BC] = [A,B]C + B[A,C]
-    """
-    return Commutator(A,B)*C + B*Commutator(A,C)
+__all__ = []
 
 def _isolate_bracket(comm):
     """

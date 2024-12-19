@@ -2,17 +2,17 @@ from sympy import \
     Number, \
     Mul, \
     Pow, \
-    Add
+    Add, \
+    factorial
 from sympy.physics.secondquant import \
     CreateBoson, \
     AnnihilateBoson, \
     Commutator
 from ..utils.operators import \
     is_ladder, \
-    is_ladder_contained
+    is_ladder_contained, \
+    get_ladder_attr
 from ..utils.commutators import \
-    expand_A_BC, \
-    expand_AB_C, \
     _isolate_bracket, \
     _treat_Kron
 from ..utils.error_handling import \
@@ -20,7 +20,71 @@ from ..utils.error_handling import \
 from .normal_order import \
     normal_ordering
 
-__all__ = ["do_commutator"]
+__all__ = ["do_commutator",
+           "expand_AB_C",
+           "expand_A_BC"]
+
+def expand_AB_C(A,B,C):
+    """
+    [AB,C] = A[B,C] + [A,C]B
+    """
+    return A*Commutator(B,C) + Commutator(A,C)*B
+
+def expand_A_BC(A,B,C):
+    """
+    [A,BC] = [A,B]C + B[A,C]
+    """
+    return Commutator(A,B)*C + B*Commutator(A,C)
+
+def _do_commutator_b_p_bd_q(b_p, bd_q):
+    """
+    [b**p, bd**q] where b is an AnnihateBoson
+    object and bd is a CreateBoson object.
+    """
+
+    def _comb(a, b):
+        return factorial(a) / (factorial(b)*factorial(a-b))
+    
+    ###
+    
+    # Shortcuts
+    
+    sub_b_p, exp_b_p = get_ladder_attr(b_p)
+    sub_bd_q, exp_bd_q = get_ladder_attr(bd_q)
+    
+    if not(is_ladder_contained(b_p)) or \
+        not(is_ladder_contained(bd_q)) or \
+        sub_b_p != sub_bd_q:
+        return Number(0)
+    
+    ### 
+    
+    if isinstance(b_p, AnnihilateBoson):
+        b = b_p
+        p = 1
+    elif isinstance(b_p, Pow) \
+        and b_p.has(AnnihilateBoson):
+        b, p = b_p.args
+    else:
+        raise InvalidTypeError([AnnihilateBoson, Pow],
+                               type(b_p))
+    
+    if isinstance(bd_q, CreateBoson):
+        bd = bd_q
+        q = 1
+    elif isinstance(bd_q, Pow) \
+        and bd_q.has(CreateBoson):
+        bd, q = bd_q.args
+    else:
+        raise InvalidTypeError([CreateBoson, Pow],
+                               type(bd_q))
+    
+    out = Number(0)
+    for k in range(max(0, p-q), p):
+        out += _comb(p, k) * _comb(q, p-k) * factorial(p-k)\
+                * bd**(q-p+k) * b**k 
+    return out
+    
 
 def _eval_sole_comm(comm):
     """

@@ -13,8 +13,7 @@ from .error_handling import \
     
 __all__ = ["ops",
            "is_ladder",
-           "is_ladder_contained",
-           "separate_by_subscript"]
+           "is_ladder_contained"]
 
 def ops(k=None):
     """
@@ -93,104 +92,40 @@ def is_ladder_contained(q):
     """
     return q.has(AnnihilateBoson, CreateBoson)
             
-def _flatten_pow(q):
+def get_ladder_attr(q):
     """
-    Layout any power expressions in q.args and 
-    return a list of arguments without power, i.e.
-    q = Mul(*output).
-    
-    Bad expressions such as a Power object with 
-    negative power and non-Number object are
-    kept as is.
-    
+    Return the index and exponent of the ladder
+    operator.
     """
-    
-    def _treat_Pow(q):
-        if not(isinstance(q.args[1], Number)) \
-            or q.args[1] < 2: # bad power expressions that may raise error in the program.
-            return [q]
-        return [q.args[0] for _ in range(q.args[1])]
-    
-    ###
-    if isinstance(q, Add):
-        msg = "Does not accept Add"
-        raise ValueError(msg)
-    
-    elif isinstance(q, (Number, 
-                        Symbol,
-                        AnnihilateBoson,
-                        CreateBoson)): 
-        return [q]
-    
+    if is_ladder(q):
+        sub = q.args[0]
+        exp =  Number(1)
     elif isinstance(q, Pow):
-        return _treat_Pow(q)
-    
-    elif isinstance(q, Mul):
-        out = []
-        for arg in q.args:
-            if isinstance(arg, Pow):
-                out.extend(_treat_Pow(arg))
-            elif not(isinstance(arg, Add)):
-                out.append(arg)
-            else:
-                raise InvalidTypeError([Pow, 
-                                        CreateBoson, 
-                                        AnnihilateBoson,
-                                        Number,
-                                        Symbol],
-                                        type(arg))
-        return out
-    
+        sub = q.args[0].args[0]
+        exp =  q.args[1]
     else:
-        raise InvalidTypeError([Pow, Mul], type(q))
-
-def separate_by_subscript(q):
-    """
-    Separate an operator product according to the subscript.
-    q is the output of flatten_pow. Returns a list, whose
-    each element is a group of operators with the same
-    index. Scalars are put into the first operator group.
+        raise ValueError
     
-    Parameters
-    ----------
-    
-    q : sympy.Expr
-        Operator product or a list of its arguments. 
-        
-    Returns
-    -------
-    
-    out : list
-        List of operator arguments separated by the subscript.
-        Reconstruct the original operator with `sympy.Mul(*out)`.
-    """
-    
-    if isinstance(q, (CreateBoson, AnnihilateBoson)):
-        return q
-    
-    if isinstance(q, (Mul, Pow)):
-        q = _flatten_pow(q)
-    
-    if not(isinstance(q, list)):
-        raise InvalidTypeError([CreateBoson, 
-                                AnnihilateBoson,
-                                Mul,
-                                Pow,
-                                list],
-                               q)
-    
-    sub_args = {}
-    scalar = Number(1)
-    for qq in q:
-        if not(is_ladder(qq)):
-            scalar *= qq
-        
-        sub = qq.args[0]
-        if sub not in sub_args:
-            sub_args[sub] = []
-        
-        sub_args[sub].append(qq)
-        
-    sub_args[list(sub_args.keys())[0]].append(scalar)
-    
-    return list(sub_args.values())
+    return sub, exp
+def separate_mul_by_sub(q):
+    if isinstance(q, (Number,
+                      Symbol,
+                      CreateBoson,
+                      AnnihilateBoson,
+                      Pow)):
+        return [q]
+    elif isinstance(q, Mul):
+        out = {}
+        for qq in q.args:
+            if not(is_ladder_contained(qq)):
+                if Number not in out:
+                    out[Number] = []
+                out[Number].append(qq)
+            else:
+                sub, exp = get_ladder_attr(qq)
+                if sub not in out:
+                    out[sub] = []
+                out[sub].append(qq)
+        return [Mul(*args) for args in list(out.values())]
+    else:
+        raise ValueError

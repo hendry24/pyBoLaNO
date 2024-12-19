@@ -1,82 +1,92 @@
 from sympy import \
     Add, \
     Pow, \
-    Mul
+    Mul, \
+    Number, \
+    Symbol
 from sympy.physics.secondquant import \
     AnnihilateBoson, \
     CreateBoson
 from ..utils.operators import \
-    _flatten_pow, \
+    is_ladder, \
     is_ladder_contained
+from .do_commutator import \
+    _do_commutator_b_p_bd_q
 from ..utils.error_handling import \
     InvalidTypeError
 
 __all__ = ["normal_ordering"]
 
-def _NO_one_step(q_args):
+def _NO_single_sub(q):
     """
-    Normal order the first [b,bd] sequence found in q_args 
-    and return the result as a list of two args.
-    
-    q_args = q.args. Here q is a single operator (Mul or Pow)
-    to be normal ordered, and q_args must be made free of Pow
-    by laying out the power in terms of multiplication instead.
-    `get_args_no_pow` does this.
-    
-    Leading scalar does not matter.
+    Input is a Mul object containing ladder operators with 
+    the same subscript. The input to this function should be
+    the outputs of _separate_mul_by_sub, which should contain
+    no scalars. If a scalar is found, the input is returned as
+    is.
     """
-    
-    for i, op in enumerate(q_args):
-        
-        # Find bd to the right of a b. 
-        
+
+    if q.has((Number, Symbol)):
+        return q
+
+    def _NO_single_Add_term(qq):
         """
-        Cases like a scalar standing
-        between b and bd should not happen since SymPy automatically
-        orders commuting expressions to the left of noncommuting ones.
-        As such, the check is skipped here.
+        In each step, iterate through the arguments qq of the
+        output Add. Find all (b**p, bd**q) sequence and commute them. 
+        Let the commutation output be an Add object which we will
+        multiply together and return as the output.
+        
+        e.g. We want (b**2*bd**2 * b**2*bd**3) to become
+        (2+4*bd*b+bd**2*b**2)(6*bd+6*bd**2*b*bd**3*b**2) 
+        whose expansion is returned.
+        
+        stop_flag tells the recursion to stop when the normal
+        ordering is done.
         """
         
-        if isinstance(op, CreateBoson):
-            if i == 0 \
-                or not(isinstance(q_args[i-1], AnnihilateBoson)):
-                continue
-        ###
-        
-            b_sub = q_args[i-1].args[0]
-            bd_sub = op.args[0]
-            args_left = q_args[:i-1] # to the left of the substituted b*bd.
-            args_right = q_args[i+1:] # to the right of the substituted b*bd.
-            
-            b = AnnihilateBoson(b_sub)
-            bd = CreateBoson(bd_sub)
-            
-            try:
-                q_NO_mul_args = [args_left + [bd,b] + args_right]
-            except:
-                """
-                In some cases (probably only the first recursion stack), args_left
-                and args_right may not be lists, so tuples are needed. Anyway, it 
-                seems to only happen when we normal order b*bd, so this may only
-                rarely happen.
-                """
-                q_NO_mul_args = [args_left + (bd,b) + args_right]
-            
-            if b_sub == bd_sub:
-                q_NO_mul_args.append(args_left + args_right)
-                            
-            """
-            We return the quantities as arguments as they will be used
-            for the recursion, so there is no need to call _flatten_pow
-            repeatedly.
-            """
+        if not(is_ladder_contained(qq)) or \
+            is_ladder(qq):
+            return qq
+                        
+        out_Mul_args = []
+        i = 0
+        while True:
+            if i > (len(qq.args)-1):
+                break
+             
+            qqq = qq.args[i]
+            if qqq.has(AnnihilateBoson):
+                if i == (len(qq.args)-1):
+                    out_Mul_args.append(qqq)
+                    break
                 
-            return q_NO_mul_args, False
-        
-    # If nothing is found, it means the NO is finished and we can return
-    # a True stop flag. We use a boolean flag since both possible outputs
-    # are lists of different
-    return q_args, True
+                qqq_next = qq.args[i+1]
+                # If the expression is not normal ordered yet,
+                # next to a Pow of b we must have a Pow of bd since
+                # there is only one subscript.
+                
+                out_Mul_args.append(_do_commutator_b_p_bd_q(qqq, 
+                                                           qqq_next)
+                                    + qqq_next*qqq)
+                i += 2
+            else:
+                out_Mul_args.append(qqq)
+                i += 1
+            
+        return Mul(*out_Mul_args).expand()
+
+    out_Add_args = []
+    def _recursion(qq):
+        res = _NO_single_Add_term(qq)
+        if isinstance(res, Add):
+            for item in res.args:
+                _recursion(item)
+        else:
+            out_Add_args.append(res)
+            
+    _recursion(q)
+    
+    return Add(*out_Add_args)
         
 def normal_ordering(q):
     """
@@ -105,17 +115,12 @@ def normal_ordering(q):
         return q
     
     elif isinstance(q, Add):
-        q_args = []
-        for qq in q.args:
-            if not(is_ladder_contained(qq)):
-                q_args.append(qq)
-            else:
-                q_args.append(_flatten_pow(qq))
+        q_args = [qq for qq in q.args]
                     
     elif isinstance(q, Mul):
         if not(is_ladder_contained(q)):
             return q
-        q_args = [_flatten_pow(q)]
+        q_args = [q]
     
     else:
         raise InvalidTypeError([Pow,
@@ -125,48 +130,21 @@ def normal_ordering(q):
                                 Mul],
                                 type(q))
     
-    # The original operator is Add(*[Mul(*x) for x in q_args])
-    # since get_args_no_pow returns a list of factors.
+    # return Add(
+    #         *[Mul(
+    #             *[_NO_single_sub(qq_single_sub)
+    #                    for qq_single_sub in _separate_mul_by_sub(qq)
+    #                    ]
+    #             ).expand()
+    #             for qq in q_args]
+    #         )
     
-    ###
-    
-    q_args_NO = []
-    
-    def _NO_recursive(arg):
-        """
-        Recursively get the arguments of the sum of the
-        normal-ordered operators and put them in q_args_NO
-        such that the output of the main function is 
-        Add(*q_args_NO).
-        """
-        
-        res, stop_flag = _NO_one_step(arg)
-            
-        if stop_flag:
-            """
-            If the stop flag is True, then out is fully
-            normal ordered. NO_one_step does
-            not return a list of addends of the two
-            terms arising from the substitution, but
-            a list of factors that is input. We can then
-            make the Mul object and append it to q_args_NO. 
-            """  
-            q_args_NO.append(Mul(*res))
-        else:
-            for arg in res:
-                """
-                For each addend in the resulting list of NO_one_step
-                containing the two terms arising from the substitution,
-                we do another step of normal ordering. arg here is a 
-                list of the factors of each addend that is free of any
-                Pow since it is the output of NO_one_step. 
-                """
-                _NO_recursive(arg)
-    
-    for arg in q_args:
-        if not(isinstance(arg, list)): 
-            q_args_NO.append(arg)
-        else:
-            _NO_recursive(arg)
-        
-    return Add(*q_args_NO)
+    # Equivalent to,
+    #
+    # q_NO_Add_args = []
+    # for qq in q_args:
+    #     qq_NO_Mul_args = []
+    #     for qq_single_sub in _separate_mul_by_sub(qq):
+    #         qq_NO_Mul_args.append(_NO_single_sub(qq_single_sub))
+    #     q_NO_Add_args.append(Mul(*qq_NO_Mul_args).expand())
+    # return Add(*q_NO_Add_args)
