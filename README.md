@@ -1,5 +1,9 @@
 ## **`boson_ladder`: Python Symbolic Package for Bosonic Ladder Operators**
 
+<div align="center">
+<img src="https://i.ibb.co.com/JKSzGdM/boson-ladder-logo.png" alt="boson-ladder-logo" style = "width:60%">
+</div>
+
 ### **Hello, there!**
 
 The `boson_ladder` package is _fully_ based on the `SymPy` symbolic package and serves as a complement for its bosonic ladder operator features that have yet to be implemented.
