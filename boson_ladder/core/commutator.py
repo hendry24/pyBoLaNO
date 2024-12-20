@@ -1,3 +1,5 @@
+from multiprocessing import \
+    Pool
 from sympy import \
     Number, \
     Mul, \
@@ -18,6 +20,8 @@ from ..utils.error_handling import \
     InvalidTypeError
 from .normal_order import \
     normal_ordering
+from ..utils.multiprocessing import \
+    mp_config
 
 __all__ = ["do_commutator",
            "expand_AB_C",
@@ -166,6 +170,20 @@ def _expand_addend(q):
         
 ###################################################
                 
+def _mp_task(comm):
+    single_comms = []
+    def _expand_recursive(comm):
+        res, stop_flag = _expand_addend(comm)
+        if stop_flag:
+            single_comms.append(res)
+        else:
+            for item in res:
+                _expand_recursive(item)
+    _expand_recursive(comm)
+    return Add(*single_comms)
+
+####################################################
+
 def do_commutator(A, B, normal_order = True):
     """
     Calculate the commutator of two arbitrary
@@ -192,6 +210,7 @@ def do_commutator(A, B, normal_order = True):
     """
     
     comm = Commutator(A, B)
+    
     """
     When the Commutator object is initialized, any sum in the
     input will automatically result in a sum of Commutators.
@@ -205,19 +224,13 @@ def do_commutator(A, B, normal_order = True):
     else:
         recursion_input = [comm]
     
-    single_comms = []
-    def expand_recursive(comm):
-        res, stop_flag = _expand_addend(comm)
-        if stop_flag:
-            single_comms.append(res)
-        else:
-            for item in res:
-                expand_recursive(item)
-                
-    for item in recursion_input:
-        expand_recursive(item)
-        
-    out = Add(*single_comms)
+    use_mp = mp_config["enable"] \
+            and (len(recursion_input) >= mp_config["min_num_args"])
+    if use_mp:
+        with Pool(mp_config["num_cpus"]) as pool:
+            out = Add(*pool.map(_mp_task, recursion_input))
+    else:
+        out = Add(*[_mp_task(item) for item in recursion_input])
     
     if normal_order:
         out = normal_ordering(out)
