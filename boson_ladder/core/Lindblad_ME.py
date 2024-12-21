@@ -18,7 +18,7 @@ __all__ = ["Hamiltonian_trace",
            "dissipator_trace",
            "LME_expval_evo"]
 
-def Hamiltonian_trace(H, A, normal_order=True):
+def Hamiltonian_trace(H, A, normal_order=True, hbar_is_one=True):
     """
     `tr(-i*[H,rho]A) = <-i[A,H]>` where `rho` 
     is the density matrix and `[.,.]` is the commutator.
@@ -34,6 +34,9 @@ def Hamiltonian_trace(H, A, normal_order=True):
         
     normal_order : bool, default: True
         Whether to normal-order the result.
+        
+    hbar_is_one : bool, default: True
+        Whether hbar is omitted. 
     
     Returns
     -------
@@ -44,17 +47,9 @@ def Hamiltonian_trace(H, A, normal_order=True):
         some expectation value.
     
     """
-    H = H.expand()
-    if isinstance(H, Add):
-        H = [arg for arg in H.args]
-    else:
-        H = [H]
-        
-    comm = do_commutator
-    out = Number(0)
     
-    for H_k in H:
-        out += -I*comm(A, H_k)
+    out = do_commutator(A, H)
+    out *= -I if hbar_is_one else -I/Symbol(r"hbar")
     
     if normal_order:
         out = normal_ordering(out)
@@ -120,7 +115,7 @@ def dissipator_trace(O, A, normal_order=True):
         
     return _expval(out)
 
-def LME_expval_evo(H, D, A, normal_order = True):
+def LME_expval_evo(H, D, A, normal_order = True, hbar_is_one=True):
     """
     Calculate the evolution of the expectation value
     of `A`, of the system described by the Lindblad master
@@ -149,6 +144,9 @@ def LME_expval_evo(H, D, A, normal_order = True):
         
     normal_order : bool, default: True
         Whether to normal order the result.
+        
+    hbar_is_one : bool, default: True
+        Whether hbar is omitted in the Hamiltonian trace.
     
     Returns
     -------
@@ -158,7 +156,8 @@ def LME_expval_evo(H, D, A, normal_order = True):
     """
     t = Symbol("t")
     RHS = Hamiltonian_trace(H, A,
-                            normal_order=normal_order)
+                            normal_order=normal_order,
+                            hbar_is_one = hbar_is_one)
     
     for D_k in D:
         RHS += D_k[0]*dissipator_trace(D_k[1], A, 
