@@ -144,6 +144,7 @@ def LME_expval_evo(H, D, A, normal_order = True, hbar_is_one=True):
                                     # Using sympy.physics.quantum.hbar 
                                     # seems to be meddlesome since it
                                     # is not a Number. 
+    RHS = RHS.expand()
     
     for D_k in D:
         RHS += D_k[0]*dissipator_trace(D_k[1], A, 
