@@ -13,7 +13,9 @@ from .error_handling import \
     
 __all__ = ["ops",
            "is_ladder",
-           "is_ladder_contained"]
+           "is_ladder_contained",
+           "get_ladder_attr",
+           "separate_mul_by_sub"]
 
 def ops(k=None):
     """

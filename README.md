@@ -1,7 +1,7 @@
 ## **`boson_ladder`: Python Symbolic Package for Bosonic Ladder Operators**
 
 <div align="center">
-<img src="https://i.ibb.co.com/JKSzGdM/boson-ladder-logo.png" alt="boson-ladder-logo" style = "width:60%">
+<img src="boson_ladder_logo.png" alt="boson-ladder-logo" style = "width:60%">
 </div>
 
 ### **Hello, there!**
