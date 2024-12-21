@@ -18,9 +18,9 @@ __all__ = ["Hamiltonian_trace",
            "dissipator_trace",
            "LME_expval_evo"]
 
-def Hamiltonian_trace(H, A, normal_order=True, hbar_is_one=True):
+def Hamiltonian_trace(H, A, normal_order=True):
     """
-    `tr(-i*[H,rho]A) = <-i[A,H]>` where `rho` 
+    `tr([H,rho]A) = <[A,H]>` where `rho` 
     is the density matrix and `[.,.]` is the commutator.
     
     Parameters
@@ -34,9 +34,6 @@ def Hamiltonian_trace(H, A, normal_order=True, hbar_is_one=True):
         
     normal_order : bool, default: True
         Whether to normal-order the result.
-        
-    hbar_is_one : bool, default: True
-        Whether hbar is omitted. 
     
     Returns
     -------
@@ -48,9 +45,7 @@ def Hamiltonian_trace(H, A, normal_order=True, hbar_is_one=True):
     
     """
     
-    scal = -I if hbar_is_one else -I/Symbol(r"hbar")
-    out = scal* do_commutator(A, H)
-    
+    out = do_commutator(A, H)
     if normal_order:
         out = normal_ordering(out)
     
@@ -144,8 +139,11 @@ def LME_expval_evo(H, D, A, normal_order = True, hbar_is_one=True):
     """
     t = Symbol("t")
     RHS = Hamiltonian_trace(H, A,
-                            normal_order=normal_order,
-                            hbar_is_one = hbar_is_one)
+                            normal_order=normal_order)
+    RHS *= -I if hbar_is_one else -I/Symbol(r"hbar")
+                                    # Using sympy.physics.quantum.hbar 
+                                    # seems to be meddlesome since it
+                                    # is not a Number. 
     
     for D_k in D:
         RHS += D_k[0]*dissipator_trace(D_k[1], A, 
