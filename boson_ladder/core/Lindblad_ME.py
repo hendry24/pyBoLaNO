@@ -93,7 +93,7 @@ def dissipator_trace(O, A, normal_order=True):
     comm = do_commutator
     
     Od = Dagger(O)
-    out = comm(Od, A)*O - Od*comm(A, O)
+    out = comm(Od, A)*O + Od*comm(A, O)
     out = (out/Number(2)).expand()
         
     if normal_order:
