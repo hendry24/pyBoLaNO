@@ -89,25 +89,13 @@ def dissipator_trace(O, A, normal_order=True):
         some expectation value.
     """
     O = O.expand()
-    if isinstance(O, Add):
-        O = [arg for arg in O.args]
-    else:
-        O = [O]
     
     comm = do_commutator
     
-    out = Number(0)
-    for k, O_k in enumerate(O):
-        Od_k = Dagger(O_k)
-        out += Od_k * comm(A, O_k)
-        out += comm(Od_k, A) * O_k
-        for O_l in O[k+1:]:
-            Od_l = Dagger(O_l)
-            out += Od_k * comm(A, O_l)
-            out += comm(Od_k, A) * O_l
-            out += Od_l * comm(A, O_k)
-            out += comm(Od_l, A) * O_k
-    
+    Od = Dagger(O)
+    out = comm(Od, A)*O - Od*comm(A, O)
+    out = (out/Number(2)).expand()
+        
     if normal_order:
         out = normal_ordering(out)
         
