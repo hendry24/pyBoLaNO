@@ -105,7 +105,18 @@ def _eval_sole_comm(comm):
     ##########
     if (isinstance(comm_1, (Pow, AnnihilateBoson, CreateBoson)) \
         and isinstance(comm_2, (Pow, AnnihilateBoson, CreateBoson))):
-        return _do_commutator_b_p_bd_q(comm_1, comm_2)
+        
+        if comm_1.has(AnnihilateBoson):
+            if comm_2.has(CreateBoson):
+                return _do_commutator_b_p_bd_q(comm_1, comm_2)
+            else:
+                return Number(0)
+        
+        if comm_1.has(CreateBoson):
+            if comm_2.has(AnnihilateBoson):
+                return -Number(1)*_do_commutator_b_p_bd_q(comm_2, comm_1)
+            else:
+                return Number(0)
         
     elif not(is_ladder(comm_1)) \
         and not(isinstance(comm_1, Pow)):
