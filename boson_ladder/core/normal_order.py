@@ -162,7 +162,8 @@ def normal_ordering(q):
                                 type(q))
         
     use_mp = mp_config["enable"] \
-                and (len(q_args) >= mp_config["min_num_args"])    
+                and (len(q_args) >= mp_config["min_num_args"])
+                    
     if use_mp:
         with Pool(mp_config["num_cpus"]) as pool:
             _out = Add(*pool.map(_NO_task_per_q_arg, q_args))

@@ -31,7 +31,7 @@ class _expval(Symbol):
             if is_ladder_contained(q):
                 return r"{\left\langle " + latex(q) + r" \right\rangle}"
             else:
-                return Number(0)
+                return latex(q)
 
         def _process(q):
             if not(isinstance(q, (Mul, Pow))):
@@ -41,7 +41,11 @@ class _expval(Symbol):
                 q_args = []
                 for qq in q.args:
                     if isinstance(qq, Pow):
-                        q_args.extend([qq.args[0]]*qq.args[1])
+                        if qq.args[1] > 0:
+                            q_args.extend([qq.args[0]]*qq.args[1])
+                        else:
+                            q_args.append(qq) 
+                            # Scalars in the denominator. 
                     else:
                         q_args.append(qq)
             else:

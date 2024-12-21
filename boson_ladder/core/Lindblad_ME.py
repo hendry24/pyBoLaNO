@@ -48,8 +48,8 @@ def Hamiltonian_trace(H, A, normal_order=True, hbar_is_one=True):
     
     """
     
-    out = do_commutator(A, H)
-    out *= -I if hbar_is_one else -I/Symbol(r"hbar")
+    scal = -I if hbar_is_one else -I/Symbol(r"hbar")
+    out = scal* do_commutator(A, H)
     
     if normal_order:
         out = normal_ordering(out)
