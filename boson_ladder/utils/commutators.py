@@ -29,8 +29,13 @@ def _do_commutator_b_p_bd_q(b_p, bd_q):
     
     # Shortcuts
     
-    if not(is_ladder_contained(b_p)) \
-        or not(is_ladder_contained(bd_q)):
+    if b_p.has(CreateBoson):
+        raise InvalidTypeError(AnnihilateBoson, type(b_p))
+    if bd_q.has(AnnihilateBoson):
+        raise InvalidTypeError(CreateBoson, type(bd_q))
+    
+    if not(b_p.has(AnnihilateBoson)) \
+        or not(bd_q.has(CreateBoson)):
         return Number(0)
     
     sub_b_p, exp_b_p = get_ladder_attr(b_p)

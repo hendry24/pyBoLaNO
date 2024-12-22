@@ -176,7 +176,6 @@ def _expand_addend(q):
     # Should generally return an Add. 
     comm = (left_factor*comm*right_factor).expand()
                                             # lays it flat.
-    
     if isinstance(comm, Add):
         return [arg for arg in comm.args], False
     elif not(comm.has(Commutator)):

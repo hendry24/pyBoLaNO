@@ -28,11 +28,15 @@ def _NO_single_sub(q):
     Input is a Mul object containing ladder operators with 
     the same subscript. The input to this function should be
     the outputs of _separate_mul_by_sub, which should contain
-    no scalars. If a scalar is found, the input is returned as
-    is.
+    no scalars. 
     """
-
-    if q.has((Number, Symbol)):
+    
+    if not(is_ladder_contained(q)):
+        return q
+    
+    if isinstance(q, (Pow, 
+                      CreateBoson, 
+                      AnnihilateBoson)):
         return q
 
     def _NO_single_Add_term(qq):
@@ -56,6 +60,7 @@ def _NO_single_sub(q):
                         
         out_Mul_args = []
         i = 0
+        # qq must be Mul at this point
         while True:
             if i > (len(qq.args)-1):
                 break
