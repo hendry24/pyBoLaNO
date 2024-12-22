@@ -1,5 +1,7 @@
 import os
 
+__all__ = ["mp_config"]
+
 class CustomDict(dict):
     def __setitem__(self, key, value):
         valid_keys = ["enable", "num_cpus", "min_num_args"]
