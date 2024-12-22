@@ -45,6 +45,9 @@ def Hamiltonian_trace(H, A, normal_order=True):
     
     """
     
+    H = H.expand()
+    A = A.expand()
+    
     out = do_commutator(A, H)
     if normal_order:
         out = normal_ordering(out)
@@ -84,17 +87,16 @@ def dissipator_trace(O, A, normal_order=True):
         some expectation value.
     """
     O = O.expand()
+    A = A.expand()
     
     comm = do_commutator
     
     Od = Dagger(O)
-    out = comm(Od, A)*O + Od*comm(A, O)
-    out = (out/Number(2)).expand()
+    out = (comm(Od, A)*O / Number(2)).expand()
+    out += (Od*comm(A, O) / Number(2)).expand()
         
     if normal_order:
         out = normal_ordering(out)
-        
-    out = (out/Number(2)).expand()
         
     return _expval(out)
 
@@ -137,7 +139,7 @@ def LME_expval_evo(H, D, A, normal_order = True, hbar_is_one=True):
     out : sympy.Equality
         The evolution equation.
     """
-    t = Symbol("t")
+    
     RHS = Hamiltonian_trace(H, A,
                             normal_order=normal_order)
     RHS *= -I if hbar_is_one else -I/Symbol(r"hbar")
@@ -147,8 +149,8 @@ def LME_expval_evo(H, D, A, normal_order = True, hbar_is_one=True):
     RHS = RHS.expand()
     
     for D_k in D:
-        RHS += D_k[0]*dissipator_trace(D_k[1], A, 
-                                       normal_order=normal_order)
+        RHS += (D_k[0]*dissipator_trace(D_k[1], A, 
+                                       normal_order=normal_order)).expand()
     
-    return Equality(Derivative(_expval(A), t),
+    return Equality(Derivative(_expval(A), Symbol(r"t")),
                     RHS)

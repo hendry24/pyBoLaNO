@@ -138,6 +138,8 @@ def normal_ordering(q):
         q, normal-ordered.
     """
     
+    q = q.expand()
+    
     if (not(q.has(CreateBoson)) \
             and not(q.has(AnnihilateBoson))) \
         or isinstance(q, (Pow, 

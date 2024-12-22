@@ -225,6 +225,8 @@ def do_commutator(A, B, normal_order = True):
         Commutator between A and B, optionally normal ordered.
     """
     
+    A = A.expand()
+    B = B.expand()
     comm = Commutator(A, B)
     
     """
