@@ -41,7 +41,7 @@ def expand_A_BC(A,B,C):
 
 def expand_AB_CD(A,B,C,D):
     return A*Commutator(B,C)*D + Commutator(A,C)*B*D \
-            + C*A*Commutator(B*D) + C*Commutator(A,D)*B 
+            + C*A*Commutator(B,D) + C*Commutator(A,D)*B 
 
 def _eval_sole_comm(comm):
     """
