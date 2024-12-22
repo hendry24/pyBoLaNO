@@ -37,7 +37,11 @@ def expand_A_BC(A,B,C):
     """
     [A,BC] = [A,B]C + B[A,C]
     """
-    return Commutator(A,B)*C + B*Commutator(A,C)    
+    return Commutator(A,B)*C + B*Commutator(A,C)   
+
+def expand_AB_CD(A,B,C,D):
+    return A*Commutator(B,C)*D + Commutator(A,C)*B*D \
+            + C*A*Commutator(B*D) + C*Commutator(A,D)*B 
 
 def _eval_sole_comm(comm):
     """
@@ -117,29 +121,28 @@ def _eval_sole_comm(comm):
                 return -Number(1)*_do_commutator_b_p_bd_q(comm_2, comm_1)
             else:
                 return Number(0)
-        
-    elif not(is_ladder(comm_1)) \
-        and not(isinstance(comm_1, Pow)):
-        # skip the check if the entry is a single operator
-        if isinstance(comm_1, Mul):
-            A = comm_1.args[0]
-            B = Mul(*comm_1.args[1:])
+            
+    else: 
+        if is_ladder(comm_1) \
+            or isinstance(comm_1, Pow):
+            A = Number(1)
+            B = comm_1
         else:
-            raise InvalidTypeError([Mul, Pow], type(comm_1))
-        C = comm_2
+            cut = len(comm_1.args)//2
+            A = Mul(*comm_1.args[:cut])
+            B = Mul(*comm_1.args[cut:])
         
-        return expand_AB_C(A, B, C)
-        
-    else:
-        if isinstance(comm_2, Mul):
-            B = comm_2.args[0]
-            C = Mul(*comm_2.args[1:])
+        if is_ladder(comm_2) \
+            or isinstance(comm_2, Pow):
+            C = Number(1)
+            D = comm_1
         else:
-            raise InvalidTypeError([Mul, Pow], type(comm_2))
-        A = comm_1
+            cut = len(comm_2.args)//2
+            C = Mul(*comm_2.args[:cut])
+            D = Mul(*comm_2.args[:cut])
         
-        return expand_A_BC(A, B, C)
-              
+        return expand_AB_CD(A,B,C,D)
+                      
 def _expand_addend(q):
     """
     Utilizing the properties
