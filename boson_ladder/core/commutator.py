@@ -124,6 +124,7 @@ def _eval_sole_comm(comm):
             
     else: 
         if is_ladder(comm_1) \
+            or not(is_ladder_contained(comm_1)) \
             or isinstance(comm_1, Pow):
             A = Number(1)
             B = comm_1
@@ -133,9 +134,10 @@ def _eval_sole_comm(comm):
             B = Mul(*comm_1.args[cut:])
         
         if is_ladder(comm_2) \
+            or not(is_ladder_contained(comm_2)) \
             or isinstance(comm_2, Pow):
             C = Number(1)
-            D = comm_1
+            D = comm_2
         else:
             cut = len(comm_2.args)//2
             C = Mul(*comm_2.args[:cut])
