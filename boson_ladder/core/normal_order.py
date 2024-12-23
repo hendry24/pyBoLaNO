@@ -3,16 +3,13 @@ from multiprocessing import \
 from sympy import \
     Add, \
     Pow, \
-    Mul, \
-    Number, \
-    Symbol
+    Mul
 from sympy.physics.secondquant import \
     AnnihilateBoson, \
     CreateBoson
 from ..utils.operators import \
     is_ladder, \
     is_ladder_contained, \
-    get_ladder_attr, \
     separate_mul_by_sub
 from ..utils.commutators import \
     _do_commutator_b_p_bd_q
