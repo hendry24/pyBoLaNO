@@ -126,41 +126,10 @@ def _treat_Kron(q):
         Object containing the Kronecker delta object.
     """
     
-    if isinstance(q, Add):
-        q = [arg for arg in q.args]
-    else:
-        q = [q]
-
-    out = []
-    for qq in q: 
-        if isinstance(qq, (Number, CreateBoson, AnnihilateBoson, Pow)):
-            """
-            A power of KroneckerDelta should not be possible, so
-            we can assume that this is the case when qq is a power
-            of a ladder operator.
-            """
-            out.append(qq)
-        
-        elif isinstance(qq, KroneckerDelta):
-            out.append(1 if (qq.args[0]==q.args[1]) 
-                       else 0)
-                
-        elif isinstance(qq, Mul):
-            if not qq.has(KroneckerDelta):
-                out.append(qq)
-            else:
-                _out = []
-                for arg in qq.args:
-                    if isinstance(arg, KroneckerDelta):
-                        if arg.args[0]==arg.args[1]:
-                            continue
-                        else:
-                            _out = [Number(0)]
-                            break
-                    _out.append(arg)
-                out.append(Mul(*_out))
-        else: 
-            raise InvalidTypeError([KroneckerDelta, Pow, Mul, Add], 
-                                    type(qq))
-            
-    return Add(*out)
+    Kron_lst = q.find(KroneckerDelta)
+    for Kron in Kron_lst:
+        if Kron.args[0] == Kron.args[1]:
+            q = q.subs(Kron, 1)
+        else:
+            q = q.subs(Kron, 0)
+    return q
