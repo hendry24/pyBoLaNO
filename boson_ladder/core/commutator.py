@@ -103,7 +103,6 @@ def _eval_sole_comm(comm):
         or not(is_ladder_contained(comm_1)) \
         \
         or not(is_ladder_contained(comm_2)):
-    
         return Number(0)
     
     ##########
@@ -130,6 +129,7 @@ def _eval_sole_comm(comm):
             B = comm_1
         else:
             cut = len(comm_1.args)//2
+            # divides the recursive tree evenly.
             A = Mul(*comm_1.args[:cut])
             B = Mul(*comm_1.args[cut:])
         
@@ -141,7 +141,7 @@ def _eval_sole_comm(comm):
         else:
             cut = len(comm_2.args)//2
             C = Mul(*comm_2.args[:cut])
-            D = Mul(*comm_2.args[:cut])
+            D = Mul(*comm_2.args[cut:])
         
         return expand_AB_CD(A,B,C,D)
                       
@@ -173,6 +173,7 @@ def _expand_addend(q):
     # At this point, comm should purely be a Commutator object.
                 
     comm = _eval_sole_comm(comm)
+
     # Should generally return an Add. 
     comm = (left_factor*comm*right_factor).expand()
                                             # lays it flat.

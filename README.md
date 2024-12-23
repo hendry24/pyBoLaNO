@@ -1,4 +1,4 @@
-## **`boson_ladder`: Python Symbolic Package for Bosonic Ladder Operators**
+## **`boson_ladder`: A `Python` Symbolic Package for Bosonic Ladder Operators**
 
 <div align="center">
 <img src="boson_ladder_logo.png" alt="boson-ladder-logo" style = "width:60%">
@@ -35,7 +35,7 @@ The core working principle of `boson_ladder` is simple&mdash;the package is base
 
 #### > [`normal_ordering`](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder/core/normal_order.py#L80)
 
-allows the user to normal-order any polynomial of bosonic ladder operators. It works like how we humans would normal-order a given expression. Assuming a sum (the most general form), the algorithm separates each addend by its subscripts. For each factor of one subscript, it looks for $\left(\hat{b}_j,\hat{b}_j^\dagger\right)$ sequences in the expression and applies the commutation relations to swap their places. This is done until all the creation operators are to the left of all the annihilation operators. The factors are then multiplied, and the products for different terms are summed to give an almost-normal-ordered expression. Lastly, the algorithm moves the operators with different indices (which commute) around to give a nice-looking output.
+allows the user to normal-order any polynomial of bosonic ladder operators. It works like how we humans would normal-order a given expression. Assuming a sum (the most general form), the algorithm separates each addend by its subscripts. For each factor of one subscript, it looks for $\left(\hat{b}_j^p,\hat{b}_j^{\dagger q}\right)$ sequences in the expression and applies commutation relations to swap their places. This is done until all the creation operators are to the left of all the annihilation operators. The factors are then multiplied, and the products for different terms are summed to give an almost-normal-ordered expression. Lastly, the algorithm moves the operators with different indices (which commute) around to give a nice-looking output.
 
 #### > [`do_commutator`](https://github.com/hendry24/boson_ladder/blob/main/boson_ladder/core/do_commutator.py#L162)
 
