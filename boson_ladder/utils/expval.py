@@ -4,8 +4,10 @@ from sympy import \
     Pow, \
     Symbol, \
     Number, \
-    sympify, \
     latex
+from sympy.physics.secondquant import \
+    AnnihilateBoson, \
+    CreateBoson
 from .operators import \
     is_ladder, \
     is_ladder_contained
@@ -25,43 +27,36 @@ class _expval(Symbol):
     """
     def __new__(cls, *args, **kwargs):
         """
-        Assumes a polynomial in ladder operators. The 
-        returned expectation values are thus a 
+        Assumes a polynomial in ladder operators. Each term in
+        the input Add is properly enclosed in bra-kets
         """
         
-        def _get_braket(q):
-            if is_ladder_contained(q):
-                return r"{\left\langle " + latex(q) + r" \right\rangle}"
-            else:
-                return latex(q)
+        def _braket(q):
+            return r"{\left\langle " + latex(q) + r" \right\rangle}"
 
         def _process(q):
-            if not(isinstance(q, (Mul, Pow))):
-                return Number(1), _get_braket(q)
-                        
-            if q.has(Pow):
-                q_args = []
-                for qq in q.args:
-                    if isinstance(qq, Pow):
-                        if qq.args[1] > 0:
-                            q_args.extend([qq.args[0]]*qq.args[1])
-                        else:
-                            q_args.append(qq) 
-                            # Scalars in the denominator. 
-                    else:
-                        q_args.append(qq)
-            else:
-                q_args = q.args
+            """
+            Assumes q to be one term to enclose in braket. This function
+            separates the scalars from the operators enclosed in bra-ket.
+            """
+            if not(is_ladder_contained(q)):
+                return q, Number(1) # Not string, no bra-ket
             
-            scalars = []
-            opers = []
-            for arg in q_args:
-                if is_ladder(arg):
-                    opers.append(arg)
-                else:
-                    scalars.append(arg)
-                    
-            return Mul(*scalars), _get_braket(Mul(*opers))
+            elif isinstance(q, (Pow, 
+                                CreateBoson, 
+                                AnnihilateBoson)):
+                return Number(1), _braket(q)
+            
+            elif isinstance(q, Mul):
+                scalars = []
+                opers = []
+                for arg in q.args:
+                    if is_ladder_contained(arg):
+                        opers.append(arg)
+                    else:
+                        scalars.append(arg)
+                        
+                return Mul(*scalars), _braket(Mul(*opers))
         ###
         
         try:
@@ -71,7 +66,7 @@ class _expval(Symbol):
         
         if q is None:
             return Number(0)
-        q = sympify(q).expand()
+        q = q.expand()
             
         ###
         
@@ -85,7 +80,7 @@ class _expval(Symbol):
             scal, braket = _process(qq)
             if isinstance(braket, str):
                 braket = super().__new__(cls, braket)
-            constructor.append(Mul(*[scal, braket]))
+            constructor.append(Mul(scal, braket))
 
         return Add(*constructor)
         
