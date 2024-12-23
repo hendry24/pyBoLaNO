@@ -54,9 +54,9 @@ def Hamiltonian_trace(H, A, normal_order=True):
     
     return _expval(out)
 
-def dissipator_trace(O, A, normal_order=True):
+def dissipator_trace(O, A, P = None, normal_order=True):
     """
-    `tr(D(O)[rho] * A)` where `rho` is the density matrix.
+    `tr(D(O, P)[rho] * A)` where `rho` is the density matrix.
     
     Parameters
     ----------
@@ -66,14 +66,19 @@ def dissipator_trace(O, A, normal_order=True):
         in the Lindblad form, also known as the Lindblad 
         dissipator, defined as
             
-            `D(O)[rho] = O*rho*Od - 0.5*{Od*O, rho}`
+            `D(O,P)[rho] = O*rho*Pd - 0.5*{Pd*O, rho}`
         
-        where `Od` is the Hermitian conjugate, `rho` is
+        where `Pd` is the Hermitian conjugate of P (another
+        argument of this function), `rho` is
         the system's density matrix, and {.,.} is the
-        anticommutator.
+        anticommutator. 
         
     A : sympy.Expr
         The operator to use in the trace. 
+        
+    P : sympy.Expr, default: None
+        The other operator making the dissipator. If not
+        specified, then `P=O`. 
     
     normal_order : bool, default: True
         Whether to normal-order the result.
@@ -87,14 +92,19 @@ def dissipator_trace(O, A, normal_order=True):
         some expectation value.
     """
     O = O.expand()
+    if P is None:
+        P = P
+    else:
+        P = P.expand()
     A = A.expand()
     
     comm = do_commutator
     
-    Od = Dagger(O)
-    out = (comm(Od, A)*O / Number(2)).expand()
-    out += (Od*comm(A, O) / Number(2)).expand()
-        
+    Pd = Dagger(P)
+    
+    out = (comm(Pd, A)*O / Number(2)).expand()
+    out += (Pd*comm(A, O) / Number(2)).expand()
+    
     if normal_order:
         out = normal_ordering(out)
         
@@ -118,10 +128,11 @@ def LME_expval_evo(H, D, A, normal_order = True, hbar_is_one=True):
         
     D : list
         The Lindblad dissipators, specified as a nested list
-        of lists of two elements. The first element is the
+        of lists of two or three elements. The first element is the
         multiplying scalar, which can be a `sympy.Expr`. The 
         second element is the operator defining the Lindblad
-        dissipator.
+        dissipator. Optionally, the third element is another operator
+        defining the dissipator alongside the second element.
         
     A : sympy.Expr
         The operator to calculate the expectation value evolution
@@ -149,8 +160,12 @@ def LME_expval_evo(H, D, A, normal_order = True, hbar_is_one=True):
     RHS = RHS.expand()
     
     for D_k in D:
-        RHS += (D_k[0]*dissipator_trace(D_k[1], A, 
-                                       normal_order=normal_order)).expand()
+        if len(D_k) == 2:
+            D_k = D_k + [None]
+        RHS += (D_k[0]*dissipator_trace(O = D_k[1], 
+                                        A = A, 
+                                        P = D_k[2], 
+                                        normal_order=normal_order)).expand()
     
     return Equality(Derivative(_expval(A), Symbol(r"t")),
                     RHS)

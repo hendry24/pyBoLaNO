@@ -1,16 +1,17 @@
 from sympy import \
-    Add, \
     Mul, \
     Pow, \
     Number, \
-    factorial, \
+    binomial, \
+    FallingFactorial, \
     KroneckerDelta
 from sympy.physics.secondquant import \
     CreateBoson, \
     AnnihilateBoson, \
-    Commutator
+    Commutator, \
+    CreateFermion, \
+    AnnihilateFermion
 from .operators import \
-    is_ladder_contained, \
     get_ladder_attr
 from .error_handling import InvalidTypeError
     
@@ -21,13 +22,14 @@ def _do_commutator_b_p_bd_q(b_p, bd_q):
     [b**p, bd**q] where b is an AnnihateBoson
     object and bd is a CreateBoson object.
     """
-
-    def _comb(a, b):
-        return factorial(a) / (factorial(b)*factorial(a-b))
     
     ###
     
     # Shortcuts
+    
+    if b_p.has(CreateFermion, AnnihilateFermion) or\
+        bd_q.has(CreateFermion, AnnihilateFermion):
+        raise TypeError("Fermionic ladder operators are not accepted.")
     
     if b_p.has(CreateBoson):
         raise InvalidTypeError(AnnihilateBoson, type(b_p))
@@ -68,7 +70,7 @@ def _do_commutator_b_p_bd_q(b_p, bd_q):
     
     out = Number(0)
     for k in range(max(0, p-q), p):
-        out += _comb(p, k) * _comb(q, p-k) * factorial(p-k)\
+        out += binomial(p, k) * FallingFactorial(q, p-k) \
                 * bd**(q-p+k) * b**k 
     return out
 
@@ -102,7 +104,7 @@ def _isolate_bracket(comm):
                 """
                 break
             comm_idx += 1
-
+        
         left_factor = Mul(*comm.args[:comm_idx])
         right_factor = Mul(*comm.args[comm_idx+1:])
         comm = comm.args[comm_idx]     # gets assigned last due to the variable assignment.

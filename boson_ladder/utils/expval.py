@@ -9,7 +9,6 @@ from sympy.physics.secondquant import \
     AnnihilateBoson, \
     CreateBoson
 from .operators import \
-    is_ladder, \
     is_ladder_contained
     
 __all__ = []

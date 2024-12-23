@@ -1,6 +1,5 @@
 from sympy import \
     Symbol, \
-    Add, \
     Mul, \
     Pow, \
     Number, \
