@@ -1,17 +1,24 @@
-from sympy import \
-    Add, \
-    Mul, \
-    Pow, \
-    Symbol, \
-    Number, \
+from sympy import (
+    Add,
+    Mul,
+    Pow,
+    Symbol,
+    Number,
     latex
-from sympy.physics.secondquant import \
-    AnnihilateBoson, \
+)
+from sympy.physics.secondquant import (
+    AnnihilateBoson,
     CreateBoson
-from .operators import \
+)
+from .operators import (
     is_ladder_contained
-    
+)
+
+############################################################
+
 __all__ = []
+
+############################################################
 
 class _expval(Symbol):
     """

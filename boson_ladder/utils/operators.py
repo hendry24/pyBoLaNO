@@ -1,20 +1,27 @@
-from sympy import \
-    Symbol, \
-    Mul, \
-    Pow, \
-    Number, \
+from sympy import (
+    Symbol, 
+    Mul, 
+    Pow, 
+    Number,
     latex
-from sympy.physics.secondquant import \
-    CreateBoson, \
+)
+from sympy.physics.secondquant import (
+    CreateBoson, 
     AnnihilateBoson
-from .error_handling import \
+)
+from .error_handling import (
     InvalidTypeError
-    
+)
+
+############################################################
+
 __all__ = ["ops",
            "is_ladder",
            "is_ladder_contained",
            "get_ladder_attr",
            "separate_mul_by_sub"]
+
+############################################################
 
 def ops(k=None):
     """
@@ -56,6 +63,8 @@ def ops(k=None):
     bd = CreateBoson(k)
     return b, bd
 
+############################################################
+
 def is_ladder(q):
     """
     Check if the input object is a ladder operator.
@@ -73,6 +82,8 @@ def is_ladder(q):
         `True` if q is a ladder operator. `False` otherwise.
     """
     return isinstance(q, (CreateBoson, AnnihilateBoson))
+
+############################################################
 
 def is_ladder_contained(q):
     """
@@ -92,6 +103,8 @@ def is_ladder_contained(q):
         `True` if a ladder operator is contained. `False` otherwise.
     """
     return q.has(AnnihilateBoson, CreateBoson)
+
+############################################################
             
 def get_ladder_attr(q):
     """
@@ -111,6 +124,8 @@ def get_ladder_attr(q):
                                type(q))
     
     return sub, exp
+
+############################################################
 
 def separate_mul_by_sub(q):
     if isinstance(q, (Number,

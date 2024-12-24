@@ -1,3 +1,7 @@
+# Write it like the following for the top-level __init__
+# so that folder names do not appear in the vscode 
+# autocomplete.
+
 from .core.commutator import (
     do_commutator,
     expand_A_BC,
@@ -5,7 +9,7 @@ from .core.commutator import (
     expand_AB_CD
 )
 
-from .core.normal_order import (
+from .core.normal_order.normal_order import (
     normal_ordering
 )
 

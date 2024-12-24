@@ -1,31 +1,45 @@
-from multiprocessing import \
+from multiprocessing import (
     Pool
-from sympy import \
-    Number, \
-    Mul, \
-    Pow, \
-    Add
-from sympy.physics.secondquant import \
-    CreateBoson, \
-    AnnihilateBoson, \
-    Commutator
-from ..utils.operators import \
-    is_ladder, \
-    is_ladder_contained
-from ..utils.commutators import \
-    _isolate_bracket, \
-    _treat_Kron, \
-    _do_commutator_b_p_bd_q
-from ..utils.error_handling import \
+)
+from sympy import (
+    Number,
+    Mul,
+    Pow,
+    Add,
+    binomial,
+    FallingFactorial
+)
+from sympy.physics.secondquant import (
+    CreateBoson,
+    AnnihilateBoson,
+    CreateFermion,
+    AnnihilateFermion,
+    Commutator,
+    KroneckerDelta
+)
+from ..utils.operators import (
+    is_ladder,
+    is_ladder_contained,
+    get_ladder_attr
+)
+from ..utils.error_handling import (
     InvalidTypeError
-from .normal_order import \
+)
+from .normal_order.normal_order import (
     normal_ordering
-from ..utils.multiprocessing import \
+)
+from ..utils.multiprocessing import (
     mp_config
+)
+
+############################################################
 
 __all__ = ["do_commutator",
            "expand_AB_C",
-           "expand_A_BC"]
+           "expand_A_BC",
+           "expand_AB_CD"]
+
+############################################################
 
 def expand_AB_C(A,B,C):
     """
@@ -42,6 +56,127 @@ def expand_A_BC(A,B,C):
 def expand_AB_CD(A,B,C,D):
     return A*Commutator(B,C)*D + Commutator(A,C)*B*D \
             + C*A*Commutator(B,D) + C*Commutator(A,D)*B 
+            
+############################################################
+            
+def _do_commutator_b_p_bd_q(b_p, bd_q):
+    """
+    [b**p, bd**q] where b is an AnnihateBoson
+    object and bd is a CreateBoson object.
+    """
+    
+    ###
+    
+    # Shortcuts
+    
+    if b_p.has(CreateFermion, AnnihilateFermion) or\
+        bd_q.has(CreateFermion, AnnihilateFermion):
+        raise TypeError("Fermionic ladder operators are not accepted.")
+    
+    if b_p.has(CreateBoson):
+        raise InvalidTypeError(AnnihilateBoson, type(b_p))
+    if bd_q.has(AnnihilateBoson):
+        raise InvalidTypeError(CreateBoson, type(bd_q))
+    
+    if not(b_p.has(AnnihilateBoson)) \
+        or not(bd_q.has(CreateBoson)):
+        return Number(0)
+    
+    sub_b_p, exp_b_p = get_ladder_attr(b_p)
+    sub_bd_q, exp_bd_q = get_ladder_attr(bd_q)
+    
+    if sub_b_p != sub_bd_q:
+        return Number(0)
+    
+    ### 
+    
+    if isinstance(b_p, AnnihilateBoson):
+        b = b_p
+        p = 1
+    elif isinstance(b_p, Pow) \
+        and b_p.has(AnnihilateBoson):
+        b, p = b_p.args
+    else:
+        raise InvalidTypeError([AnnihilateBoson, Pow],
+                               type(b_p))
+    
+    if isinstance(bd_q, CreateBoson):
+        bd = bd_q
+        q = 1
+    elif isinstance(bd_q, Pow) \
+        and bd_q.has(CreateBoson):
+        bd, q = bd_q.args
+    else:
+        raise InvalidTypeError([CreateBoson, Pow],
+                               type(bd_q))
+    
+    out = Number(0)
+    for k in range(max(0, p-q), p):
+        out += binomial(p, k) * FallingFactorial(q, p-k) \
+                * bd**(q-p+k) * b**k 
+    return out
+
+def _isolate_bracket(comm):
+    """
+    Isolate the commutator bracket from the left and right factors.
+    Must only be called if a commutator bracket is present.
+    
+    Parameters
+    ----------
+    
+    comm : sympy.physics.secondquant.Commutator or Mul containing a Commutator
+    
+    """
+    
+    if isinstance(comm, Commutator):
+        left_factor = Number(1)
+        right_factor = Number(1)
+        comm = comm
+    
+    elif isinstance(comm, Mul):
+        if not(comm.has(Commutator)):
+            msg = "Input is Mul but does not contain Commutator."
+            raise ValueError(msg)
+        
+        comm_idx = 0
+        for arg in comm.args:
+            if isinstance(arg, Commutator):
+                """
+                Power of a commutator should not occur.
+                """
+                break
+            comm_idx += 1
+        
+        left_factor = Mul(*comm.args[:comm_idx])
+        right_factor = Mul(*comm.args[comm_idx+1:])
+        comm = comm.args[comm_idx]     # gets assigned last due to the variable assignment.
+        
+    else:
+        raise InvalidTypeError([Commutator, Mul], comm)
+            
+    return left_factor, comm, right_factor
+
+def _treat_Kron(q):
+    """
+    Due to the use of `sympy.Symbol` in the bosonic ladder objects, 
+    commutator `[b_i,bd_j]` will be a Kronecker delta since SymPy
+    cannot tell if the symbols `i` and `j` here are different. This
+    function finishes the job.
+    
+    Parameters
+    ----------
+    
+    q : sympy.Expr
+        Object containing the Kronecker delta object.
+    """
+    
+    Kron_lst = q.find(KroneckerDelta)
+    for Kron in Kron_lst:
+        if Kron.args[0] == Kron.args[1]:
+            q = q.subs(Kron, 1)
+        else:
+            q = q.subs(Kron, 0)
+    return q
 
 def _eval_sole_comm(comm):
     """
@@ -183,10 +318,8 @@ def _expand_addend(q):
         return _treat_Kron(comm), True
     else:
         return [comm], False
-        
-###################################################
                 
-def _mp_task(comm):
+def _comm_input_addend(comm):
     single_comms = []
     def _expand_recursive(comm):
         res, stop_flag = _expand_addend(comm)
@@ -198,7 +331,7 @@ def _mp_task(comm):
     _expand_recursive(comm)
     return Add(*single_comms)
 
-####################################################
+############################################################
 
 def do_commutator(A, B, normal_order = True):
     """
@@ -246,9 +379,9 @@ def do_commutator(A, B, normal_order = True):
             and (len(recursion_input) >= mp_config["min_num_args"])
     if use_mp:
         with Pool(mp_config["num_cpus"]) as pool:
-            out = Add(*pool.map(_mp_task, recursion_input))
+            out = Add(*pool.map(_comm_input_addend, recursion_input))
     else:
-        out = Add(*[_mp_task(item) for item in recursion_input])
+        out = Add(*[_comm_input_addend(item) for item in recursion_input])
     
     if normal_order:
         out = normal_ordering(out)

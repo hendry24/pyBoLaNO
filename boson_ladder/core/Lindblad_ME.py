@@ -1,22 +1,30 @@
-from sympy import \
-    Add, \
-    I, \
-    Number, \
-    Derivative, \
-    Symbol,\
+from sympy import (
+    I,
+    Number,
+    Derivative,
+    Symbol,
     Equality
-from sympy.physics.secondquant import \
+)
+from sympy.physics.secondquant import (
     Dagger
-from .commutator import \
+)
+from .commutator import (
     do_commutator
-from .normal_order import \
+)
+from .normal_order.normal_order import (
     normal_ordering
-from ..utils.expval import \
+)
+from ..utils.expval import (
     _expval
-    
+)
+
+############################################################
+
 __all__ = ["Hamiltonian_trace",
            "dissipator_trace",
            "LME_expval_evo"]
+
+############################################################
 
 def Hamiltonian_trace(H, A, normal_order=True):
     """
@@ -53,6 +61,8 @@ def Hamiltonian_trace(H, A, normal_order=True):
         out = normal_ordering(out)
     
     return _expval(out)
+
+############################################################
 
 def dissipator_trace(O, A, P = None, normal_order=True):
     """
@@ -109,6 +119,8 @@ def dissipator_trace(O, A, P = None, normal_order=True):
         out = normal_ordering(out)
         
     return _expval(out)
+
+############################################################
 
 def LME_expval_evo(H, D, A, normal_order = True, hbar_is_one=True):
     """

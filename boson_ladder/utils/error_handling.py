@@ -1,5 +1,7 @@
 __all__ = []
 
+############################################################
+
 class InvalidTypeError(TypeError):
     def __init__(self, expected, got):
         """
