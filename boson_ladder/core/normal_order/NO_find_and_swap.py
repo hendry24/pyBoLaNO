@@ -7,7 +7,7 @@ from sympy.physics.secondquant import (
     CreateBoson,
     AnnihilateBoson
 )
-from ..commutator import (
+from ..commutator.do_commutator import (
     _do_commutator_b_p_bd_q
 )
 from ...utils.operators import (

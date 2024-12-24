@@ -2,14 +2,14 @@
 # so that folder names do not appear in the vscode 
 # autocomplete.
 
-from .core.commutator import (
+from .core.commutator.do_commutator import (
     do_commutator,
     expand_A_BC,
     expand_AB_C,
     expand_AB_CD
 )
 
-from .core.normal_order.normal_order import (
+from .core.normal_order.normal_ordering import (
     normal_ordering
 )
 

@@ -5,31 +5,29 @@ from sympy import (
     Number,
     Mul,
     Pow,
-    Add,
-    binomial,
-    FallingFactorial
+    Add
 )
 from sympy.physics.secondquant import (
     CreateBoson,
     AnnihilateBoson,
-    CreateFermion,
-    AnnihilateFermion,
     Commutator,
     KroneckerDelta
 )
-from ..utils.operators import (
+from ...utils.operators import (
     is_ladder,
-    is_ladder_contained,
-    get_ladder_attr
+    is_ladder_contained
 )
-from ..utils.error_handling import (
+from ...utils.error_handling import (
     InvalidTypeError
 )
-from .normal_order.normal_order import (
+from ..normal_order.normal_ordering import (
     normal_ordering
 )
-from ..utils.multiprocessing import (
+from ...utils.multiprocessing import (
     mp_config
+)
+from .do_commutator_b_p_bd_q import (
+    _do_commutator_b_p_bd_q
 )
 
 ############################################################
@@ -59,63 +57,6 @@ def expand_AB_CD(A,B,C,D):
             
 ############################################################
             
-def _do_commutator_b_p_bd_q(b_p, bd_q):
-    """
-    [b**p, bd**q] where b is an AnnihateBoson
-    object and bd is a CreateBoson object.
-    """
-    
-    ###
-    
-    # Shortcuts
-    
-    if b_p.has(CreateFermion, AnnihilateFermion) or\
-        bd_q.has(CreateFermion, AnnihilateFermion):
-        raise TypeError("Fermionic ladder operators are not accepted.")
-    
-    if b_p.has(CreateBoson):
-        raise InvalidTypeError(AnnihilateBoson, type(b_p))
-    if bd_q.has(AnnihilateBoson):
-        raise InvalidTypeError(CreateBoson, type(bd_q))
-    
-    if not(b_p.has(AnnihilateBoson)) \
-        or not(bd_q.has(CreateBoson)):
-        return Number(0)
-    
-    sub_b_p, exp_b_p = get_ladder_attr(b_p)
-    sub_bd_q, exp_bd_q = get_ladder_attr(bd_q)
-    
-    if sub_b_p != sub_bd_q:
-        return Number(0)
-    
-    ### 
-    
-    if isinstance(b_p, AnnihilateBoson):
-        b = b_p
-        p = 1
-    elif isinstance(b_p, Pow) \
-        and b_p.has(AnnihilateBoson):
-        b, p = b_p.args
-    else:
-        raise InvalidTypeError([AnnihilateBoson, Pow],
-                               type(b_p))
-    
-    if isinstance(bd_q, CreateBoson):
-        bd = bd_q
-        q = 1
-    elif isinstance(bd_q, Pow) \
-        and bd_q.has(CreateBoson):
-        bd, q = bd_q.args
-    else:
-        raise InvalidTypeError([CreateBoson, Pow],
-                               type(bd_q))
-    
-    out = Number(0)
-    for k in range(max(0, p-q), p):
-        out += binomial(p, k) * FallingFactorial(q, p-k) \
-                * bd**(q-p+k) * b**k 
-    return out
-
 def _isolate_bracket(comm):
     """
     Isolate the commutator bracket from the left and right factors.

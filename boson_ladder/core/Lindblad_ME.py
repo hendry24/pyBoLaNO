@@ -8,10 +8,10 @@ from sympy import (
 from sympy.physics.secondquant import (
     Dagger
 )
-from .commutator import (
+from .commutator.do_commutator import (
     do_commutator
 )
-from .normal_order.normal_order import (
+from .normal_order.normal_ordering import (
     normal_ordering
 )
 from ..utils.expval import (
