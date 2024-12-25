@@ -14,25 +14,25 @@ __all__ = ["do_commutator",
 
 ############################################################
 
-def comm_AB_C(A,B,C):
+def expand_comm_AB_C(A,B,C):
     """
     [AB,C] = A[B,C] + [A,C]B
     """
     return A*Commutator(B,C) + Commutator(A,C)*B
 
-def comm_A_BC(A,B,C):
+def expand_comm_A_BC(A,B,C):
     """
     [A,BC] = [A,B]C + B[A,C]
     """
     return Commutator(A,B)*C + B*Commutator(A,C)   
 
-def comm_AB_CD(A,B,C,D):
+def expand_comm_AB_CD(A,B,C,D):
     return A*Commutator(B,C)*D + Commutator(A,C)*B*D \
             + C*A*Commutator(B,D) + C*Commutator(A,D)*B 
             
 ############################################################
             
-def do_commutator(A, B):
+def NO_commutator(A, B):
     """
     Return the normal-ordered equivalent of  commutator 
     of two arbitrary polynomials of bosonic ladder operators.

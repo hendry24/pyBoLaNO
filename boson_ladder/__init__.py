@@ -3,10 +3,10 @@
 # autocomplete.
 
 from .core.commutators import (
-    do_commutator,
-    comm_A_BC,
-    comm_AB_C,
-    comm_AB_CD
+    NO_commutator,
+    expand_comm_A_BC,
+    expand_comm_AB_C,
+    expand_comm_AB_CD
 )
 
 from .core.normal_ordering import (
