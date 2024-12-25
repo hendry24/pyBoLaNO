@@ -6,12 +6,13 @@ from sympy import (
     Equality
 )
 from sympy.physics.secondquant import (
-    Dagger
+    Dagger,
+    Commutator
 )
-from .commutator.do_commutator import (
+from .commutators import (
     do_commutator
 )
-from .normal_order.normal_ordering import (
+from .normal_ordering import (
     normal_ordering
 )
 from ..utils.expval import (
@@ -26,7 +27,7 @@ __all__ = ["Hamiltonian_trace",
 
 ############################################################
 
-def Hamiltonian_trace(H, A, normal_order=True):
+def Hamiltonian_trace(H, A):
     """
     `tr([H,rho]A) = <[A,H]>` where `rho` 
     is the density matrix and `[.,.]` is the commutator.
@@ -56,13 +57,13 @@ def Hamiltonian_trace(H, A, normal_order=True):
     H = H.expand()
     A = A.expand()
     
-    out = do_commutator(A, H, normal_order=normal_order)
+    out = do_commutator(A, H)
     
     return _expval(out)
 
 ############################################################
 
-def dissipator_trace(O, A, P = None, normal_order=True):
+def dissipator_trace(O, A, P = None):
     """
     `tr(D(O, P)[rho] * A)` where `rho` is the density matrix.
     
@@ -110,18 +111,16 @@ def dissipator_trace(O, A, P = None, normal_order=True):
     
     Pd = Dagger(P)
     
-    out = comm(Pd, A, normal_order=False)*O / Number(2)
-    out += Pd*comm(A, O, normal_order=False) / Number(2)
+    out = comm(Pd, A)*O / Number(2)
+    out += Pd*comm(A, O) / Number(2)
     
-    out = out.expand()
-    if normal_order:
-        out = normal_ordering(out)
+    out = normal_ordering(out.expand())
         
     return _expval(out)
 
 ############################################################
 
-def LME_expval_evo(H, D, A, normal_order = True, hbar_is_one=True):
+def LME_expval_evo(H, D, A, hbar_is_one=True):
     """
     Calculate the evolution of the expectation value
     of `A`, of the system described by the Lindblad master
@@ -162,8 +161,7 @@ def LME_expval_evo(H, D, A, normal_order = True, hbar_is_one=True):
         The evolution equation.
     """
     
-    RHS = Hamiltonian_trace(H, A,
-                            normal_order=normal_order)
+    RHS = Hamiltonian_trace(H, A)
     RHS *= -I if hbar_is_one else -I/Symbol(r"hbar")
                                     # Using sympy.physics.quantum.hbar 
                                     # seems to be meddlesome since it
@@ -175,8 +173,7 @@ def LME_expval_evo(H, D, A, normal_order = True, hbar_is_one=True):
             D_k = D_k + [None]
         RHS += (D_k[0]*dissipator_trace(O = D_k[1], 
                                         A = A, 
-                                        P = D_k[2], 
-                                        normal_order=normal_order)).expand()
+                                        P = D_k[2])).expand()
     
     return Equality(Derivative(_expval(A), Symbol(r"t")),
                     RHS)
