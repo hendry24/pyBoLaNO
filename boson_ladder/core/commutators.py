@@ -8,9 +8,9 @@ from .normal_ordering import (
 ############################################################
 
 __all__ = ["NO_commutator",
-           "comm_AB_C",
-           "comm_A_BC",
-           "comm_AB_CD"]
+           "expand_comm_AB_C",
+           "expand_comm_A_BC",
+           "expand_comm_AB_CD"]
 
 ############################################################
 
