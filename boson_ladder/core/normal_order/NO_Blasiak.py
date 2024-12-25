@@ -1,5 +1,6 @@
 from sympy import (
     Mul,
+    Pow,
     Number,
     factorial,
     FallingFactorial,
@@ -9,8 +10,19 @@ from sympy.physics.secondquant import (
     AnnihilateBoson,
     CreateBoson
 )
+from ..commutator.do_commutator_b_p_bd_q import (
+    _do_commutator_b_p_bd_q
+)
 from ...utils.operators import (
-    get_ladder_attr
+    is_ladder,
+    get_ladder_attr,
+    is_ladder_contained
+)
+from ...utils.error_handling import (
+    InvalidTypeError
+)
+from .NO_find_and_swap import (
+    _NO_find_and_swap
 )
 
 ############################################################
@@ -27,26 +39,36 @@ def _NO_Blasiak(q):
     
     q is assumed to be a ``boson string'' per Blasiak, i.e.
     a monomial in the bosonic ladder operators. Refer to
-    Eqs. (4.2), (4.10), (4.34)
+    Eqs. (4.2), (4.10), (4.34). 
     
-    The shortcuts in the main function should allow no
-    AnnihilateBoson, CreateBoson, or Pow to get here.
-    As such, both b and bd must be in q and we can use 
-    the .find method to get them. 
+    Input is assumed to contain single subscript.
     """
-    
-    b = q.find(AnnihilateBoson)
-    bd = q.find(CreateBoson)
-    
+        
+    if not(is_ladder_contained(q)) \
+        or is_ladder(q) \
+        or isinstance(q, Pow):
+        return q
+            
     if isinstance(q, Mul):
         q_args = q.args
+        if len(q_args) == 2 \
+            and q_args[0].has(AnnihilateBoson) \
+            and q_args[1].has(CreateBoson):
+            return _do_commutator_b_p_bd_q(*q_args) \
+                    + q_args[1]*q_args[0]
     else:
-        q_args = [q]
+        raise InvalidTypeError([AnnihilateBoson, 
+                                CreateBoson,
+                                Pow,
+                                Mul],
+                               type(q))
+        
+    ###
     
-    r = [] if q_args[0].has(AnnihilateBoson) \
+    r = [] if q_args[0].has(CreateBoson) \
         else [Number(0)]    # in case monomial starts with b
     s = []
-    for i, qq in enumerate(q_args):
+    for qq in q_args:
         sub, exp = get_ladder_attr(qq)
         if qq.has(CreateBoson):
             r.insert(0, exp)
@@ -55,23 +77,29 @@ def _NO_Blasiak(q):
     if len(r) != len(s):    # monomial ends with bd
         s.insert(0, Number(0))
     
-    # To make indexing easier, we pad with r_0 and s_0,
+    # To make indexing easier, we pad r and s 
+    # with r_0 and s_0,
     # which do not exist in Blasiak's formulation.
     r.insert(0, Number(0))
     s.insert(0, Number(0))
         
     # Excess
-    d = [Number(0)] # d_0 is, however, used in Eq. (4.10).
-    sum_val = 0
+    d = [] # d_0 is, however, used in Eq. (4.10).
+    sum_val = Number(0)
     for r_m,s_m in zip(r,s):
         sum_val += (r_m-s_m)
         d.append(sum_val)
-    
+
     ###
     
-    def _get_S_rsk(r, s, d, k):
+    def _S_rs(s,d,k):
+        """
+        Generalized Stirling number, Eq. (4.10). We use
+        d instead of r since d is already calculated 
+        before this function is called.
+        """
         sum_val = Number(0)
-        for j in range(k):
+        for j in range(k+1):
             prod_val = Number(1)
             for m in range(1, len(s)):
                 prod_val *= FallingFactorial(d[m-1]+j, s[m])
@@ -79,16 +107,34 @@ def _NO_Blasiak(q):
         return 1/factorial(k) * sum_val
     
     ###
+
+    b = list(q.find(AnnihilateBoson))[0]
+    bd = list(q.find(CreateBoson))[0]
     
     if d[-1] >= 0:
+        R,S,D = r,s,d
         k_lst = range(s[1], sum(s)+1)
     else:
         k_lst = range(r[-1], sum(r)+1)
         
+        """
+        Somehow using the original expression
+        in Eq. (4.34) does not work. However,
+        it does work when we utilize the symmetry
+        property stated in Eq. (4.37).
+        """
+        R = [Number(0)] + list(reversed(s[1:]))
+        S = [Number(0)] + list(reversed(r[1:])) 
+        D = []
+        sum_val = Number(0)
+        for r_m,s_m in zip(R,S):
+            sum_val += (r_m-s_m)
+            D.append(sum_val)
+        
     out = Number(0)
     for k in k_lst:
-        out += _get_S_rsk(r,s,d,k) * bd**k * b**k
-    
+        out += _S_rs(S,D,k) * bd**k * b**k
+        
     if d[-1] >= 0:
         out = (bd**d[-1] * out).expand()
     else:

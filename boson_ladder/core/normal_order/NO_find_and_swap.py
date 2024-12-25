@@ -1,13 +1,12 @@
 from sympy import (
-    Pow,
     Mul,
     Add,
+    Pow
 )
 from sympy.physics.secondquant import (
-    CreateBoson,
     AnnihilateBoson
 )
-from ..commutator.do_commutator import (
+from ..commutator.do_commutator_b_p_bd_q import (
     _do_commutator_b_p_bd_q
 )
 from ...utils.operators import (
@@ -44,13 +43,15 @@ def _NO_find_and_swap(q):
         ordering is done.
         """
         
-        if not(is_ladder_contained(qq)) or \
-            is_ladder(qq):
-            return qq
-                        
+        if not(is_ladder_contained(qq)) \
+            or is_ladder(qq) \
+            or isinstance(qq, Pow):
+            return qq, True # stop flag
+        
         out_Mul_args = []
         i = 0
         # qq must be Mul at this point
+        stop_flag = True
         while True:
             if i > (len(qq.args)-1):
                 break
@@ -63,27 +64,27 @@ def _NO_find_and_swap(q):
                 
                 qqq_next = qq.args[i+1]
                 # If the expression is not normal ordered yet,
-                # next to a Pow of b we must have a Pow of bd since
-                # there is only one subscript.
+                # next to a Pow of b we must have a Pow of bd.
                 
                 out_Mul_args.append(_do_commutator_b_p_bd_q(qqq, 
                                                            qqq_next)
                                     + qqq_next*qqq)
+                stop_flag = False
                 i += 2
             else:
                 out_Mul_args.append(qqq)
                 i += 1
-            
-        return Mul(*out_Mul_args).expand()
+        
+        return Mul(*out_Mul_args).expand(), stop_flag
 
     out_Add_args = []
     def _recursion(qq):
-        res = _NO_single_Add_term(qq)
-        if isinstance(res, Add):
+        res, stop_flag = _NO_single_Add_term(qq)
+        if stop_flag:
+            out_Add_args.append(res)
+        else:
             for item in res.args:
                 _recursion(item)
-        else:
-            out_Add_args.append(res)
             
     _recursion(q)
     

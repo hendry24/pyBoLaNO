@@ -56,9 +56,7 @@ def Hamiltonian_trace(H, A, normal_order=True):
     H = H.expand()
     A = A.expand()
     
-    out = do_commutator(A, H)
-    if normal_order:
-        out = normal_ordering(out)
+    out = do_commutator(A, H, normal_order=normal_order)
     
     return _expval(out)
 
@@ -103,7 +101,7 @@ def dissipator_trace(O, A, P = None, normal_order=True):
     """
     O = O.expand()
     if P is None:
-        P = P
+        P = O
     else:
         P = P.expand()
     A = A.expand()
@@ -112,9 +110,10 @@ def dissipator_trace(O, A, P = None, normal_order=True):
     
     Pd = Dagger(P)
     
-    out = (comm(Pd, A)*O / Number(2)).expand()
-    out += (Pd*comm(A, O) / Number(2)).expand()
+    out = comm(Pd, A, normal_order=False)*O / Number(2)
+    out += Pd*comm(A, O, normal_order=False) / Number(2)
     
+    out = out.expand()
     if normal_order:
         out = normal_ordering(out)
         

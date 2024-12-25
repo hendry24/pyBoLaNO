@@ -1,7 +1,8 @@
 from sympy import (
     Mul,
     Add,
-    Pow
+    Pow,
+    Number
 )
 from sympy.physics.secondquant import (
     AnnihilateBoson,
@@ -81,13 +82,15 @@ def _final_swap(q):
         return Mul(*(collect_scalar+collect_bd+collect_b))
 
 def _NO_input_addend(qq, NO_single_sub):
-    # NOTE: A necessary duplicate in NO_Blasiak.
-    _out_Mul_args = []
-    for qq_single_sub in separate_mul_by_sub(qq):
-        # NOTE: Not sure if its worthy to multiprocess here
-        # except when the number of subscripts are large.
-        _out_Mul_args.append(NO_single_sub(qq_single_sub))
-    return Mul(*_out_Mul_args).expand()
+    qq_Mul_args = separate_mul_by_sub(qq)
+    
+    out = Number(1) if is_ladder_contained(qq_Mul_args[0]) \
+            else qq_Mul_args.pop(0)
+    
+    for qq_single_sub in qq_Mul_args:
+        out *= NO_single_sub(qq_single_sub)
+    
+    return out.expand()
 
 ############################################################
 
@@ -103,32 +106,45 @@ def normal_ordering(q, method="Blasiak"):
     q : sympy.Expr
         The operator to normal order.
         
+    method : str, default: "Blasiak"
+        Normal ordering method.
+        
+        (1) "find-and-swap" or "fns" or 1
+        The conventional find-and-swap method. The algorithm
+        recursively looks for `(b**p*bd**q)` sequences and 
+        expands them using the commutation relations. Avoid
+        this method for complex expressions as the recursion
+        tree can be very large.
+        
+        (2) "Blasiak" or "2"
+        Explicit formula derived by Blasiak (see 
+        https://arxiv.org/abs/quant-ph/0507206. This is the
+        faster method since it does not involve recursions.
+
     Returns
     -------
     
     q_NO : sympy.Expr
         q, normal-ordered.
         
-    method : str, default: "Blasiak"
-        Either "find-and-swap" or "Blasiak". 
     """
     
     # Shortcuts
     
-    if not(is_ladder_contained(q)):
+    if not(is_ladder_contained(q)) \
+        or isinstance(q, (Pow,
+                          CreateBoson,
+                          AnnihilateBoson)):
         return q
-    
-    if isinstance(q, (Pow, 
-                      CreateBoson, 
-                      AnnihilateBoson)):
-        return q
+        
+    # NOTE: checking if all bd are already to the
+    # left of b may be too computationally expensive
+    # to implement here.
     
     ###
     
-    if method not in ["find-and-swap","Blasiak"]:
-        method = "Blasiak"
-    match method:
-        case "find-and-swap":
+    match method.lower():
+        case "find-and-swap" | "fns" | 1:
             NO_single_sub = _NO_find_and_swap
         case default:
             NO_single_sub = _NO_Blasiak

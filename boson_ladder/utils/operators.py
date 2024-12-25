@@ -5,6 +5,9 @@ from sympy import (
     Number,
     latex
 )
+from random import (
+    randrange
+)
 from sympy.physics.secondquant import (
     CreateBoson, 
     AnnihilateBoson
@@ -19,7 +22,8 @@ __all__ = ["ops",
            "is_ladder",
            "is_ladder_contained",
            "get_ladder_attr",
-           "separate_mul_by_sub"]
+           "separate_mul_by_sub",
+           "random_ladder"]
 
 ############################################################
 
@@ -93,7 +97,7 @@ def is_ladder_contained(q):
     Parameters
     ----------
     
-    q : object
+    q : sympy.Expr
         Object to check.
         
     Returns
@@ -110,6 +114,21 @@ def get_ladder_attr(q):
     """
     Return the index and exponent of the ladder
     operator.
+    
+    Parameters
+    ----------
+    
+    q : sympy.Expr
+        Either a ladder operator or its power.
+    
+    Returns
+    -------
+    
+    sub : sympy.Symbol or sympy.Number
+        Subscript (index) of the ladder operator.
+    
+    exp : sympy.Number
+        Exponent of the expression. 
     """
     if is_ladder(q):
         sub = q.args[0]
@@ -128,6 +147,23 @@ def get_ladder_attr(q):
 ############################################################
 
 def separate_mul_by_sub(q):
+    """
+    Separate a Mul object by the ladder operator subscript.
+    
+    Parameters
+    ----------
+    
+    q : sympy.Expr
+        Input quantity. 
+    
+    Returns
+    -------
+    
+    out : list
+        A list containing the arguments of `q` separated
+        by subscript. Scalars are put in one group as the
+        first entry.
+    """
     if isinstance(q, (Number,
                       Symbol,
                       CreateBoson,
@@ -148,4 +184,15 @@ def separate_mul_by_sub(q):
                 out[sub].append(qq)
         return [Mul(*args) for args in list(out.values())]
     else:
-        raise ValueError
+        raise InvalidTypeError([Number, Symbol, CreateBoson,
+                                AnnihilateBoson, Pow, Mul],
+                               type(q))
+
+############################################################
+
+def random_ladder(n_ladder, k = ""):
+    out = Number(1)
+    for _ in range(n_ladder):
+        out *= ops(k)[randrange(2)]
+    return out
+        
