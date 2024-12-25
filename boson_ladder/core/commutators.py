@@ -7,7 +7,7 @@ from .normal_ordering import (
 
 ############################################################
 
-__all__ = ["do_commutator",
+__all__ = ["NO_commutator",
            "comm_AB_C",
            "comm_A_BC",
            "comm_AB_CD"]

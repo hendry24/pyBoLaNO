@@ -6,11 +6,10 @@ from sympy import (
     Equality
 )
 from sympy.physics.secondquant import (
-    Dagger,
-    Commutator
+    Dagger
 )
 from .commutators import (
-    do_commutator
+    NO_commutator
 )
 from .normal_ordering import (
     normal_ordering
@@ -57,7 +56,7 @@ def Hamiltonian_trace(H, A):
     H = H.expand()
     A = A.expand()
     
-    out = do_commutator(A, H)
+    out = NO_commutator(A, H)
     
     return _expval(out)
 
@@ -100,6 +99,7 @@ def dissipator_trace(O, A, P = None):
         master equation is used to calculate the evolution of 
         some expectation value.
     """
+    
     O = O.expand()
     if P is None:
         P = O
@@ -107,7 +107,7 @@ def dissipator_trace(O, A, P = None):
         P = P.expand()
     A = A.expand()
     
-    comm = do_commutator
+    comm = NO_commutator
     
     Pd = Dagger(P)
     
