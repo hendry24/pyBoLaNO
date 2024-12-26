@@ -38,9 +38,6 @@ def Hamiltonian_trace(H, A):
         
     A : sympy.Expr
         The operator to use in the trace.
-        
-    normal_order : bool, default: True
-        Whether to normal-order the result.
     
     Returns
     -------
@@ -84,9 +81,6 @@ def dissipator_trace(O, A, P = None):
     P : sympy.Expr, default: None
         The other operator making the dissipator. If not
         specified, then `P=O`. 
-    
-    normal_order : bool, default: True
-        Whether to normal-order the result.
     
     Returns
     -------
@@ -139,10 +133,7 @@ def LME_expval_evo(H, D, A, hbar_is_one=True):
     A : sympy.Expr
         The operator to calculate the expectation value evolution
         of.
-        
-    normal_order : bool, default: True
-        Whether to normal order the result.
-        
+
     hbar_is_one : bool, default: True
         Whether hbar is omitted in the Hamiltonian trace.
     
