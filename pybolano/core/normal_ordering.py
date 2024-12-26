@@ -222,20 +222,25 @@ def normal_ordering(q):
     """
     Normal order the operator q: all creation operators are
     written to the left of all annihilation operators within
-    a single term. 
+    a single term. This function uses Blasiak's formulae
+    [see Eqs. (4.2), (4.10), (4.34), (4.37) in https://arxiv.org/pdf/quant-ph/0507206 ].
     
     Parameters
     ----------
     
     q : sympy.Expr
-        The operator to normal order.
+        An expression containing SymPy's bosonic ladder operator objects.
 
     Returns
     -------
     
     q_NO : sympy.Expr
-        q, normal-ordered.
-        
+        Normal ordering of q. 
+       
+    See Also
+    --------
+    
+    ops : Get the bosonic ladder operator objects. 
     """
     
     q = sympify(q)
