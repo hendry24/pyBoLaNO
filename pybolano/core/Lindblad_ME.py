@@ -6,10 +6,8 @@ from sympy import (
     Equality
 )
 from sympy.physics.secondquant import (
-    Dagger
-)
-from .commutators import (
-    NO_commutator
+    Dagger,
+    Commutator
 )
 from .normal_ordering import (
     normal_ordering
@@ -28,6 +26,7 @@ __all__ = ["Hamiltonian_trace",
 
 def Hamiltonian_trace(H, A):
     """
+    The normal-ordered equivalent of the Hamiltonian trace
     `tr([H,rho]A) = <[A,H]>` where `rho` 
     is the density matrix and `[.,.]` is the commutator.
     
@@ -53,10 +52,7 @@ def Hamiltonian_trace(H, A):
     
     """
     
-    H = H.expand()
-    A = A.expand()
-    
-    out = NO_commutator(A, H)
+    out = normal_ordering(Commutator(A, H).doit().expand())
     
     return _expval(out)
 
@@ -64,6 +60,7 @@ def Hamiltonian_trace(H, A):
 
 def dissipator_trace(O, A, P = None):
     """
+    The normal-ordered equivalent of the Lindblad dissipator trace
     `tr(D(O, P)[rho] * A)` where `rho` is the density matrix.
     
     Parameters
@@ -100,21 +97,16 @@ def dissipator_trace(O, A, P = None):
         some expectation value.
     """
     
-    O = O.expand()
     if P is None:
         P = O
-    else:
-        P = P.expand()
-    A = A.expand()
-    
-    comm = NO_commutator
     
     Pd = Dagger(P)
     
-    out = comm(Pd, A)*O / Number(2)
-    out += Pd*comm(A, O) / Number(2)
+    out = Commutator(Pd, A).doit()*O
+    out += Pd*Commutator(A, O).doit()
+    out = (out/Number(2)).expand()
     
-    out = normal_ordering(out.expand())
+    out = normal_ordering(out)
         
     return _expval(out)
 
@@ -122,9 +114,9 @@ def dissipator_trace(O, A, P = None):
 
 def LME_expval_evo(H, D, A, hbar_is_one=True):
     """
-    Calculate the evolution of the expectation value
-    of `A`, of the system described by the Lindblad master
-    equation (LME):
+    Write out the normal-ordered equation for the evolution 
+    of the expectation value of `A` for a system described 
+    by the Lindblad master equation (LME):
 
         `d/dt expval(A) = Hamiltonian_trace(H, A) + sum_k D_k[0] * dissipator_trace(D_k[1], A)`
     

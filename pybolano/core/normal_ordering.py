@@ -287,3 +287,9 @@ def normal_ordering(q):
                                  _out.args))
     else:
         return Add(*[_final_swap(q) for q in _out.args])
+
+def NO(q):
+    """
+    Alias for `normal_ordering`.
+    """
+    return normal_ordering(q)
