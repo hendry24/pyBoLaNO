@@ -10,7 +10,8 @@ from .core.commutators import (
 )
 
 from .core.normal_ordering import (
-    normal_ordering
+    normal_ordering,
+    NO
 )
 
 from .core.Lindblad_ME import (

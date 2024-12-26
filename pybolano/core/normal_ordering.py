@@ -30,7 +30,8 @@ from ..utils.error_handling import (
 
 ############################################################
 
-__all__ = ["normal_ordering"]    
+__all__ = ["normal_ordering",
+           "NO"]
 
 ############################################################
 
@@ -223,7 +224,7 @@ def normal_ordering(q):
     Normal order the operator q: all creation operators are
     written to the left of all annihilation operators within
     a single term. This function uses Blasiak's formulae
-    [see Eqs. (4.2), (4.10), (4.34), (4.37) in https://arxiv.org/pdf/quant-ph/0507206 ].
+    [see Eqs. (4.2), (4.10), (4.34), (4.37) in https://arxiv.org/abs/quant-ph/0507206 ].
     
     Parameters
     ----------
