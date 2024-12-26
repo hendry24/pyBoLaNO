@@ -14,6 +14,15 @@ __all__ = ["NO_commutator",
 
 ############################################################
 
+def _break_comm(A, B):
+    """
+    To avoid SymPy evaluating the commutatotr to a Kronecker
+    delta.
+    """
+    return (A*B-B*A).expand()
+
+############################################################
+
 def expand_comm_AB_C(A,B,C):
     """
     [AB,C] = A[B,C] + [A,C]B
@@ -56,4 +65,4 @@ def NO_commutator(A, B):
         Normal-oredered commutator between A and B.
     """
     
-    return normal_ordering(Commutator(A,B).doit().expand())
+    return normal_ordering(_break_comm(A, B))

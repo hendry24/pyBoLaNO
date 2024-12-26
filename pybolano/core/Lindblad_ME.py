@@ -15,6 +15,9 @@ from .normal_ordering import (
 from ..utils.expval import (
     _expval
 )
+from .commutators import (
+    _break_comm
+)
 
 ############################################################
 
@@ -49,7 +52,7 @@ def Hamiltonian_trace(H, A):
     
     """
     
-    out = normal_ordering(Commutator(A, H).doit().expand())
+    out = normal_ordering(_break_comm(A,H))
     
     return _expval(out)
 
@@ -96,12 +99,12 @@ def dissipator_trace(O, A, P = None):
     
     Pd = Dagger(P)
     
-    out = Commutator(Pd, A).doit()*O
-    out += Pd*Commutator(A, O).doit()
+    out = _break_comm(Pd, A)*O
+    out += Pd*_break_comm(A, O)
     out = (out/Number(2)).expand()
     
     out = normal_ordering(out)
-        
+    
     return _expval(out)
 
 ############################################################
