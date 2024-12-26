@@ -1,7 +1,7 @@
 ## **`pyBoLaNO`: A `Python` Symbolic Package for Normal Ordering Involving Bosonic Ladder Operators**
 
 <div align="center">
-<img src="logo.png" alt="boson-ladder-logo" style = "width:40%">
+<img src="logo.svg" alt="boson-ladder-logo" style = "width:40%">
 </div>
 
 ### **Hello, there!**
