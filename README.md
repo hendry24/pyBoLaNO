@@ -91,12 +91,3 @@ This program is far from perfect and we would appreciate any critics and suggest
 Enjoy the package. \\( ﾟヮﾟ)/ 
 
 \- The authors.
-
----
-
----
-
-### **CHANGELOG**
-
-`ver 1.0.0`
--   First release.
