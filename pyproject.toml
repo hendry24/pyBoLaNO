@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pybolano"
+version = "1.0.0"
+dependencies = [
+    "sympy >= 1.13.3"
+]
+requires-python = ">= 3.8"
+authors = [
+    {name = "Hendry Minfui Lim", email = "hendry01@ui.ac.id"}
+]
+description = "Symbolic normal (Wick) ordering involving bosonic ladder operators."
+readme = "README_PyPI.md"
+license = {file = "LICENSE"}
+keywords = [
+    "boson",
+    "bosonic",
+    "ladder",
+    "operator",
+    "normal ordering",
+    "Wick ordering",
+    "annihilation",
+    "creation",
+    "symbolic"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.urls]
+Repository = "https://github.com/hendry24/pyBoLaNO"
+Issues = "https://github.com/hendry24/pyBoLaNO/issues"
+Tutorial = "https://github.com/hendry24/pyBoLaNO/blob/main/tutorial.ipynb"
