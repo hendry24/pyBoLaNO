@@ -9,9 +9,7 @@ from pybolano.core.Lindblad_ME import (
     LME_expval_evo,
     dissipator_trace,
 )
-from pybolano.core.normal_ordering import (
-    normal_ordering,
-)
+from pybolano.core.normal_ordering import NO, normal_ordering
 
 __all__ = [
     "NO_commutator",
@@ -22,4 +20,5 @@ __all__ = [
     "Hamiltonian_trace",
     "LME_expval_evo",
     "dissipator_trace",
+    "NO",
 ]
