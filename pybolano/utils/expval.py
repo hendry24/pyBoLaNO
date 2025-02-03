@@ -1,4 +1,4 @@
-from sympy import Add, Mul, Number, Pow, Symbol, latex
+from sympy import Add, Mul, Number, Pow, Symbol, latex, sympify
 from sympy.physics.secondquant import AnnihilateBoson, CreateBoson
 
 from pybolano.utils.operators import is_ladder_contained
@@ -62,7 +62,7 @@ class _expval(Symbol):
 
         if q is None:
             return Number(0)
-        q = q.expand()
+        q = sympify(q).expand()
 
         ###
 
@@ -82,3 +82,15 @@ class _expval(Symbol):
 
     def __init__(self, q):
         pass
+
+    def __getattribute__(self, name):
+        if name in ["__add__",
+                    "__radd__",
+                    "__pow__", 
+                    "__mul__", 
+                    "__rmul__"]:
+            s = "This object is for display only. "
+            s += "Algebraic operations not allowed."
+            raise AttributeError(s)
+        
+        return super().__getattribute__(name)

@@ -1,6 +1,7 @@
 from ast import Expr
 
 from sympy.physics.secondquant import Commutator
+from sympy import sympify
 
 from pybolano.core.normal_ordering import normal_ordering
 
@@ -16,6 +17,8 @@ def _break_comm(A: Expr, B: Expr) -> Expr:
     To avoid SymPy evaluating the commutatotr to a Kronecker
     delta.
     """
+    A = sympify(A)
+    B = sympify(B)
     return (A * B - B * A).expand()
 
 

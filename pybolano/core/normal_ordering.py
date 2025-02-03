@@ -258,7 +258,7 @@ def normal_ordering(q: Expr) -> Expr:
     """
 
     if not (isinstance(_out, Add)):
-        return _out
+        return _final_swap(_out)
 
     if use_mp:
         with Pool(mp_config["num_cpus"]) as pool:

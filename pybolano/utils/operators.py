@@ -63,7 +63,6 @@ def ops(k: str | Symbol | None = None) -> tuple[AnnihilateBoson, CreateBoson]:
 
 ############################################################
 
-
 def is_ladder(q: object) -> TypeGuard[Union[AnnihilateBoson, CreateBoson]]:
     """
     Check if the input object is a ladder operator.
@@ -109,10 +108,9 @@ def is_ladder_contained(q: Expr) -> bool:
 ############################################################
 
 
-def get_ladder_attr(q: Expr) -> tuple[Symbol, Number] | tuple[Number, Number]:
+def get_ladder_attr(q: Expr) -> tuple[Symbol, Number]:
     """
-    Return the index and exponent of the ladder
-    operator.
+    Return the index and exponent of the ladder operator.
 
     Parameters
     ----------
@@ -185,9 +183,9 @@ def separate_mul_by_sub(q: Expr) -> list[Expr]:
 
 ############################################################
 
-
-def random_ladder(n_ladder: int, k: str = "") -> Number | SqOperator:
-    out = Number(1)
-    for _ in range(n_ladder):
-        out *= ops(k)[randrange(2)]
-    return out
+def random_ladder(n_ladder: int, 
+                  k: str | Expr | list[str, Expr] = ""
+                  ) -> Expr:
+    if not(isinstance(k, list)):
+        k = [k]
+    return Mul(*[ops(k[randrange(len(k))])[randrange(2)] for _ in range(n_ladder)])

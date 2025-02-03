@@ -1,0 +1,13 @@
+# Ignore compiled Python files
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environments
+venv/
+.env/
+*.egg-info/
+
+# Ignore logs and temporary files
+*.log
+.DS_Store
+
