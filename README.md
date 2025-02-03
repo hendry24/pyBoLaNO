@@ -18,7 +18,7 @@ Are you tired of doing a **cumbersome bosonic ladder operator algebra with compl
 
 ### **We present you...**
 
-At `ver. 1.0.0`, this package offers you useful functions to do your algebra, including:
+At `ver. 1.0.2`, this package offers you useful functions to do your algebra, including:
 
 -   **Normal-ordering** _any_ polynomial of bosonic ladder operators.
 -   Normal-ordering _any_ **commutator** of two polynomials of bosonic ladder operators.
@@ -45,7 +45,7 @@ pip install git+https://github.com/hendry24/pyBoLaNO
 
 ### **Let's be transparent**
 
-The core working principle of `pyBoLaNO` is simple&mdash;the package is based on the commutation relations $\left[\hat{b}_j , \hat{b}_k^\dagger\right]= 1 \mathrm{if} j=k,\ 0 \mathrm{otherwise}$ and $\left[\hat{b}_j,\hat{b}_k\right]=\left[\hat{b}_j^\dagger,\hat{b}_k^\dagger\right]=0$ of the bosonic creation $\hat{b}_j^\dagger$ and annihilation $\hat{b}_j^\dagger$ operators, where the subscript ($j$ here) indexes the bosonic mode. More precisely, we make use of the explicit formula for the normal ordering of any monomial in bosonic operators presented by Blasiak ([arXiv link for his PhD thesis](https://arxiv.org/abs/quant-ph/0507206) and the [journal article](https://doi.org/10.1063/1.1990120)).
+The core working principle of `pyBoLaNO` is simple&mdash;the package is based on the commutation relations $\left[\hat{b}_j , \hat{b}_k^\dagger\right]= 1 \mathrm{if} j=k,\ 0 \mathrm{otherwise}$ and $\left[\hat{b}_j,\hat{b}_k\right]=\left[\hat{b}_j^\dagger,\hat{b}_k^\dagger\right]=0$ of the bosonic creation $\hat{b}_j^\dagger$ and annihilation $\hat{b}_j^\dagger$ operators, where the subscript ($j$ here) indexes the bosonic mode. More precisely, we make use of the explicit formula for the normal ordering of any monomial in bosonic operators presented by Blasiak (arXiv links for [his PhD thesis](https://arxiv.org/abs/quant-ph/0507206) and a relevant [journal article](https://doi.org/10.1063/1.1990120)).
 
 #### > [`normal_ordering`](https://github.com/hendry24/pyBoLaNO/blob/main/pybolano/core/normal_ordering.py#L221)
 
@@ -75,10 +75,14 @@ We provide a quick tutorial of this package, in the file `tutorial.ipynb` in the
 Pitiful as it may be, researchers nowadays are valued based on their citation counts. If you find our package helpful for your work, feel free to acknowledge the use of `pyBoLaNO` in your publications. Here is a `bibtex` entry you can copy:
 
 ```
-@article{hendlim2024,
-    title = "pyBoLaNO: A Python Symbolic Package for Normal Ordering Involving Bosonic Ladder Operators",
-    year = 2024,
-    author = "Lim, Hendry M. and Dwiputra, Donny and Ukhtary, M. Shoufie and Nugraha, A. R. T"
+@misc{lim2025pybolano,
+      title={pyBoLaNO: A Python symbolic package for normal ordering involving bosonic ladder operators}, 
+      author={Hendry M. Lim and Donny Dwiputra and M. Shoufie Ukhtary and Ahmad R. T. Nugraha},
+      year={2025},
+      eprint={2501.01603},
+      archivePrefix={arXiv},
+      primaryClass={quant-ph},
+      url={https://arxiv.org/abs/2501.01603},
 }
 ```
 
