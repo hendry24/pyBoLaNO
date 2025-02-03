@@ -257,7 +257,7 @@ def normal_ordering(q: Expr) -> Expr:
     the creation and the annihilation operators.
     """
 
-    if not (isinstance(_out, Add)):
+    if not(isinstance(_out, Add)):
         return _final_swap(_out)
 
     if use_mp:
