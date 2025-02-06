@@ -2,10 +2,6 @@ from ast import Expr
 from multiprocessing import Pool
 
 from sympy import Add, FallingFactorial, Mul, Number, Pow, binomial, factorial, sympify
-from sympy.physics.secondquant import (
-    AnnihilateBoson,
-    CreateBoson,
-)
 
 from pybolano.utils.error_handling import InvalidTypeError
 from pybolano.utils.multiprocessing import mp_config
@@ -14,6 +10,9 @@ from pybolano.utils.operators import (
     is_ladder,
     is_ladder_contained,
     separate_mul_by_sub,
+    pybolanoOp,
+    BosonicAnnihilationOp,
+    BosonicCreationOp
 )
 
 ############################################################
@@ -42,17 +41,17 @@ def _NO_Blasiak(q):
     if isinstance(q, Mul):
         q_args = q.args
     else:
-        raise InvalidTypeError([AnnihilateBoson, CreateBoson, Pow, Mul], type(q))
+        raise InvalidTypeError([pybolanoOp, Pow, Mul], type(q))
 
     ###
 
     r = (
-        [] if q_args[0].has(CreateBoson) else [Number(0)]
+        [] if q_args[0].has(BosonicCreationOp) else [Number(0)]
     )  # in case monomial starts with b
     s = []
     for qq in q_args:
         sub, exp = get_ladder_attr(qq)
-        if qq.has(CreateBoson):
+        if qq.has(BosonicCreationOp):
             r.insert(0, exp)
         else:
             s.insert(0, exp)
@@ -90,8 +89,8 @@ def _NO_Blasiak(q):
 
     ###
 
-    b = list(q.find(AnnihilateBoson))[0]
-    bd = list(q.find(CreateBoson))[0]
+    b = list(q.find(BosonicAnnihilationOp))[0]
+    bd = list(q.find(BosonicCreationOp))[0]
 
     if d[-1] >= 0:
         R, S, D = r, s, d
@@ -124,17 +123,16 @@ def _NO_Blasiak(q):
 
     return out
 
-
 def _NO_preprocess(q):
     q = q.expand()
 
-    if (not (q.has(CreateBoson)) and not (q.has(AnnihilateBoson))) or isinstance(
-        q, (Pow, CreateBoson, AnnihilateBoson)
+    if not(is_ladder_contained(q)) or isinstance(
+        q, (Pow, pybolanoOp)
     ):
         return q
 
     elif isinstance(q, Add):
-        q_args = [qq for qq in q.args]
+        q_args = q.args
 
     elif isinstance(q, Mul):
         if not (is_ladder_contained(q)):
@@ -142,7 +140,7 @@ def _NO_preprocess(q):
         q_args = [q]
 
     else:
-        raise InvalidTypeError([Pow, CreateBoson, AnnihilateBoson, Add, Mul], type(q))
+        raise InvalidTypeError([Pow, pybolanoOp, Add, Mul], type(q))
     return q_args
 
 
@@ -170,7 +168,7 @@ def _final_swap(q):
                 # to force the subscript order for
                 # b and bd.
 
-            if qq.has(AnnihilateBoson):
+            if qq.has(BosonicAnnihilationOp):
                 collect_b[sub] = qq
             else:
                 collect_bd[sub] = qq
@@ -195,7 +193,6 @@ def _NO_input_addend(qq):
 
 
 ############################################################
-
 
 def normal_ordering(q: Expr) -> Expr:
     """
@@ -226,8 +223,8 @@ def normal_ordering(q: Expr) -> Expr:
 
     # Shortcuts
 
-    if not (is_ladder_contained(q)) or isinstance(
-        q, (Pow, CreateBoson, AnnihilateBoson)
+    if not(is_ladder_contained(q)) or isinstance(
+        q, (Pow, pybolanoOp)
     ):
         return q
 

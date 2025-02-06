@@ -6,6 +6,7 @@ from sympy.physics.secondquant import Dagger
 from pybolano.core.commutators import _break_comm
 from pybolano.core.normal_ordering import normal_ordering
 from pybolano.utils.expval import _expval
+from pybolano.utils.operators import dagger
 
 ############################################################
 
@@ -86,7 +87,7 @@ def dissipator_trace(O: Expr, A: Expr, P: Expr | None = None) -> Expr:
     if P is None:
         P = O
 
-    Pd = Dagger(P)
+    Pd = dagger(P)
 
     out = _break_comm(Pd, A) * O
     out += Pd * _break_comm(A, O)
@@ -95,7 +96,6 @@ def dissipator_trace(O: Expr, A: Expr, P: Expr | None = None) -> Expr:
     out = normal_ordering(out)
 
     return _expval(out)
-
 
 ############################################################
 

@@ -7,11 +7,14 @@ from pybolano.utils.operators import (
 )
 
 __all__ = [
+    "BosonicAnnihilationOp",
+    "BosonicCreationOp",
     "mp_config",
     "ops",
     "is_ladder",
     "is_ladder_contained",
     "get_ladder_attr",
     "separate_mul_by_sub",
+    "dagger",
     "random_ladder",
 ]

@@ -2,11 +2,13 @@ import pytest
 import random
 
 from sympy import Symbol, I, Mul, Pow
-from sympy.physics.secondquant import AnnihilateBoson, CreateBoson
 
-from pybolano.utils.operators import (ops, 
-                                      is_ladder, 
+from pybolano.utils.operators import (BosonicAnnihilationOp,
+                                      BosonicCreationOp,
+                                      ops, 
+                                      is_ladder,
                                       is_ladder_contained, 
+                                      dagger,
                                       random_ladder, 
                                       get_ladder_attr, 
                                       separate_mul_by_sub)
@@ -16,7 +18,7 @@ from pybolano.utils.operators import (ops,
 @pytest.mark.order(1)
 def test_ops():
     b, bd = ops()
-    assert isinstance(b, AnnihilateBoson) and isinstance(bd, CreateBoson)
+    assert isinstance(b, BosonicAnnihilationOp) and isinstance(bd, BosonicCreationOp)
     
     ops("iashdak")
     ops(r"\\gamma")
@@ -54,6 +56,12 @@ def test_random_ladder():
     assert is_ladder_contained(random_ladder(5, [Symbol("x"), "yeah", 0]))
 
 @pytest.mark.order(4)
+def test_dagger():
+    for _ in range(100):
+        q = random_ladder(10)
+        assert q == dagger(dagger(q))
+
+@pytest.mark.order(5)
 def test_get_ladder_attr():
     for _ in range(10):
         exp = random.randrange(1, 10)
@@ -61,7 +69,7 @@ def test_get_ladder_attr():
         b, bd = ops(sub)
         assert (sub, exp) == get_ladder_attr(b**exp)
 
-@pytest.mark.order(5)
+@pytest.mark.order(6)
 def test_separate_by_sub():
     q = random_ladder(20, ["a", "b", "c", "d"])
     q_sep = separate_mul_by_sub(q)

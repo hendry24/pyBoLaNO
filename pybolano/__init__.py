@@ -3,10 +3,7 @@
 # autocomplete.
 
 from .core.commutators import (
-    NO_commutator,
-    expand_comm_A_BC,
-    expand_comm_AB_C,
-    expand_comm_AB_CD
+    NO_commutator
 )
 
 from .core.normal_ordering import (
@@ -25,10 +22,13 @@ from .utils.multiprocessing import (
 )
 
 from .utils.operators import (
+    BosonicAnnihilationOp,
+    BosonicCreationOp,
     ops,
     is_ladder,
     is_ladder_contained,
     get_ladder_attr,
     separate_mul_by_sub,
-    random_ladder
+    random_ladder,
+    dagger
 )

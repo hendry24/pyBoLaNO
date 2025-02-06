@@ -19,37 +19,8 @@ def _break_comm(A: Expr, B: Expr) -> Expr:
     """
     A = sympify(A)
     B = sympify(B)
+    
     return (A * B - B * A).expand()
-
-
-############################################################
-
-
-def expand_comm_AB_C(A: Expr, B: Expr, C: Expr) -> Expr:
-    """
-    [AB,C] = A[B,C] + [A,C]B
-    """
-    return A * Commutator(B, C) + Commutator(A, C) * B
-
-
-def expand_comm_A_BC(A: Expr, B: Expr, C: Expr) -> Expr:
-    """
-    [A,BC] = [A,B]C + B[A,C]
-    """
-    return Commutator(A, B) * C + B * Commutator(A, C)
-
-
-def expand_comm_AB_CD(A: Expr, B: Expr, C: Expr, D: Expr) -> Expr:
-    """
-    [AB,CD] = A[B,C]D + [A,C]BD + CA[B,D] + C[A,D]B
-    """
-    return (
-        A * Commutator(B, C) * D
-        + Commutator(A, C) * B * D
-        + C * A * Commutator(B, D)
-        + C * Commutator(A, D) * B
-    )
-
 
 ############################################################
 

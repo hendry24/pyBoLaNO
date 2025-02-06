@@ -1,17 +1,20 @@
 from random import randrange
-from typing import TypeGuard, Union
+from typing import TypeGuard
+import re
 
-from sympy import Expr, Mul, Number, Pow, Symbol, latex
-from sympy.physics.secondquant import AnnihilateBoson, CreateBoson, SqOperator
+from sympy import Expr, Mul, Add, Number, Pow, Basic, Symbol, latex, conjugate, sympify
 
 from pybolano.utils.error_handling import InvalidTypeError
 
 ############################################################
 
 __all__ = [
+    "BosonicAnnihilationOp",
+    "BosonicCreationOp",
     "ops",
     "is_ladder",
     "is_ladder_contained",
+    "dagger",
     "get_ladder_attr",
     "separate_mul_by_sub",
     "random_ladder",
@@ -19,15 +22,54 @@ __all__ = [
 
 ############################################################
 
+def _handle_sub(s):
+    if s is None:
+        s = ""
+    if not(isinstance(s, Expr)):
+        s = Symbol(str(s))
+    return s
 
-def ops(k: str | Symbol | None = None) -> tuple[AnnihilateBoson, CreateBoson]:
+class pybolanoOp(Expr):
+    
+    symb = NotImplemented
+    is_commutative = False
+    
+    def __new__(cls, sub = None):
+        if sub is None:
+            sub = ""
+        if not(isinstance(sub, Basic)):
+            sub = Symbol(str(sub))
+        return Basic.__new__(cls, sub)
+    
+    @property
+    def sub(self):
+        return self.args[0]
+    
+    def __str__(self):
+        return r"{%s_{%s}}" % (self.symb, latex(self.sub))
+    
+    def __repr__(self):
+        return str(self)
+    
+    def _latex(self, printer):
+        return str(self)
+    
+class BosonicAnnihilationOp(pybolanoOp):
+    symb = r"b"
+    
+class BosonicCreationOp(pybolanoOp):
+    symb = r"b^{\dagger}"
+
+###
+
+def ops(sub: str | Symbol | None = None) -> tuple[BosonicAnnihilationOp, BosonicCreationOp]:
     """
-    SymPy's bosonic ladder operator objects.
+    Bosonic ladder operator objects.
 
     Parameters
     ----------
 
-    k : scalar or `sympy.Number` or `sympy.Symbol`, default: None
+    sub : scalar or `sympy.Number` or `sympy.Symbol`, default: None
         Subscript of the boson ladder objects, used
         do differentiate the ladder operators for
         different subsystems in a multipartite system.
@@ -38,32 +80,19 @@ def ops(k: str | Symbol | None = None) -> tuple[AnnihilateBoson, CreateBoson]:
     Returns
     -------
 
-    b : AnnihilateBoson
+    b : BosonicAnnihilationOp
         Boson annihilation object.
 
-    bd : CreateBoson
+    bd : BosonicCreationOp
         Boson creation object.
 
     """
-
-    if k is None:
-        k = Symbol("")
-    elif isinstance(k, Symbol):
-        pass
-    else:
-        try:
-            k = Symbol(latex(k))
-        except:
-            raise ValueError("Invalid k.")
-
-    b = AnnihilateBoson(k)
-    bd = CreateBoson(k)
-    return b, bd
-
+    
+    return BosonicAnnihilationOp(sub=sub), BosonicCreationOp(sub=sub)
 
 ############################################################
 
-def is_ladder(q: object) -> TypeGuard[Union[AnnihilateBoson, CreateBoson]]:
+def is_ladder(q: object) -> TypeGuard[pybolanoOp]:
     """
     Check if the input object is a ladder operator.
 
@@ -79,11 +108,9 @@ def is_ladder(q: object) -> TypeGuard[Union[AnnihilateBoson, CreateBoson]]:
     out : bool
         `True` if q is a ladder operator. `False` otherwise.
     """
-    return isinstance(q, (CreateBoson, AnnihilateBoson))
-
+    return isinstance(q, pybolanoOp)
 
 ############################################################
-
 
 def is_ladder_contained(q: Expr) -> bool:
     """
@@ -102,11 +129,44 @@ def is_ladder_contained(q: Expr) -> bool:
     out : bool
         `True` if a ladder operator is contained. `False` otherwise.
     """
-    return q.has(AnnihilateBoson, CreateBoson)
-
+    return q.has(pybolanoOp)
 
 ############################################################
 
+def dagger(q : Expr) -> Expr:
+
+    def Op_dag(op : pybolanoOp) -> pybolanoOp:
+        if isinstance(op, BosonicAnnihilationOp):
+            return BosonicCreationOp(sub = op.sub)
+        elif isinstance(op, BosonicCreationOp):
+            return BosonicAnnihilationOp(sub = op.sub)
+    
+    q = sympify(q).expand()
+    if not(isinstance(q, Add)):
+        q_args  = [q]
+    else:
+        q_args = q.args
+    
+    q_dag = 0        
+    for qq in q_args:
+        qq_dag = 1
+        if not(is_ladder_contained(qq)):
+            qq_dag *= conjugate(qq)
+        elif is_ladder(qq):
+            qq_dag *= Op_dag(qq)
+        elif isinstance(qq, Pow):
+            qq_dag *= Op_dag(qq.args[0]) ** qq.args[1]
+        elif isinstance(qq, Mul):
+            qq_dag = 1
+            for qqq in reversed(qq.args):
+                qq_dag *= dagger(qqq)
+        else:
+            raise ValueError("Input is not a polynomial in the ladder operators.")
+        q_dag += qq_dag
+    
+    return q_dag
+
+############################################################
 
 def get_ladder_attr(q: Expr) -> tuple[Symbol, Number]:
     """
@@ -128,19 +188,20 @@ def get_ladder_attr(q: Expr) -> tuple[Symbol, Number]:
         Exponent of the expression.
     """
     if is_ladder(q):
-        sub = q.args[0]
+        sub = q.sub
         exp = Number(1)
     elif isinstance(q, Pow):
-        sub = q.args[0].args[0]
-        exp = q.args[1]
+        if is_ladder_contained(q):
+            sub = q.args[0].sub
+            exp = q.args[1]
+        else:
+            raise ValueError("q is Pow but does not contain pybolanoOp.")
     else:
-        raise InvalidTypeError([CreateBoson, AnnihilateBoson, Pow], type(q))
+        raise InvalidTypeError([pybolanoOp, Pow], type(q))
 
     return sub, exp
 
-
 ############################################################
-
 
 def separate_mul_by_sub(q: Expr) -> list[Expr]:
     """
@@ -160,7 +221,8 @@ def separate_mul_by_sub(q: Expr) -> list[Expr]:
         by subscript. Scalars are put in one group as the
         first entry.
     """
-    if isinstance(q, (Number, Symbol, CreateBoson, AnnihilateBoson, Pow)):
+    
+    if isinstance(q, (Number, Symbol, Pow, pybolanoOp)):
         return [q]
     elif isinstance(q, Mul):
         out = {}
@@ -177,7 +239,7 @@ def separate_mul_by_sub(q: Expr) -> list[Expr]:
         return [Mul(*args) for args in list(out.values())]
     else:
         raise InvalidTypeError(
-            [Number, Symbol, CreateBoson, AnnihilateBoson, Pow, Mul], type(q)
+            [Number, Symbol, pybolanoOp, Pow, Mul], type(q)
         )
 
 

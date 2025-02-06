@@ -1,7 +1,6 @@
 from sympy import Add, Mul, Number, Pow, Symbol, latex, sympify
-from sympy.physics.secondquant import AnnihilateBoson, CreateBoson
 
-from pybolano.utils.operators import is_ladder_contained
+from pybolano.utils.operators import is_ladder_contained, pybolanoOp
 
 ############################################################
 
@@ -39,7 +38,7 @@ class _expval(Symbol):
             if not (is_ladder_contained(q)):
                 return q, Number(1)  # Not string, no bra-ket
 
-            elif isinstance(q, (Pow, CreateBoson, AnnihilateBoson)):
+            elif isinstance(q, (Pow, pybolanoOp)):
                 return Number(1), _braket(q)
 
             elif isinstance(q, Mul):
