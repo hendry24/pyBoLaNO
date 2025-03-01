@@ -30,5 +30,6 @@ from .utils.operators import (
     get_ladder_attr,
     separate_mul_by_sub,
     random_ladder,
-    dagger
+    dagger,
+    to_sympy_physics
 )
