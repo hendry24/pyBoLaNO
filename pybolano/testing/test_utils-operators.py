@@ -13,7 +13,7 @@ from pybolano.utils.operators import (BosonicAnnihilationOp,
                                       random_ladder, 
                                       get_ladder_attr, 
                                       separate_mul_by_sub,
-                                      pybolano_to_sympy)
+                                      to_sympy_physics)
 
 ###
 
@@ -107,10 +107,10 @@ def test_separate_by_sub():
         assert len(set(sub_lst)) == 1
         
 @pytest.mark.order(7)
-def test_pybolano_to_sympy():
-    assert pybolano_to_sympy(5) == sympify(5)
-    assert pybolano_to_sympy(I) == I
-    assert pybolano_to_sympy(Symbol("x")) == Symbol("x")
+def test_to_sympy_physics():
+    assert to_sympy_physics(5) == sympify(5)
+    assert to_sympy_physics(I) == I
+    assert to_sympy_physics(Symbol("x")) == Symbol("x")
 
     b, bd = ops(1)
     bb, bbd = ops(2)
@@ -120,10 +120,10 @@ def test_pybolano_to_sympy():
     bb_s = BosonOp(r"b_{2}", True)
     bbd_s = BosonOp(r"b_{2}", False)
     
-    assert pybolano_to_sympy(b) == b_s
-    assert pybolano_to_sympy(bbd) == bbd_s
-    assert pybolano_to_sympy(b+1) == b_s+1
-    assert pybolano_to_sympy(b+bbd) == b_s + bbd_s
-    assert pybolano_to_sympy(50*Symbol(r"\gamma")*bb)  == 50*Symbol(r"\gamma")*bb_s
-    assert pybolano_to_sympy(bd**2) == bd_s**2
-    assert pybolano_to_sympy(5*bbd**2*b + b*bbd*b) == (5*bbd_s**2*b_s + b_s*bbd_s*b_s)
+    assert to_sympy_physics(b) == b_s
+    assert to_sympy_physics(bbd) == bbd_s
+    assert to_sympy_physics(b+1) == b_s+1
+    assert to_sympy_physics(b+bbd) == b_s + bbd_s
+    assert to_sympy_physics(50*Symbol(r"\gamma")*bb)  == 50*Symbol(r"\gamma")*bb_s
+    assert to_sympy_physics(bd**2) == bd_s**2
+    assert to_sympy_physics(5*bbd**2*b + b*bbd*b) == (5*bbd_s**2*b_s + b_s*bbd_s*b_s)

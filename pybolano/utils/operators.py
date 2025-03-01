@@ -270,10 +270,10 @@ def random_ladder(n_ladder: int,
 
 ############################################################
 
-def pybolano_to_sympy(q : Expr) -> Expr:
+def to_sympy_physics(q : Expr) -> Expr:
     """
     Convert expressions such that this package's ladder operators is replaced by the
-    corresponding`BosonOp` objects in `sympy.physics.quantum`. 
+    corresponding `BosonOp` objects in `sympy.physics.quantum`. 
     
     Parameters
     ----------
@@ -304,7 +304,7 @@ def pybolano_to_sympy(q : Expr) -> Expr:
     if not(is_ladder_contained(q)):
         return q
     elif isinstance(q, Add):
-        return Add(*[pybolano_to_sympy(qq) for qq in q.args])
+        return Add(*[to_sympy_physics(qq) for qq in q.args])
     elif isinstance(q, Mul):
         return Mul(*[_treat_factor(qq) for qq in q.args])
     else:
