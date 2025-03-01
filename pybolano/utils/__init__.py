@@ -17,4 +17,5 @@ __all__ = [
     "separate_mul_by_sub",
     "dagger",
     "random_ladder",
+    "pybolano_to_sympy"
 ]
