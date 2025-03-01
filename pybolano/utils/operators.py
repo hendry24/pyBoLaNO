@@ -1,8 +1,10 @@
-from random import randrange
+import random
 from typing import TypeGuard
 import re
 
 from sympy import Expr, Mul, Add, Number, Pow, Basic, Symbol, latex, conjugate, sympify
+from sympy.physics.quantum import Dagger
+from sympy.physics.quantum.boson import BosonOp
 
 from pybolano.utils.error_handling import InvalidTypeError
 
@@ -242,12 +244,68 @@ def separate_mul_by_sub(q: Expr) -> list[Expr]:
             [Number, Symbol, pybolanoOp, Pow, Mul], type(q)
         )
 
-
 ############################################################
 
 def random_ladder(n_ladder: int, 
                   k: str | Expr | list[str, Expr] = ""
                   ) -> Expr:
+    """
+    Generate a random ladder operator monomial containing a specified
+    number of ladder operators whose subscripts are randomly chosen from a list
+    of input subscripts.
+    
+    Parameters
+    ----------
+    
+    n_ladder : int
+        Total number of ladder operators in the monomial.
+        
+    k : str or sympy.Expr or list
+        List of subscripts from which the function randomly samples and assign to
+        a given ladder operator in the monomial.
+    """
     if not(isinstance(k, list)):
         k = [k]
-    return Mul(*[ops(k[randrange(len(k))])[randrange(2)] for _ in range(n_ladder)])
+    return Mul(*[ops(random.choice(k))[random.randrange(2)] for _ in range(n_ladder)])
+
+############################################################
+
+def pybolano_to_sympy(q : Expr) -> Expr:
+    """
+    Convert expressions such that this package's ladder operators is replaced by the
+    corresponding`BosonOp` objects in `sympy.physics.quantum`. 
+    
+    Parameters
+    ----------
+    
+    q : Expr
+        Expression to convert. Does not work with expectation value objects, which are
+        visual-only. 
+        
+    Returns
+    -------
+    
+    out : Expr
+        Equivalent expression compatible with `sympy.physics.quantum`.
+    """
+    def _treat_factor(q):
+        if not(is_ladder_contained(q)):
+            return q
+        else:
+            k, pow = get_ladder_attr(q)
+            b_sympy = BosonOp(r"b_{%s}" % k)
+            if q.has(BosonicAnnihilationOp):
+                return b_sympy**pow
+            else:
+                return Dagger(b_sympy)**pow
+
+    q = sympify(q).expand()
+    
+    if not(is_ladder_contained(q)):
+        return q
+    elif isinstance(q, Add):
+        return Add(*[pybolano_to_sympy(qq) for qq in q.args])
+    elif isinstance(q, Mul):
+        return Mul(*[_treat_factor(qq) for qq in q.args])
+    else:
+        return _treat_factor(q)

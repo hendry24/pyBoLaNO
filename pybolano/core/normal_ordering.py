@@ -219,7 +219,7 @@ def normal_ordering(q: Expr) -> Expr:
     ops : Get the bosonic ladder operator objects.
     """
 
-    q = sympify(q)
+    q = sympify(q).expand()
 
     # Shortcuts
 

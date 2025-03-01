@@ -1,7 +1,8 @@
 import pytest
 import random
 
-from sympy import Symbol, I, Mul, Pow
+from sympy import Symbol, I, Mul, Pow, sympify
+from sympy.physics.quantum.boson import BosonOp
 
 from pybolano.utils.operators import (BosonicAnnihilationOp,
                                       BosonicCreationOp,
@@ -11,7 +12,8 @@ from pybolano.utils.operators import (BosonicAnnihilationOp,
                                       dagger,
                                       random_ladder, 
                                       get_ladder_attr, 
-                                      separate_mul_by_sub)
+                                      separate_mul_by_sub,
+                                      pybolano_to_sympy)
 
 ###
 
@@ -103,3 +105,25 @@ def test_separate_by_sub():
             raise ValueError(s)
         
         assert len(set(sub_lst)) == 1
+        
+@pytest.mark.order(7)
+def test_pybolano_to_sympy():
+    assert pybolano_to_sympy(5) == sympify(5)
+    assert pybolano_to_sympy(I) == I
+    assert pybolano_to_sympy(Symbol("x")) == Symbol("x")
+
+    b, bd = ops(1)
+    bb, bbd = ops(2)
+    
+    b_s = BosonOp(r"b_{1}", True)
+    bd_s = BosonOp(r"b_{1}", False)
+    bb_s = BosonOp(r"b_{2}", True)
+    bbd_s = BosonOp(r"b_{2}", False)
+    
+    assert pybolano_to_sympy(b) == b_s
+    assert pybolano_to_sympy(bbd) == bbd_s
+    assert pybolano_to_sympy(b+1) == b_s+1
+    assert pybolano_to_sympy(b+bbd) == b_s + bbd_s
+    assert pybolano_to_sympy(50*Symbol(r"\gamma")*bb)  == 50*Symbol(r"\gamma")*bb_s
+    assert pybolano_to_sympy(bd**2) == bd_s**2
+    assert pybolano_to_sympy(5*bbd**2*b + b*bbd*b) == (5*bbd_s**2*b_s + b_s*bbd_s*b_s)

@@ -10,7 +10,7 @@ from pybolano.utils.expval import _expval
 
 ###
 
-@pytest.mark.order(8)
+@pytest.mark.order(9)
 def test_break_comm():
     b, bd = ops()
     for _ in range(100):
@@ -28,7 +28,7 @@ def test_break_comm():
         
         assert _break_comm(A, B) == expect
 
-@pytest.mark.order(9)
+@pytest.mark.order(10)
 def test_NO():
     b_1, bd_1 = ops(1) 
     b_2, bd_2 = ops(2)
@@ -59,7 +59,7 @@ def test_NO():
         q = random_ladder(10, ["a", "b", "c"])
         assert NO(q) == normal_ordering(q)
     
-@pytest.mark.order(9)
+@pytest.mark.order(11)
 def test_LME_expval_evo():
     b_1, bd_1 = ops("1")
     b_2, bd_2 = ops("2")

@@ -5,7 +5,7 @@ from sympy import Add, Mul, Pow
 from pybolano.utils.operators import ops
 from pybolano.utils.expval import _expval
 
-@pytest.mark.order(7)
+@pytest.mark.order(8)
 def test_expval():
     b, bd = ops()
     

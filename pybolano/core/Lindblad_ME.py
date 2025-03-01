@@ -1,7 +1,6 @@
 from typing import Any
 
 from sympy import Derivative, Equality, Expr, I, Number, Symbol
-from sympy.physics.secondquant import Dagger
 
 from pybolano.core.commutators import _break_comm
 from pybolano.core.normal_ordering import normal_ordering
