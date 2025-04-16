@@ -1,0 +1,346 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
+
+\usepackage{amssymb,amsmath}
+\usepackage{enumerate}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{sfmath}
+\usepackage{changepage}
+\usepackage{hyperref}
+\usepackage{ragged2e}
+\usepackage{parskip}
+\usepackage[english]{babel}
+\usepackage{seqsplit}
+\usepackage{bm}
+
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[lighttt]{lmodern}
+
+\newcommand{\hlinesep}{\noindent \rule{\textwidth}{0.5pt}\vspace{6pt}}
+
+\usepackage{newfloat}
+\usepackage{minted}
+\setminted{
+bgcolor = gray!20,
+breaklines,
+python3
+}
+\newcommand{\inlinecode}[1]{\mintinline[breaklines, bgcolor=gray!20, python3]{python}{#1}}
+
+\renewcommand{\figurename}{Fig.}
+
+\newcommand{\code}[1]{\colorbox{gray!25}{\texttt{#1}}}
+
+\newcommand{\filestamp}[1]{\underline{\textbf{file: #1}}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\matrixel}[3]{\left\langle{#1}\middle|{#2}\middle|{#3}\right\rangle}
+\newcommand{\trace}[1]{\mathrm{tr}\left({#1}\right)}
+\newcommand{\ket}[1]{\left|{#1}\right\rangle}
+\newcommand{\bra}[1]{\left\langle{#1}\right|}
+\newcommand{\expval}[1]{\left\langle{#1}\right\rangle}
+\newcommand{\comm}[2]{\left[{#1},{#2}\right]}
+\newcommand{\acomm}[2]{\left\{{#1},{#2}\right\}}
+\newcommand{\imag}[1]{\mathrm{Im}\left\{{#1}\right\}}
+\newcommand{\real}[1]{\mathrm{Re}\left\{{#1}\right\}}
+\newcommand{\dissip}[1]{\mathcal{D}\left({#1}\right)\left[\rho\right]}
+\newcommand{\smalleq}[2][0.75]{\text{\scalebox{#1}{$#2$}}}
+\newcommand{\bop}{\hat{b}}
+\newcommand{\bopn}[1]{\bop^{#1}}
+\newcommand{\bdag}{\bop^\dagger}
+\newcommand{\bdagn}[1]{\bop^{\dagger {#1}}}
+\newcommand{\bmbn}[2]{\bdagn{#1}\bop^{#2}}
+
+\newcommand{\pybolano}{\texttt{pyBoLaNO}~}
+
+\newenvironment{revision}{%
+\color{red}
+}
+{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\review}[1]{
+\newpage
+\phantomsection
+%\vspace*{\fill}
+\begin{center}
+\Large{\uppercase{{\textbf{Reply to Report of Reviewer {#1}}}}}
+\end{center}
+%\vspace*{\fill}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\addendum}{
+\newpage
+\phantomsection
+\vspace*{\fill}
+\begin{center}
+\Large{\uppercase{\textbf{Addendum}}}
+\end{center}
+\vspace*{\fill}
+\newpage
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{revremark}{%
+%\newpage
+\phantomsection
+\vspace{12pt}
+\color{RoyalPurple}
+\par
+\textbf{REVIEWER'S REMARK:}
+\par
+}
+{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{revthanks}{%
+\color{Black}
+\textbf{AUTHORS:}
+\par 
+Thank you for your appreciation to this work and for the precious time you spent in reviewing the manuscript and codes. 
+}
+{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{revq}[1]{%
+%\newpage
+\phantomsection
+\color{RoyalPurple}
+\par
+\textbf{QUESTION/COMMENT {#1}:}
+\par %
+}
+{\bigskip}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{reva}{%
+\color{Black}
+\par
+\textbf{REPLY:}
+\par
+}
+{\bigskip}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{revpre}{%
+\textbf{{BEFORE REVISION:}}
+\par
+}
+{\bigskip}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newenvironment{revpost}{%
+\textbf{{AFTER REVISION:}}
+\par
+}
+{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setlength{\parindent}{0pt}
+
+\usepackage{setspace}
+\onehalfspacing
+
+%---------------------------------------------------
+\begin{document}
+
+\sloppy
+
+\pagenumbering{gobble}
+
+\begin{flushright}
+    South Tangerang, \today
+\end{flushright}
+
+\bigskip
+
+Dear Editor of Computer Physics Communications (CPC), 
+
+Thank you for sending us the second round of referee reports for our article, ``pyBoLaNO: A Python symbolic package for normal ordering involving bosonic ladder operators'' (COMPHY-D-25-00012). We are delighted that our work may be accepted pending appropriate revisions in response to Reviewer \#1’s comments. We also thank Reviewer \#2 for their final remark.
+
+We address the remaining comments from Reviewer \#1 by modifying some parts of the manuscript and updating our GitHub repository. The revised texts in the manuscript are indicated in \textcolor{red}{red} in the compiled PDF file. In the LaTeX source file, we use a self-defined environment \verb|\begin{revision2}...\end{revision2}|. The revision indicator can be safely removed by redefining this environment in the preamble (as we have for the first \texttt{revision} environment). The detailed answers to each comment/question, alongside the corresponding changes made to the manuscript, are enclosed with this response letter.
+
+Thank you once again for considering our work for publication in CPC.
+
+\bigskip
+\hrule
+\bigskip
+
+Corresponding author:
+
+\textbf{Hendry Minfui Lim}\
+
+\url{hendry01@ui.ac.id}
+
+{Research Center for Quantum Physics, National Research and Innovation Agency (BRIN), South Tangerang 15314, Indonesia}
+
+{Department of Physics, Faculty of Mathematics and Natural Sciences, Universitas Indonesia, Depok 16424, Indonesia}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\review{1}
+
+%%%
+
+\begin{revremark}
+This paper describes an efficient algorithm to bring strings of bosonic operators in normal order. It has similar capabilities as the sympy.physics package but is more efficient.
+\end{revremark}
+
+\begin{revthanks}
+\end{revthanks}
+
+%%%
+
+\begin{revq}{1}
+It would be nice if the package could be combined with symbolic use of normal modes (q\_i, q\_j) and sums over i, j etc., rather than explicit terms q\_1, q\_2. That does not seem to be the case at the moment. 
+\end{revq}
+
+\begin{reva}
+Thank you for your comment and suggestion. As we have stated in \textbf{Section 3.2} of the previous version of the manuscript, the subscript $k$ in $\hat{b}_k$ is treated as a \inlinecode{Symbol} in \texttt{SymPy}. Therefore, users may utilize \textit{any} symbol as the subscript, including the dummy index of a sum or product. 
+
+Arguably, the most computationally efficient way to normal-order a sum or product written in the sigma or pi notation is to \textbf{first normal-order the summand expression, then carry out the sum or product}. As a simple example, the normal ordering
+\begin{equation}\label{eq:1}
+    \mathcal{N}\left(\sum_{j=a}^b\sum_{k=c}^d \bop_j\bop_k\bdag_j\bdag_k\right) = \sum_{j=a}^b\sum_{k=c}^d \left(1+\bdag_j\bop_j\right)\left(1+\bdag_k\bop_k\right)
+\end{equation}
+can be reproduced in \texttt{SymPy} with the help of our package as follows.
+\begin{minted}{python}
+import pybolano as bl
+import sympy as sm
+
+j, k, a, b, c, d = sm.symbols("j k a b c d")
+
+b_j, bd_j = bl.ops(j)
+b_k, bd_k = bl.ops(k)
+
+summand = b_j*b_k*bd_j*bd_k
+
+summand_NO = bl.NO(summand)
+
+sum = sm.Sum(summand_NO, (j,a,b), (k,c,d))
+
+print(sm.latex(sum))
+
+Out: \sum_{\substack{a \leq j \leq b\\c \leq k \leq d}} \left(1 + {b^{\dagger}_{j}} {b_{j}} + {b^{\dagger}_{j}} {b^{\dagger}_{k}} {b_{j}} {b_{k}} + {b^{\dagger}_{k}} {b_{k}}\right)
+\end{minted}
+The render of the \LaTeX~output is
+\begin{equation}
+    \text{Out:}\qquad \sum_{\substack{a \leq j \leq b\\c \leq k \leq d}} \left(1 + {b^{\dagger}_{j}} {b_{j}} + {b^{\dagger}_{j}} {b^{\dagger}_{k}} {b_{j}} {b_{k}} + {b^{\dagger}_{k}} {b_{k}}\right)
+\end{equation}
+which is equivalent to the RHS of Eq.~\eqref{eq:1}.
+
+We recognize the lack of emphasis on this capability in the previous version of the manuscript and have added to \textbf{Section 4.1} (of the revised manuscript) the demonstration of using symbols as subscripts.
+
+We have also noted how our package's ladder operator base object, \inlinecode{pybolanoOp}, is compatible with other \texttt{SymPy} expressions, such as the sigma and pi notations, which are ubiquitous in many-body cases. For example, with the variables in the above code block, we have
+\begin{minted}{python}
+print(sm.latex(sm.Sum(b_j, (j,1,3)).doit())
+
+Out: {b_{1}} + {b_{2}} + {b_{3}}
+\end{minted}
+or 
+\begin{equation}
+    \sum_{j=1}^3 \bop_j = \bop_1+\bop_2+\bop_3
+\end{equation}
+which can be correctly produced with \texttt{sympy.Sum} alongside our ladder operator objects. This remark has been added to \textbf{Section 3.2}. We have also updated the tutorial file in the GitHub repository with commit \href{https://github.com/hendry24/pyBoLaNO/commit/2f1aa4914dca615bc4842bf2e86f8b4356e74445}{\texttt{2f1aa49}}.
+
+\end{reva}
+
+\begin{revpre}
+\textbf{Section 3.2 of the first revision}
+
+$\dots$~This function preprocesses \inlinecode{k} into \inlinecode{Symbol} to be used as the subscript of ladder operators. 
+\end{revpre}
+
+\begin{revpost}
+\textbf{Section 3.2 of the second revision}
+
+$\dots$~This function preprocesses \inlinecode{k} into \inlinecode{Symbol} to be used as the subscript of ladder operators. 
+
+\begin{revision}
+Since the objects inherit from \inlinecode{sympy.Expr} without any modifications to methods handling interactions between \texttt{SymPy} objects, they are compatible with other expression objects. In particular, they are compatible with the sigma and pi notations, implemented as \inlinecode{sympy.Sum} and \inlinecode{sympy.Product}, respectively. That is, the summation and product can be explicitly carried out, e.g. $\sum_{k=1}^3 \bop_k = \bop_1+\bop_2+\bop_3$ and $\prod_{k=1}^3 \bop_k = \bop_1\bop_2\bop_3$.
+\end{revision}
+\end{revpost}
+
+%%%
+
+\begin{revq}{2}
+The output is rendered in LaTeX, and this is how much of the results in the document are illustrated. I think it would be nice if those results would then be typeset such that it is easier to read.
+\end{revq}
+
+\begin{reva}
+Thank you for pointing out the \LaTeX~issue. We have added the \LaTeX~renders of the outputs (and inputs, where necessary) after the corresponding code blocks in the manuscript. These revisions are not all specified in this response due to their large number. The following illustrates \textbf{one example} of the revised output representations. 
+\end{reva}
+
+\begin{revpre}
+
+\textbf{Section 4.1 of the first revision}
+
+\begin{minted}{python}
+print(latex(
+bl.normal_ordering(b * bd * b)
+))
+
+Out: b_{} + {b^\dagger_{}} b_{}^{2}
+\end{minted}
+
+\end{revpre}
+
+\newpage
+
+\begin{revpost}
+
+\textbf{Section 4.1 of the second revision}
+
+\begin{minted}{python}
+print(latex(
+bl.normal_ordering(b * bd * b)
+))
+
+Out: b_{} + {b^\dagger_{}} b_{}^{2}
+\end{minted}
+\begin{revision}
+\inlinecode{Input render:}
+\begin{equation*}
+    \bop\bdag\bop
+\end{equation*}
+\inlinecode{Output render:}
+\begin{equation*}
+    b_{} + {b^\dagger_{}} b_{}^{2}
+\end{equation*}
+\end{revision}
+
+\end{revpost}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\review{2}
+
+%%%
+
+\begin{revremark}
+    I am satisfied with the authors replies.
+\end{revremark}
+
+\begin{revthanks}
+\end{revthanks}
+
+%%%
+
+% \newpage
+% \phantomsection
+
+% \bibliographystyle{unsrt}
+% \bibliography{bibliography}
+
+\end{document}

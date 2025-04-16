@@ -1,0 +1,19 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{omega\PYGZus{}0}\PYG{p}{,} \PYG{n}{mu}\PYG{p}{,} \PYG{n}{q\PYGZus{}0} \PYG{o}{=} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{symbols}\PYG{p}{(}\PYG{l+s+sa}{r}\PYG{l+s+s2}{\PYGZdq{}omega\PYGZus{}0 mu q\PYGZus{}0\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{b}\PYG{p}{,} \PYG{n}{bd} \PYG{o}{=} \PYG{n}{bl}\PYG{o}{.}\PYG{n}{ops}\PYG{p}{()}
+
+\PYG{n}{H} \PYG{o}{=} \PYG{n}{omega\PYGZus{}0}\PYG{o}{*}\PYG{n}{bd}\PYG{o}{*}\PYG{n}{b} \PYGZbs{}
+    \PYG{o}{+} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{I}\PYG{o}{*}\PYG{n}{mu}\PYG{o}{/}\PYG{l+m+mi}{12} \PYG{o}{*} \PYG{p}{(}\PYG{n}{bd}\PYG{o}{*}\PYG{n}{b}\PYG{o}{**}\PYG{l+m+mi}{3} \PYG{o}{\PYGZhy{}} \PYG{n}{bd}\PYG{o}{**}\PYG{l+m+mi}{3}\PYG{o}{*}\PYG{n}{b}\PYG{p}{)} \PYGZbs{}
+    \PYG{o}{+} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{I}\PYG{o}{*}\PYG{n}{mu}\PYG{o}{/}\PYG{l+m+mi}{24} \PYG{o}{*} \PYG{p}{(}\PYG{n}{b}\PYG{o}{**}\PYG{l+m+mi}{4}\PYG{o}{\PYGZhy{}}\PYG{n}{bd}\PYG{o}{**}\PYG{l+m+mi}{4}\PYG{p}{)} \PYGZbs{}
+    \PYG{o}{\PYGZhy{}} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{I}\PYG{o}{*}\PYG{n}{mu}\PYG{o}{*}\PYG{p}{(}\PYG{n}{q\PYGZus{}0}\PYG{o}{**}\PYG{l+m+mi}{2}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{/}\PYG{l+m+mi}{4} \PYG{o}{*} \PYG{p}{(}\PYG{n}{b}\PYG{o}{**}\PYG{l+m+mi}{2}\PYG{o}{\PYGZhy{}}\PYG{n}{bd}\PYG{o}{**}\PYG{l+m+mi}{2}\PYG{p}{)}
+
+\PYG{n}{D} \PYG{o}{=} \PYG{p}{[[}\PYG{n}{mu}\PYG{o}{*}\PYG{p}{(}\PYG{n}{q\PYGZus{}0}\PYG{o}{**}\PYG{l+m+mi}{2}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{),} \PYG{n}{bd}\PYG{p}{],}
+     \PYG{p}{[}\PYG{l+m+mi}{3}\PYG{o}{*}\PYG{n}{mu}\PYG{o}{/}\PYG{l+m+mi}{4}\PYG{p}{,} \PYG{n}{b}\PYG{o}{**}\PYG{l+m+mi}{2}\PYG{p}{],}
+     \PYG{p}{[}\PYG{n}{mu}\PYG{p}{,} \PYG{n}{bd}\PYG{o}{*}\PYG{n}{b}\PYG{o}{\PYGZhy{}}\PYG{n}{bd}\PYG{o}{**}\PYG{l+m+mi}{2}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{p}{]]}
+
+\PYG{n}{A} \PYG{o}{=} \PYG{n}{b}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{latex}\PYG{p}{(}
+\PYG{n}{bl}\PYG{o}{.}\PYG{n}{LME\PYGZus{}expval\PYGZus{}evo}\PYG{p}{(}\PYG{n}{H}\PYG{p}{,} \PYG{n}{D}\PYG{p}{,} \PYG{n}{A}\PYG{p}{)}
+\PYG{p}{))}
+\end{Verbatim}

@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import} \PYG{n+nn}{pybolano} \PYG{k}{as} \PYG{n+nn}{bl}
+\PYG{n}{bl}\PYG{o}{.}\PYG{n}{mpconfig}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}num\PYGZus{}cpus\PYGZdq{}}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{4}
+\end{Verbatim}
