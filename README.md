@@ -86,6 +86,8 @@ Pitiful as it may be, researchers nowadays are valued based on their citation co
 }
 ```
 
+If you are interested in how we handle the peer review from the original version to the latest version of the preprint manuscript, we also provide a [preprint folder](preprint) in this repository in addition to the [arXiv page](https://arxiv.org/abs/2501.01603).
+
 ---
 
 ### **Parting words**
