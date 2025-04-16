@@ -46,8 +46,7 @@ pip install git+https://github.com/hendry24/pyBoLaNO
 ### **Let's be transparent**
 
 The core working principle of `pyBoLaNO` is simple. The package is based on the commutation relations:
-$[\hat{b}_j,{\hat{b}_k}^\dagger]= 1~\textrm{if}j = k ([\hat{b}_j,{\hat{b}_k}^\dagger]= 1~\textrm{otherwise})$
-and
+$[\hat{b}_j,{\hat{b}_k}^\dagger]= 1~\textrm{if}j = k \quad~(and [\hat{b}_j,{\hat{b}_k}^\dagger]= 0~\textrm{otherwise})$ and
 $\left[\hat{b}_j,\hat{b}_k\right]=\left[\hat{b}_j^\dagger,\hat{b}_k^\dagger\right]=0$
 for the bosonic creation $\hat{b}_j^\dagger$ and annihilation $\hat{b}_j^\dagger$ operators, where the subscript ($j$ here) indexes the bosonic mode. More precisely, we make use of the explicit formula for the normal ordering of any monomial in bosonic operators presented by Blasiak (see arXiv links for [his PhD thesis](https://arxiv.org/abs/quant-ph/0507206) and a relevant [journal article](https://doi.org/10.1063/1.1990120)).
 
