@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{mp\PYGZus{}config}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}enable\PYGZdq{}}\PYG{p}{]} \PYG{o}{=} \PYG{k+kc}{True}
+\PYG{n}{mp\PYGZus{}config}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}num\PYGZus{}cpus\PYGZdq{}}\PYG{p}{]} \PYG{o}{=} \PYG{n}{os}\PYG{o}{.}\PYG{n}{cpu\PYGZus{}count}\PYG{p}{()}
+\PYG{n}{mp\PYGZus{}config}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}min\PYGZus{}num\PYGZus{}args\PYGZdq{}}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{2}
+\end{Verbatim}

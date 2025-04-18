@@ -1,0 +1,29 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{omega\PYGZus{}0}\PYG{p}{,} \PYG{n}{kappa} \PYG{o}{=} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{symbols}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}omega\PYGZus{}0 kappa\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{gamma\PYGZus{}1}\PYG{p}{,} \PYG{n}{gamma\PYGZus{}2}\PYG{p}{,} \PYG{n}{gamma\PYGZus{}3} \PYG{o}{=} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{symbols}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}gamma\PYGZus{}1 gamma\PYGZus{}2 gamma\PYGZus{}3\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{p\PYGZus{}1}\PYG{p}{,} \PYG{n}{p\PYGZus{}2}\PYG{p}{,} \PYG{n}{p\PYGZus{}3} \PYG{o}{=} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{symbols}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}p\PYGZus{}1 p\PYGZus{}2 p\PYGZus{}3\PYGZdq{}}\PYG{p}{)}
+
+\PYG{n}{b\PYGZus{}1}\PYG{p}{,} \PYG{n}{bd\PYGZus{}1} \PYG{o}{=} \PYG{n}{bl}\PYG{o}{.}\PYG{n}{ops}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{)}
+\PYG{n}{b\PYGZus{}2}\PYG{p}{,} \PYG{n}{bd\PYGZus{}2} \PYG{o}{=} \PYG{n}{bl}\PYG{o}{.}\PYG{n}{ops}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{)}
+\PYG{n}{b\PYGZus{}3}\PYG{p}{,} \PYG{n}{bd\PYGZus{}3} \PYG{o}{=} \PYG{n}{bl}\PYG{o}{.}\PYG{n}{ops}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{)}
+
+\PYG{n}{H} \PYG{o}{=} \PYG{p}{(}\PYG{n}{omega\PYGZus{}0} \PYG{o}{+} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{I}\PYG{o}{*}\PYG{n}{kappa}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{o}{*}\PYG{n}{bd\PYGZus{}1}\PYG{o}{*}\PYG{n}{b\PYGZus{}1} \PYGZbs{}
+    \PYG{o}{+} \PYG{n}{omega\PYGZus{}0}\PYG{o}{*}\PYG{n}{bd\PYGZus{}2}\PYG{o}{*}\PYG{n}{b\PYGZus{}2} \PYGZbs{}
+    \PYG{o}{+} \PYG{p}{(}\PYG{n}{omega\PYGZus{}0} \PYG{o}{\PYGZhy{}} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{I}\PYG{o}{*}\PYG{n}{kappa}\PYG{o}{/}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{o}{*}\PYG{n}{bd\PYGZus{}3}\PYG{o}{*}\PYG{n}{b\PYGZus{}3} \PYGZbs{}
+    \PYG{o}{+} \PYG{n}{g}\PYG{o}{*}\PYG{p}{(}\PYG{n}{bd\PYGZus{}1}\PYG{o}{*}\PYG{n}{b\PYGZus{}2}\PYG{o}{+}\PYG{n}{bd\PYGZus{}2}\PYG{o}{*}\PYG{n}{b\PYGZus{}1} \PYG{o}{+} \PYG{n}{bd\PYGZus{}2}\PYG{o}{*}\PYG{n}{b\PYGZus{}3} \PYG{o}{+} \PYG{n}{bd\PYGZus{}3}\PYG{o}{*}\PYG{n}{b\PYGZus{}2}\PYG{p}{)}
+
+\PYG{n}{D} \PYG{o}{=} \PYG{p}{[[}\PYG{n}{gamma\PYGZus{}1}\PYG{p}{,} \PYG{n}{b\PYGZus{}1}\PYG{p}{],}
+     \PYG{p}{[}\PYG{n}{gamma\PYGZus{}2}\PYG{p}{,} \PYG{n}{b\PYGZus{}2}\PYG{p}{],}
+     \PYG{p}{[}\PYG{n}{gamma\PYGZus{}3}\PYG{p}{,} \PYG{n}{b\PYGZus{}3}\PYG{p}{],}
+     \PYG{p}{[}\PYG{n}{p\PYGZus{}1}\PYG{p}{,} \PYG{n}{bd\PYGZus{}1}\PYG{p}{],}
+     \PYG{p}{[}\PYG{n}{p\PYGZus{}2}\PYG{p}{,} \PYG{n}{bd\PYGZus{}2}\PYG{p}{],}
+     \PYG{p}{[}\PYG{n}{p\PYGZus{}3}\PYG{p}{,} \PYG{n}{bd\PYGZus{}3}\PYG{p}{]]}
+
+\PYG{n}{A} \PYG{o}{=} \PYG{n}{bd\PYGZus{}1}\PYG{o}{*}\PYG{n}{b\PYGZus{}1}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{latex}\PYG{p}{(}
+\PYG{n}{bl}\PYG{o}{.}\PYG{n}{LME\PYGZus{}expval\PYGZus{}evo}\PYG{p}{(}\PYG{n}{H}\PYG{p}{,} \PYG{n}{D}\PYG{p}{,} \PYG{n}{A}\PYG{p}{)}
+\PYG{p}{))}
+
+\PYG{n}{Out}\PYG{p}{:} \PYGZbs{}\PYG{n}{frac}\PYG{p}{\PYGZob{}}\PYG{n}{d}\PYG{p}{\PYGZcb{}\PYGZob{}}\PYG{n}{d} \PYG{n}{t}\PYG{p}{\PYGZcb{}} \PYG{p}{\PYGZob{}}\PYGZbs{}\PYG{n}{left}\PYGZbs{}\PYG{n}{langle} \PYG{p}{\PYGZob{}}\PYG{n}{b}\PYG{o}{\PYGZca{}}\PYGZbs{}\PYG{n}{dagger\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}\PYGZcb{}} \PYG{n}{b\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}} \PYGZbs{}\PYG{n}{right}\PYGZbs{}\PYG{n}{rangle}\PYG{p}{\PYGZcb{}} \PYG{o}{=} \PYG{o}{\PYGZhy{}} \PYG{n}{i} \PYG{n}{g} \PYG{p}{\PYGZob{}}\PYGZbs{}\PYG{n}{left}\PYGZbs{}\PYG{n}{langle} \PYG{p}{\PYGZob{}}\PYG{n}{b}\PYG{o}{\PYGZca{}}\PYGZbs{}\PYG{n}{dagger\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}\PYGZcb{}} \PYG{n}{b\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{2}\PYG{p}{\PYGZcb{}} \PYGZbs{}\PYG{n}{right}\PYGZbs{}\PYG{n}{rangle}\PYG{p}{\PYGZcb{}} \PYG{o}{+} \PYG{n}{i} \PYG{n}{g} \PYG{p}{\PYGZob{}}\PYGZbs{}\PYG{n}{left}\PYGZbs{}\PYG{n}{langle} \PYG{p}{\PYGZob{}}\PYG{n}{b}\PYG{o}{\PYGZca{}}\PYGZbs{}\PYG{n}{dagger\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{2}\PYG{p}{\PYGZcb{}\PYGZcb{}} \PYG{n}{b\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}} \PYGZbs{}\PYG{n}{right}\PYGZbs{}\PYG{n}{rangle}\PYG{p}{\PYGZcb{}} \PYG{o}{\PYGZhy{}} \PYGZbs{}\PYG{n}{gamma\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}} \PYG{p}{\PYGZob{}}\PYGZbs{}\PYG{n}{left}\PYGZbs{}\PYG{n}{langle} \PYG{p}{\PYGZob{}}\PYG{n}{b}\PYG{o}{\PYGZca{}}\PYGZbs{}\PYG{n}{dagger\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}\PYGZcb{}} \PYG{n}{b\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}} \PYGZbs{}\PYG{n}{right}\PYGZbs{}\PYG{n}{rangle}\PYG{p}{\PYGZcb{}} \PYG{o}{+} \PYG{n}{p\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}} \PYG{p}{\PYGZob{}}\PYGZbs{}\PYG{n}{left}\PYGZbs{}\PYG{n}{langle} \PYG{p}{\PYGZob{}}\PYG{n}{b}\PYG{o}{\PYGZca{}}\PYGZbs{}\PYG{n}{dagger\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}\PYGZcb{}} \PYG{n}{b\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}} \PYGZbs{}\PYG{n}{right}\PYGZbs{}\PYG{n}{rangle}\PYG{p}{\PYGZcb{}} \PYG{o}{+} \PYG{n}{p\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

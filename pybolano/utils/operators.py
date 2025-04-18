@@ -1,5 +1,5 @@
 import random
-from typing import TypeGuard
+from typing import TypeGuard 
 
 from sympy import Expr, Mul, Add, Number, Pow, Basic, Symbol, latex, conjugate, sympify
 from sympy.physics.quantum import Dagger

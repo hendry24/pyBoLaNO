@@ -1,0 +1,99 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{griffiths_introduction_2018}
+D.~J. Griffiths, D.~F. Schroeter, Introduction to quantum mechanics, 3rd Edition, Cambridge University Press, 2018.
+
+\bibitem{lancaster_quantum_2014}
+T.~Lancaster, S.~Blundell, Quantum field theory for the gifted amateur, 1st Edition, Oxford Univ. Press, 2014.
+
+\bibitem{gerry_introductory_2005}
+C.~C. Gerry, P.~L. Knight, Introductory quantum optics, Cambridge University Press, 2005.
+
+\bibitem{fox2006quantum}
+M.~Fox, Quantum Optics: An Introduction, Oxford Master Series in Physics, OUP Oxford, 2006.
+
+\bibitem{chia_relaxation_2020}
+A.~Chia, L.~C. Kwek, C.~Noh, Relaxation oscillations and frequency entrainment in quantum mechanics, Phys. Rev. E 102~(4) (2020) 042213.
+
+\bibitem{Shen2023}
+Y.~Shen, W.-K. Mok, C.~Noh, A.~Q. Liu, L.-C. Kwek, W.~Fan, A.~Chia, Quantum synchronization effects induced by strong nonlinearities, Phys. Rev. A 107~(5) (2023) 053713.
+
+\bibitem{downing_hyperbolic_2024}
+C.~A. Downing, M.~S. Ukhtary, Hyperbolic enhancement of a quantum battery, Phys. Rev. A 109~(5) (2024) 052206.
+
+\bibitem{Krimer2019}
+D.~O. Krimer, M.~Zens, S.~Rotter, Critical phenomena and nonlinear dynamics in a spin ensemble strongly coupled to a cavity. {I}. semiclassical approach, Phys. Rev. A 100~(1) (2019) 013855.
+
+\bibitem{Zens2019}
+M.~Zens, D.~O. Krimer, S.~Rotter, Critical phenomena and nonlinear dynamics in a spin ensemble strongly coupled to a cavity. {II}. semiclassical-to-quantum boundary, Phys. Rev. A 100~(1) (2019) 013856.
+
+\bibitem{Ahmadi2024}
+B.~Ahmadi, P.~Mazurek, P.~Horodecki, S.~Barzanjeh, Nonreciprocal quantum batteries, Phys. Rev, Lett. 132~(21) (2024) 210402.
+
+\bibitem{Downing2021}
+C.~A. Downing, V.~A. Saroka, Exceptional points in oligomer chains, Commun. Phys. 4~(1) (2021) 254.
+
+\bibitem{Downing2022}
+C.~A. Downing, T.~J. Sturges, Directionality between driven-dissipative resonators, Europhys. Lett. 140~(3) (2022) 35001.
+
+\bibitem{Downing2023}
+C.~A. Downing, A.~Vidiella-Barranco, Parametrically driving a quantum oscillator into exceptionality, Sci. Rep. 13~(1) (2023) 11004.
+
+\bibitem{BenArosh2021}
+L.~Ben~Arosh, M.~C. Cross, R.~Lifshitz, Quantum limit cycles and the rayleigh and van der pol oscillators, Phys. Rev. Res. 3 (2021) 013130.
+
+\bibitem{Amitai2018.PhysRevE.97.052203}
+E.~Amitai, M.~Koppenh\"ofer, N.~L\"orch, C.~Bruder, Quantum effects in amplitude death of coupled anharmonic self-oscillators, Phys. Rev. E 97 (2018) 052203.
+
+\bibitem{Minganti2019}
+F.~Minganti, A.~Miranowicz, R.~W. Chhajlany, F.~Nori, Quantum exceptional points of non-hermitian hamiltonians and liouvillians: The effects of quantum jumps, Phys. Rev. A 100~(6) (2019) 062131.
+
+\bibitem{Chimczak2023}
+G.~Chimczak, A.~Kowalewska-Kudłaszyk, E.~Lange, K.~Bartkiewicz, J.~Peřina, The effect of thermal photons on exceptional points in coupled resonators, Sci. Rep. 13~(1) (2023) 5859.
+
+\bibitem{Farina2019}
+D.~Farina, G.~M. Andolina, A.~Mari, M.~Polini, V.~Giovannetti, Charger-mediated energy transfer for quantum batteries: An open-system approach, Phys. Rev. B 99~(3) (2019) 035421.
+
+\bibitem{Zhang2021}
+G.-Q. Zhang, Z.~Chen, W.~Xiong, C.-H. Lam, J.~Q. You, Parity-symmetry-breaking quantum phase transition via parametric drive in a cavity magnonic system, Phys. Rev. B 104~(6) (2021) 064423.
+
+\bibitem{meurer_sympy_2017}
+A.~Meurer, C.~P. Smith, M.~Paprocki, O.~{\v{C}}ertík, S.~B. Kirpichev, M.~Rocklin, A.~Kumar, S.~Ivanov, J.~K. Moore, S.~Singh, T.~Rathnayake, S.~Vig, B.~E. Granger, R.~P. Muller, F.~Bonazzi, H.~Gupta, S.~Vats, F.~Johansson, F.~Pedregosa, M.~J. Curry, A.~R. Terrel, {\v{S}}.~Rou\v{c}ka, A.~Saboo, I.~Fernando, S.~Kulal, R.~Cimrman, A.~Scopatz, {SymPy}: symbolic computing in {Python}, PeerJ Comput. Sci. 3 (2017) e103.
+
+\bibitem{blasiak_combinatorics_2005}
+P.~Blasiak, Combinatorics of boson normal ordering and some applications (2005).
+\newblock \href {http://arxiv.org/abs/quant-ph/0507206} {\path{arXiv:quant-ph/0507206}}.
+
+\bibitem{Mendez_2005}
+M.~A. Méndez, P.~Blasiak, K.~A. Penson, Combinatorial approach to generalized bell and stirling numbers and boson normal ordering problem, J. Math. Phys. 46~(8) (2005) 083511.
+
+\bibitem{schlosshauer_decoherence_2007}
+M.~Schlosshauer, Decoherence and the quantum-to-classical transition, Springer, 2007.
+
+\bibitem{breuer_theory_2002}
+H.-P. Breuer, F.~Petruccione, The theory of open quantum systems, Oxford University Press, 2002.
+
+\bibitem{pikovsky_synchronization_2001}
+A.~Pikovsky, M.~Rosenblum, J.~Kurths, Synchronization: a universal concept in nonlinear sciences, Cambridge University Press, 2001.
+
+\bibitem{Bender1998}
+C.~M. Bender, S.~Boettcher, Real spectra in non-hermitian hamiltonians having $\mathcal{P}\mathcal{T}$ symmetry, Phys. Rev. Lett. 80~(24) (1998) 5243.
+
+\bibitem{Wiersig2020}
+J.~Wiersig, Prospects and fundamental limits in exceptional point-based sensing, Nat. Commun. 11~(1) (2020) 2454.
+
+\bibitem{Zhou2024}
+W.~Zhou, J.~Liu, J.~Zhu, D.~Gromyko, C.~Qiu, L.~Wu, Exceptional points unveiling quantum limit of fluorescence rates in non-hermitian plexcitonic single-photon sources, APL Quantum 1~(1) (2024) 016110.
+
+\bibitem{Caloz2018}
+C.~Caloz, A.~Alù, S.~Tretyakov, D.~Sounas, K.~Achouri, Z.-L. Deck-Léger, Electromagnetic nonreciprocity, Phys. Rev. Appl. 10~(4) (2018) 047001.
+
+\bibitem{Dek2012}
+L.~Deák, T.~F\"{u}l\"{o}p, Reciprocity in quantum, electromagnetic and other wave scattering, Ann. of Phys. 327~(4) (2012) 1050.
+
+\end{thebibliography}

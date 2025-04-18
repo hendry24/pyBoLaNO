@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import} \PYG{n+nn}{sympy} \PYG{k}{as} \PYG{n+nn}{sm}
+\PYG{n}{latex} \PYG{o}{=} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{latex} \PYG{c+c1}{\PYGZsh{} to print as LaTeX code.}
+
+\PYG{n}{b}\PYG{p}{,} \PYG{n}{bd} \PYG{o}{=} \PYG{n}{bl}\PYG{o}{.}\PYG{n}{ops}\PYG{p}{()}
+\PYG{n}{b\PYGZus{}1}\PYG{p}{,} \PYG{n}{bd\PYGZus{}1} \PYG{o}{=} \PYG{n}{bl}\PYG{o}{.}\PYG{n}{ops}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{)}
+\PYG{n}{b\PYGZus{}2}\PYG{p}{,} \PYG{n}{bd\PYGZus{}2} \PYG{o}{=} \PYG{n}{bl}\PYG{o}{.}\PYG{n}{ops}\PYG{p}{(}\PYG{n}{sm}\PYG{o}{.}\PYG{n}{Symbol}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}2\PYGZdq{}}\PYG{p}{))} \PYG{c+c1}{\PYGZsh{} or any other symbols such as sm.Symbol(\PYGZdq{}k\PYGZdq{}) for a dummy index.}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{latex}\PYG{p}{(}
+\PYG{n}{b\PYGZus{}1}
+\PYG{p}{))}
+
+\PYG{n}{Out}\PYG{p}{:} \PYG{n}{b\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{1}\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{x} \PYG{o}{=} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{Symbol}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}x\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{A} \PYG{o}{=} \PYG{n}{x}\PYG{o}{*}\PYG{n}{b\PYGZus{}1}
+\PYG{n}{B} \PYG{o}{=} \PYG{n}{x}\PYG{o}{**}\PYG{p}{(}\PYG{l+m+mf}{0.5}\PYG{p}{)}\PYG{o}{*}\PYG{n}{bd\PYGZus{}1}\PYG{o}{*}\PYG{n}{b}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{latex}\PYG{p}{(}
+\PYG{n}{bl}\PYG{o}{.}\PYG{n}{NO\PYGZus{}commutator}\PYG{p}{(}\PYG{n}{A}\PYG{p}{,} \PYG{n}{B}\PYG{p}{)}
+\PYG{p}{))}
+
+\PYG{n}{Out}\PYG{p}{:} \PYG{n}{x}\PYG{o}{\PYGZca{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mf}{1.5}\PYG{p}{\PYGZcb{}} \PYG{n}{b\PYGZus{}}\PYG{p}{\PYGZob{}\PYGZcb{}}
+\end{Verbatim}

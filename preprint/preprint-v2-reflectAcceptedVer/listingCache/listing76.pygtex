@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{normal\PYGZus{}ordering}\PYG{p}{(}\PYG{n}{A}\PYG{o}{*}\PYG{n}{B}\PYG{o}{\PYGZhy{}}\PYG{n}{B}\PYG{o}{*}\PYG{n}{A}\PYG{p}{)}
+\end{Verbatim}

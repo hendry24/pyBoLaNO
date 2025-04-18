@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{hbar}\PYG{p}{,} \PYG{n}{omega\PYGZus{}0} \PYG{o}{=} \PYG{n}{sm}\PYG{o}{.}\PYG{n}{symbols}\PYG{p}{(}\PYG{l+s+sa}{r}\PYG{l+s+s2}{\PYGZdq{}hbar omega\PYGZus{}0\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{b}\PYG{p}{,} \PYG{n}{bd} \PYG{o}{=} \PYG{n}{bl}\PYG{o}{.}\PYG{n}{ops}\PYG{p}{()}
+
+\PYG{n}{H} \PYG{o}{=} \PYG{n}{hbar}\PYG{o}{*}\PYG{n}{omega\PYGZus{}0}\PYG{o}{*}\PYG{n}{bd}\PYG{o}{*}\PYG{n}{b}
+\PYG{n}{D} \PYG{o}{=} \PYG{p}{[]}
+\PYG{n}{A} \PYG{o}{=} \PYG{n}{b}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{latex}\PYG{p}{(}
+\PYG{n}{bl}\PYG{o}{.}\PYG{n}{LME\PYGZus{}expval\PYGZus{}evo}\PYG{p}{(}\PYG{n}{H}\PYG{p}{,} \PYG{n}{D}\PYG{p}{,} \PYG{n}{A}\PYG{p}{,} \PYG{n}{hbar\PYGZus{}is\PYGZus{}one}\PYG{o}{=}\PYG{k+kc}{False}\PYG{p}{)}
+\PYG{p}{))}
+
+\PYG{n}{Out}\PYG{p}{:} \PYGZbs{}\PYG{n}{frac}\PYG{p}{\PYGZob{}}\PYG{n}{d}\PYG{p}{\PYGZcb{}\PYGZob{}}\PYG{n}{d} \PYG{n}{t}\PYG{p}{\PYGZcb{}} \PYG{p}{\PYGZob{}}\PYGZbs{}\PYG{n}{left}\PYGZbs{}\PYG{n}{langle} \PYG{n}{b\PYGZus{}}\PYG{p}{\PYGZob{}\PYGZcb{}} \PYGZbs{}\PYG{n}{right}\PYGZbs{}\PYG{n}{rangle}\PYG{p}{\PYGZcb{}} \PYG{o}{=} \PYG{o}{\PYGZhy{}} \PYG{n}{i} \PYGZbs{}\PYG{n}{omega\PYGZus{}}\PYG{p}{\PYGZob{}}\PYG{l+m+mi}{0}\PYG{p}{\PYGZcb{}} \PYG{p}{\PYGZob{}}\PYGZbs{}\PYG{n}{left}\PYGZbs{}\PYG{n}{langle} \PYG{n}{b\PYGZus{}}\PYG{p}{\PYGZob{}\PYGZcb{}} \PYGZbs{}\PYG{n}{right}\PYGZbs{}\PYG{n}{rangle}\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
