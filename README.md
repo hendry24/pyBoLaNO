@@ -77,13 +77,13 @@ Pitiful as it may be, researchers nowadays are valued based on their citation co
 
 ```
 @misc{lim2025pybolano,
-      title={pyBoLaNO: A Python symbolic package for normal ordering involving bosonic ladder operators}, 
-      author={Hendry M. Lim and Donny Dwiputra and M. Shoufie Ukhtary and Ahmad R. T. Nugraha},
-      year={2025},
-      eprint={2501.01603},
-      archivePrefix={arXiv},
-      primaryClass={quant-ph},
-      url={https://arxiv.org/abs/2501.01603},
+      title = {pyBoLaNO: A Python symbolic package for normal ordering involving bosonic ladder operators}, 
+      author = {Hendry M. Lim and Donny Dwiputra and M. Shoufie Ukhtary and Ahmad R. T. Nugraha},
+      journal = {Computer Physics Communications},
+      volume = {313},
+      year = {2025},
+      pages = {109622},
+      DOI = {10.1016/j.cpc.2025.109622}
 }
 ```
 
