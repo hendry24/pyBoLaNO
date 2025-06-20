@@ -76,7 +76,7 @@ We provide a quick tutorial of this package, in the file `tutorial.ipynb` in the
 Pitiful as it may be, researchers nowadays are valued based on their citation counts. If you find our package helpful for your work, feel free to acknowledge the use of `pyBoLaNO` in your publications. Here is a `bibtex` entry you can copy:
 
 ```
-@misc{lim2025pybolano,
+@article{lim2025pybolano,
       title = {pyBoLaNO: A Python symbolic package for normal ordering involving bosonic ladder operators}, 
       author = {Hendry M. Lim and Donny Dwiputra and M. Shoufie Ukhtary and Ahmad R. T. Nugraha},
       journal = {Computer Physics Communications},
